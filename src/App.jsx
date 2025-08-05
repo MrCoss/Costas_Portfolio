@@ -139,17 +139,20 @@ const Hero = () => (
                 className="md:col-span-2 flex justify-center items-center relative"
             >
                 <motion.div 
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                    className="absolute w-[350px] h-[350px] md:w-[450px] md:h-[450px] bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl"
-                />
-                <img src="/assets/Costas.png" onError={(e) => {
+  animate={{ rotate: 360 }}
+  transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+  className="absolute w-[350px] h-[350px] md:w-[450px] md:h-[450px] bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl"
+>
+<img
+  src="https://res.cloudinary.com/dnihy0crt/image/upload/v1754421179/Untitled_design-removebg-preview_r20wax.png"
+  onError={(e) => {
     e.target.onerror = null;
     e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
   }}
   alt="Costas Pinto"
   className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl"
 />
+</motion.div>
 
             </motion.div>
         </div>
