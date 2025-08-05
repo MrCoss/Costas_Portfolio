@@ -1,0 +1,9 @@
+// --- FIREBASE CONFIGURATION ---
+const firebaseConfig = {
+  apiKey: "AIzaSyAZjJnEruroTDXYEjbne6-BHPA-lJMRw1c",
+  authDomain: "costas-portfolio.firebaseapp.com",
+  projectId: "costas-portfolio",
+  storageBucket: "costas-portfolio.appspot.com",
+  messagingSenderId: "958634149930",
+  appId: "1:958634149930:web:b847a2bc997021711a5b53",
+  measurementId: "G-5ZT1KDPJPT"

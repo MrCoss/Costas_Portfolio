@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Build output directory
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Local development files
+.DS_Store           # macOS specific
+.vscode/            # VS Code settings (optional, if you don't want to share workspace settings)
+npm-debug.log* # npm debug logs
+yarn-debug.log* # yarn debug logs
+yarn-error.log* # yarn error logs
+
+# Firebase specific (if applicable)
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+.firebaserc
+firestore.indexes.json # If generated locally and not part of source control
+firestore.rules      # If generated locally and not part of source control
+storage.rules        # If generated locally and not part of source control
+
+# Other common ignores
+*.log
+.parcel-cache/ # If using Parcel
+.pnp/
+.pnp.js
