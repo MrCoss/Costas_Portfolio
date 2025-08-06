@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react'; // Added lazy and Suspense
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'; // Import Auth methods
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { motion, useInView, LazyMotion, domAnimation, AnimatePresence } from 'framer-motion';
 
 // --- THEME & STYLES ---
@@ -891,7 +891,6 @@ function App() {
 
     const renderPage = () => {
         if (page === 'admin') {
-            // FIX: Removed the extra curly brace at the end of the line
             return <AdminPanel db={db} projects={projects} fetchProjects={fetchAllData} auth={auth} />;
         }
         return (
