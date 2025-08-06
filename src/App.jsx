@@ -135,7 +135,7 @@ const Header = () => (
 );
 
 const Hero = () => (
-    <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden">
+    <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fdfcf9]">
         <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center relative z-10">
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
@@ -181,7 +181,7 @@ const Hero = () => (
                         className="absolute inset-0 bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl"
                     />
                     <div className="relative z-10 flex justify-center items-center">
-                        {/* FIX: Changed the image path to a relative URL for GitHub Pages compatibility */}
+                        {/* FIX: Removed shadow-2xl and border to make the image borderless */}
                         <img
                             src="./assets/Costas.png"
                             onError={(e) => {
@@ -189,7 +189,7 @@ const Hero = () => (
                                 e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
                             }}
                             alt="Costas Pinto"
-                            className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl object-contain z-10"
+                            className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-contain z-10"
                         />
                     </div>
                 </div>
@@ -658,7 +658,8 @@ function App() {
 
     return (
         <LazyMotion features={domAnimation}>
-            <div className="bg-[#fdfcf9] text-gray-800 font-sans">
+            {/* UPDATED: Changed the main background color to a creamy white */}
+            <div className="bg-[#fcfaf7] text-gray-800 font-sans">
                 <GlobalStyles />
                 {renderPage()}
             </div>
