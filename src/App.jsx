@@ -148,14 +148,14 @@ const Hero = () => (
     
     <div className="relative z-10 flex justify-center items-center">
       <img
-        src="assets/Costas.png"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
-        }}
-        alt="Costas Pinto"
-        className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl object-contain"
-      />
+  src="/Costas_Portfolio/assets/Costas.png"
+  onError={(e) => {
+    e.target.onerror = null;
+    e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
+  }}
+  alt="Costas Pinto"
+  className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl object-contain z-10"
+/>
     </div>
     
   </div>
