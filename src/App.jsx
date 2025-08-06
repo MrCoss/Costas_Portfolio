@@ -133,29 +133,34 @@ const Hero = () => (
                 </div>
             </motion.div>
             <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
-                className="md:col-span-2 flex justify-center items-center relative"
-            >
-                <motion.div 
-  animate={{ rotate: 360 }}
-  transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-  className="absolute w-[350px] h-[350px] md:w-[450px] md:h-[450px] bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl flex items-center justify-center"
+  initial={{ opacity: 0, scale: 0.5 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
+  className="md:col-span-2 flex justify-center items-center relative"
 >
-  <img
-    src="https://res.cloudinary.com/dnihy0crt/image/upload/v1754421179/Untitled_design-removebg-preview_r20wax.png"
-    onError={(e) => {
-      e.target.onerror = null;
-      e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
-    }}
-    alt="Costas Pinto"
-    className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl object-contain"
-  />
+  <div className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] flex items-center justify-center">
+    
+    <motion.div 
+      animate={{ rotate: 360 }}
+      transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+      className="absolute inset-0 bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl"
+    />
+    
+    <div className="relative z-10 flex justify-center items-center">
+      <img
+        src="https://drive.google.com/uc?export=view&id=17V01woP4knNDczlDOIk1n4WSS1rBb1ed"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
+        }}
+        alt="Costas Pinto"
+        className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl object-contain"
+      />
+    </div>
+    
+  </div>
 </motion.div>
 
-
-            </motion.div>
         </div>
     </section>
 );
