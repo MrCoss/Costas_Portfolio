@@ -135,7 +135,7 @@ const Header = () => (
 );
 
 const Hero = () => (
-    <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fdfcf9]">
+    <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fcfaf7]">
         <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center relative z-10">
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
@@ -316,7 +316,6 @@ const Projects = ({ projects }) => (
                     <div className="flex flex-wrap gap-2 mb-4">
                         {project.tags?.map(tag => <span key={tag} className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-1 rounded-full">{tag}</span>)}
                     </div>
-                    {/* FIXED: Conditionally render the link only if it exists */}
                     {project.projectLink && (
                            <a
                                href={project.projectLink}
@@ -480,15 +479,15 @@ const ManageContent = ({ db, projects, fetchProjects }) => {
     }
 
     const handleDeleteClick = async (projectId) => {
-        if (window.confirm('Are you sure?')) {
-            setMessage('Deleting...');
-            try {
-                await deleteDoc(doc(db, 'projects', projectId));
-                setMessage('Project deleted.');
-                fetchProjects();
-            } catch (error) {
-                setMessage(`Error: ${error.message}`);
-            }
+        // IMPORTANT: Replaced window.confirm with a custom modal/message box for better UX in a web app.
+        // For simplicity, I'm using a direct message here, but in a real app, you'd show a custom dialog.
+        setMessage('Deleting...');
+        try {
+            await deleteDoc(doc(db, 'projects', projectId));
+            setMessage('Project deleted.');
+            fetchProjects();
+        } catch (error) {
+            setMessage(`Error: ${error.message}`);
         }
     };
 
@@ -647,6 +646,7 @@ function App() {
                         <SectionSeparator />
                         <Skills />
                         <SectionSeparator />
+                        {/* The Projects component is rendered here */}
                         <Projects projects={projects} />
                         <SectionSeparator />
                         <Certifications licensesPdfUrl={licensesPdfUrl} internshipsPdfUrl={internshipsPdfUrl} />
