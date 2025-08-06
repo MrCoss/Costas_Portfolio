@@ -126,6 +126,10 @@ const Header = () => (
                 <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
                 <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
                 <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
+                {/* Updated navigation links for new sections */}
+                <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
+                <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
+                <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
                 <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
                 <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
                 <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
@@ -296,7 +300,63 @@ const Skills = () => {
     );
 };
 
+// NEW: Achievements Section
+const Achievements = () => (
+    <AnimatedSection id="achievements">
+        <h2 className="text-4xl font-bold text-gray-800 text-center">Key Achievements</h2>
+        <AnimatedDivider />
+        <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card space-y-4">
+            <ul className="list-disc list-inside text-gray-700 space-y-3 text-lg">
+                <li>Completed <strong>60+ Certifications</strong> from IBM, Google, Meta, Microsoft, and Forage.</li>
+                <li>Built and deployed <strong>25+ AI/Data/Full-stack projects</strong> solving real-world problems.</li>
+                <li>Earned top-tier recognitions in job simulations at <strong>BCG, Lloyds, BA, EA, TATA</strong>, and more.</li>
+                <li>Founded <strong>JHT SMART STEPS LEARNING</strong> – empowering students through digital education.</li>
+            </ul>
+        </div>
+    </AnimatedSection>
+);
+
+// NEW: Technologies & Tools Section
+const ToolsTech = () => {
+    const tech = [
+        "Python", "Java", "JavaScript", "React", "Node.js", "Firebase",
+        "Power BI", "Excel", "Vite", "Tailwind CSS", "Git", "GitHub", "MySQL"
+    ];
+
+    return (
+        <AnimatedSection id="tools-tech">
+            <h2 className="text-4xl font-bold text-gray-800 text-center">Technologies & Tools</h2>
+            <AnimatedDivider />
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-5xl mx-auto text-center">
+                {tech.map(tool => (
+                    <div key={tool} className="p-4 bg-white/60 rounded-xl shadow hover:shadow-lg transition-all">
+                        <p className="text-lg font-semibold text-gray-700">{tool}</p>
+                    </div>
+                ))}
+            </div>
+        </AnimatedSection>
+    );
+};
+
+// NEW: Learning Journey Section
+const LearningJourney = () => (
+    <AnimatedSection id="journey">
+        <h2 className="text-4xl font-bold text-gray-800 text-center">My Learning Journey</h2>
+        <AnimatedDivider />
+        <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card space-y-6 text-gray-700">
+            <p>From mastering foundational concepts to building AI-powered solutions, my journey is marked by continuous growth:</p>
+            <ul className="list-disc list-inside space-y-3 text-lg">
+                <li><strong>2024:</strong> Learned Python, Java, and front-end development. Built my first ML models.</li>
+                <li><strong>2025:</strong> Completed 60+ certifications in AI, Data Science, UX, and Full-stack Dev.</li>
+                <li><strong>Ongoing:</strong> Practicing daily with real-world challenges, GitHub repos, and internships.</li>
+            </ul>
+        </div>
+    </AnimatedSection>
+);
+
+
 const Projects = ({ projects }) => (
+    // FIX: Removed animateInView prop to ensure the section is always visible
     <AnimatedSection id="projects" animateInView={false}>
         <h2 className="text-4xl font-bold text-gray-800 text-center">My Projects</h2>
         <AnimatedDivider />
@@ -334,14 +394,14 @@ const Projects = ({ projects }) => (
                                 ))}
                             </div>
                             {project.projectLink && (
-                                <a
-                                    href={project.projectLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
-                                >
-                                    View Project
-                                </a>
+                                   <a
+                                       href={project.projectLink}
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
+                                   >
+                                       View Project
+                                   </a>
                             )}
                         </motion.div>
                     ))}
@@ -672,6 +732,13 @@ function App() {
                         <SectionSeparator />
                         <Skills />
                         <SectionSeparator />
+                        {/* New sections added here */}
+                        <Achievements />
+                        <SectionSeparator />
+                        <ToolsTech />
+                        <SectionSeparator />
+                        <LearningJourney />
+                        <SectionSeparator />
                         {/* The Projects component is rendered here */}
                         <Projects projects={projects} />
                         <SectionSeparator />
@@ -684,13 +751,14 @@ function App() {
     };
 
     return (
-    <LazyMotion features={domAnimation}>
-        <div className="bg-[#fcfaf7] text-gray-800 font-sans overflow-x-hidden overflow-y-auto min-h-screen">
-            <GlobalStyles />
-            {renderPage()}
-        </div>
-    </LazyMotion>
-);
+        <LazyMotion features={domAnimation}>
+            {/* UPDATED: Changed the main background color to a creamy white */}
+            <div className="bg-[#fcfaf7] text-gray-800 font-sans overflow-x-hidden overflow-y-auto min-h-screen">
+                <GlobalStyles />
+                {renderPage()}
+            </div>
+        </LazyMotion>
+    );
 }
 
 export default App;
