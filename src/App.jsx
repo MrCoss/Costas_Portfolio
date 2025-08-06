@@ -111,82 +111,77 @@ const SectionSeparator = () => (
     </div>
 );
 
-const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+// REFACTORED Header Component
+const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
+    return (
+        <motion.header
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="bg-white/70 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200/80"
+        >
+            <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#home" className="flex items-center space-x-2" onClick={closeMobileMenu}>
+                    {/* UPDATED: Increased logo size for a more prominent look */}
+                    <img src="/assets/logo.png" alt="Logo" className="h-10 w-auto md:h-12" />
+                    <span className="text-2xl font-bold text-gray-800 hover:text-blue-500 transition-colors">Mr.Coss</span>
+                </a>
 
-  return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80"
-    >
-      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#home">
-          <img
-            src="/Costas_Portfolio/assets/logo.png"
-            alt="Logo"
-            className="h-8 w-8 object-contain"
-          />
-        </a>
+                {/* Desktop Menu */}
+                <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
+                    <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
+                    <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
+                    <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
+                    <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
+                    <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
+                    <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
+                    <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
+                    <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
+                    <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
+                </div>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
-          <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
-          <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
-          <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
-          <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
-          <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
-          <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
-          <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
-          <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
-          <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
-        </div>
+                {/* Hamburger Icon */}
+                <div className="md:hidden">
+                    <button onClick={toggleMobileMenu} className="text-gray-700 focus:outline-none">
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {isMobileMenuOpen ? (
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            ) : (
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            )}
+                        </svg>
+                    </button>
+                </div>
+            </nav>
 
-        {/* Hamburger Icon */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-gray-700 focus:outline-none"
-            aria-label="Toggle Menu"
-          >
-            {menuOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Nav */}
-      {menuOpen && (
-        <div className="md:hidden px-6 pb-4 flex flex-col space-y-4 text-gray-600 font-medium">
-          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
-          <a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a>
-          <a href="#skills" onClick={() => setMenuOpen(false)}>Skills</a>
-          <a href="#achievements" onClick={() => setMenuOpen(false)}>Achievements</a>
-          <a href="#tools-tech" onClick={() => setMenuOpen(false)}>Tech Stack</a>
-          <a href="#journey" onClick={() => setMenuOpen(false)}>Journey</a>
-          <a href="#projects" onClick={() => setMenuOpen(false)}>Projects</a>
-          <a href="#certifications" onClick={() => setMenuOpen(false)}>Certificates</a>
-          <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
-        </div>
-      )}
-    </motion.header>
-  );
+            {/* Mobile Menu */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="md:hidden absolute top-full left-0 w-full bg-white z-40 shadow-md px-6 py-4 space-y-3 text-gray-600 font-medium"
+                    >
+                        <a href="#about" onClick={closeMobileMenu} className="block hover:text-blue-500">About</a>
+                        <a href="#experience" onClick={closeMobileMenu} className="block hover:text-blue-500">Experience</a>
+                        <a href="#skills" onClick={closeMobileMenu} className="block hover:text-blue-500">Skills</a>
+                        <a href="#achievements" onClick={closeMobileMenu} className="block hover:text-blue-500">Achievements</a>
+                        <a href="#tools-tech" onClick={closeMobileMenu} className="block hover:text-blue-500">Tech Stack</a>
+                        <a href="#journey" onClick={closeMobileMenu} className="block hover:text-blue-500">Journey</a>
+                        <a href="#projects" onClick={closeMobileMenu} className="block hover:text-blue-500">Projects</a>
+                        <a href="#certifications" onClick={closeMobileMenu} className="block hover:text-blue-500">Certificates</a>
+                        <a href="#contact" onClick={closeMobileMenu} className="block hover:text-blue-500">Contact</a>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.header>
+    );
 };
- Header;
 
- const Hero = () => (
+
+const Hero = () => (
     <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fcfaf7]">
         <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center relative z-10">
             <motion.div
@@ -208,7 +203,7 @@ const Header = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
                     <motion.a href="#" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-teal-400 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-blue-500/20 transition-all hover:shadow-xl">
                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
-                       Download CV
+                        Download CV
                     </motion.a>
                     <div className="flex gap-4">
                         <a href="https://www.linkedin.com/in/costaspinto/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors">
@@ -370,7 +365,7 @@ const Skills = () => {
                                             initial={{ width: 0 }}
                                             animate={{ width: isInView ? `${skill.level}%` : 0 }}
                                             transition={{ duration: 1, delay: 0.1 * index, ease: "easeOut" }}
-                                        />
+                                            />
                                     </div>
                                 </div>
                             ))}
@@ -476,14 +471,14 @@ const Projects = ({ projects }) => (
                                 ))}
                             </div>
                             {project.projectLink && (
-                                   <a
-                                       href={project.projectLink}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
-                                   >
-                                       View Project
-                                   </a>
+                                       <a
+                                        href={project.projectLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
+                                        >
+                                        View Project
+                                        </a>
                             )}
                         </motion.div>
                     ))}
@@ -795,7 +790,7 @@ const AdminPanel = ({ db, projects, fetchProjects, auth }) => { // Pass auth pro
             {!isAuthenticated ? (
                 <AdminLogin onLogin={handleLogin} message={message} auth={auth} />
             ) : (
-                <ManageContent db={db} projects={projects} fetchProjects={fetchProjects} auth={auth} />
+                <ManageContent db={db} projects={projects} fetchProjects={fetchAllData} auth={auth} />
             )}
         </div>
       </div>
