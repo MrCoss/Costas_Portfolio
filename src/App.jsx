@@ -27,16 +27,16 @@ const GlobalStyles = () => (
             border: 1px solid rgb(209 213 219 / 1); /* border-gray-300 */
             border-radius: 0.5rem; /* rounded-lg */
             padding: 0.75rem 1rem;
-            color: rgb(17 24 39 / 1); /* text-gray-900 */
+            color: #334155; /* Dark navy-gray */
             outline: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .input-field:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            border-color: #2563eb; /* Navy blue focus */
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
         }
         .btn-primary {
-            background-image: linear-gradient(to right, #3b82f6, #14b8a6);
+            background-image: linear-gradient(to right, #2563eb, #1e3a8a); /* Navy blue gradient */
             color: white;
             font-weight: bold;
             padding: 0.75rem 1.5rem;
@@ -45,7 +45,7 @@ const GlobalStyles = () => (
         }
         .btn-primary:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
         }
         .btn-secondary {
             background-color: transparent;
@@ -65,8 +65,8 @@ const GlobalStyles = () => (
 // --- DYNAMIC & ANIMATED COMPONENTS ---
 
 const LoadingSpinner = () => (
-    <div className="flex justify-center items-center h-screen bg-[#fdfcf9]">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-teal-500"></div>
+    <div className="flex justify-center items-center h-screen bg-[#f5f7fa]">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#1e3a8a]"></div>
     </div>
 );
 
@@ -78,8 +78,8 @@ const AnimatedSection = ({ children, id, className = '', animateInView = true })
         <motion.section
             id={id}
             ref={ref}
-            initial={animateInView ? { opacity: 0, y: 50 } : false} // Only apply initial animation if animateInView is true
-            animate={animateInView ? { opacity: isInView ? 1 : 0, y: isInView ? 0 : 50 } : { opacity: 1, y: 0 }} // Always visible if not animating
+            initial={animateInView ? { opacity: 0, y: 50 } : false}
+            animate={animateInView ? { opacity: isInView ? 1 : 0, y: isInView ? 0 : 50 } : { opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className={`py-20 md:py-24 min-h-[50vh] ${className}`}
         >
@@ -95,7 +95,7 @@ const AnimatedDivider = () => {
     return (
         <div ref={ref} className="h-1 w-24 mx-auto my-8">
             <motion.div
-                className="h-full bg-gradient-to-r from-blue-500 to-teal-400 rounded-full"
+                className="h-full bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] rounded-full"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: isInView ? 1 : 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
@@ -107,40 +107,37 @@ const AnimatedDivider = () => {
 
 const SectionSeparator = () => (
     <div className="my-8 md:my-12">
-        <hr className="border-t border-gray-200/80 max-w-4xl mx-auto" />
+        <hr className="border-t border-gray-300/80 max-w-4xl mx-auto" />
     </div>
 );
 
 // REFACTORED Header Component
 const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
     return (
-        // REMOVED `initial` and `animate` props to make it static from the start
         <header
             className="bg-white/70 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200/80"
         >
             <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <a href="#home" className="flex items-center space-x-2" onClick={closeMobileMenu}>
-                    {/* UPDATED: Increased logo size for a more prominent look */}
                     <img src="/Costas_Portfolio/assets/logo.png" alt="Logo" className="h-10 w-auto md:h-12" />
-                    <span className="text-2xl font-bold text-gray-800 hover:text-blue-500 transition-colors">Mr.Coss</span>
+                    <span className="text-2xl font-bold text-[#334155] hover:text-[#2563eb] transition-colors"></span>
                 </a>
 
                 {/* Desktop Menu */}
-                <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
-                    <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
-                    <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
-                    <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
-                    <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
-                    {/* REMOVED: link to the `tools-tech` section */}
-                    <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
-                    <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
-                    <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
-                    <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
+                <div className="hidden md:flex space-x-8 items-center text-[#4b5563] font-medium">
+                    <a href="#about" className="hover:text-[#2563eb] transition-colors">About</a>
+                    <a href="#experience" className="hover:text-[#2563eb] transition-colors">Experience</a>
+                    <a href="#skills" className="hover:text-[#2563eb] transition-colors">Skills</a>
+                    <a href="#achievements" className="hover:text-[#2563eb] transition-colors">Achievements</a>
+                    <a href="#journey" className="hover:text-[#2563eb] transition-colors">Journey</a>
+                    <a href="#projects" className="hover:text-[#2563eb] transition-colors">Projects</a>
+                    <a href="#certifications" className="hover:text-[#2563eb] transition-colors">Certificates</a>
+                    <a href="#contact" className="hover:text-[#2563eb] transition-colors">Contact</a>
                 </div>
 
                 {/* Hamburger Icon */}
                 <div className="md:hidden">
-                    <button onClick={toggleMobileMenu} className="text-gray-700 focus:outline-none">
+                    <button onClick={toggleMobileMenu} className="text-[#4b5563] focus:outline-none">
                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             {isMobileMenuOpen ? (
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -160,17 +157,16 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="md:hidden absolute top-full left-0 w-full bg-white z-40 shadow-md px-6 py-4 space-y-3 text-gray-600 font-medium"
+                        className="md:hidden absolute top-full left-0 w-full bg-white z-40 shadow-md px-6 py-4 space-y-3 text-[#4b5563] font-medium"
                     >
-                        <a href="#about" onClick={closeMobileMenu} className="block hover:text-blue-500">About</a>
-                        <a href="#experience" onClick={closeMobileMenu} className="block hover:text-blue-500">Experience</a>
-                        <a href="#skills" onClick={closeMobileMenu} className="block hover:text-blue-500">Skills</a>
-                        <a href="#achievements" onClick={closeMobileMenu} className="block hover:text-blue-500">Achievements</a>
-                        {/* REMOVED: link to the `tools-tech` section */}
-                        <a href="#journey" onClick={closeMobileMenu} className="block hover:text-blue-500">Journey</a>
-                        <a href="#projects" onClick={closeMobileMenu} className="block hover:text-blue-500">Projects</a>
-                        <a href="#certifications" onClick={closeMobileMenu} className="block hover:text-blue-500">Certificates</a>
-                        <a href="#contact" onClick={closeMobileMenu} className="block hover:text-blue-500">Contact</a>
+                        <a href="#about" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">About</a>
+                        <a href="#experience" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">Experience</a>
+                        <a href="#skills" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">Skills</a>
+                        <a href="#achievements" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">Achievements</a>
+                        <a href="#journey" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">Journey</a>
+                        <a href="#projects" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">Projects</a>
+                        <a href="#certifications" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">Certificates</a>
+                        <a href="#contact" onClick={closeMobileMenu} className="block hover:text-[#2563eb]">Contact</a>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -178,12 +174,8 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
     );
 };
 
-// ... (Other components remain the same) ...
-
-// REMOVED: The `ToolsTech` component is no longer used or needed.
-
 const Hero = () => (
-    <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fcfaf7]">
+    <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#f5f7fa]">
         <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center relative z-10">
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
@@ -191,26 +183,26 @@ const Hero = () => (
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="md:col-span-3"
             >
-                <h1 className="text-5xl md:text-7xl font-extrabold text-gray-800 mb-4">
-                    <span className="block mb-2 text-xl font-normal text-gray-500">Hello, I'm</span>
+                <h1 className="text-5xl md:text-7xl font-extrabold text-[#334155] mb-4">
+                    <span className="block mb-2 text-xl font-normal text-[#64748b]">Hello, I'm</span>
                     Costas Pinto
                 </h1>
-                <p className="text-2xl md:text-3xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
+                <p className="text-2xl md:text-3xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#2563eb] to-[#1e3a8a]">
                     Data Science & ML Enthusiast
                 </p>
-                <p className="max-w-xl text-gray-600 leading-relaxed mb-8 mx-auto md:mx-0">
+                <p className="max-w-xl text-[#4b5563] leading-relaxed mb-8 mx-auto md:mx-0">
                     Transforming raw data into actionable insights. I build intelligent systems and solve complex problems with a passion for machine learning and data visualization.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
-                    <motion.a href="#" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-teal-400 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-blue-500/20 transition-all hover:shadow-xl">
+                    <motion.a href="#" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-[#2563eb]/20 transition-all hover:shadow-xl">
                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                         Download CV
                     </motion.a>
                     <div className="flex gap-4">
-                        <a href="https://www.linkedin.com/in/costaspinto/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors">
+                        <a href="https://www.linkedin.com/in/costaspinto/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2563eb] transition-colors">
                            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
                         </a>
-                        <a href="https://github.com/MrCoss" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-800 transition-colors">
+                        <a href="https://github.com/MrCoss" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#334155] transition-colors">
                            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clipRule="evenodd"/></svg>
                         </a>
                     </div>
@@ -226,10 +218,9 @@ const Hero = () => (
                     <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                        className="absolute inset-0 bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl"
+                        className="absolute inset-0 bg-gradient-to-tr from-[#2563eb]/20 via-[#1e3a8a]/20 to-[#2563eb]/30 rounded-full opacity-40 blur-3xl"
                     />
                     <div className="relative z-10 flex justify-center items-center">
-                        {/* FIX: Removed shadow-2xl and border to make the image borderless */}
                         <img
                             src="./assets/Costas.png"
                             onError={(e) => {
@@ -248,10 +239,10 @@ const Hero = () => (
 
 const About = () => (
     <AnimatedSection id="about">
-        <h2 className="text-4xl font-bold text-gray-800 text-center">About Me</h2>
+        <h2 className="text-4xl font-bold text-[#334155] text-center">About Me</h2>
         <AnimatedDivider />
         <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card">
-            <p className="text-lg leading-relaxed text-gray-700 text-center">
+            <p className="text-lg leading-relaxed text-[#4b5563] text-center">
                 As a current MCA student at Manipal University, Jaipur, with a Bachelor's in Computer Science, I am deeply engaged in the world of data analytics and machine learning. My internship at SkillFied Mentor provided a strong foundation in data exploration, visualization, and interpretation using tools like Python, Excel, and Power BI. I am passionate about leveraging technology to make complex subjects accessible, a skill I've honed as the founder of JHT SMART STEPS LEARNING. I am eager to apply my analytical skills to new challenges in the AI and ML space.
             </p>
         </div>
@@ -262,13 +253,13 @@ const TimelineItem = ({ date, title, company, details }) => (
     <motion.div
         whileHover={{ x: 5 }}
         transition={{ type: 'spring', stiffness: 300 }}
-        className="relative pl-8 py-4 border-l-2 border-blue-200"
+        className="relative pl-8 py-4 border-l-2 border-[#a5b4fc]"
     >
-        <div className="absolute -left-[11px] top-6 w-5 h-5 bg-gradient-to-br from-blue-500 to-teal-400 rounded-full border-4 border-white"></div>
-        <p className="text-gray-500 mb-1 font-medium">{date}</p>
-        <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
-        <p className="text-lg text-teal-600 font-semibold mb-3">{company}</p>
-        <ul className="list-disc list-inside text-gray-600 space-y-2">
+        <div className="absolute -left-[11px] top-6 w-5 h-5 bg-gradient-to-br from-[#2563eb] to-[#1e3a8a] rounded-full border-4 border-white"></div>
+        <p className="text-[#64748b] mb-1 font-medium">{date}</p>
+        <h3 className="text-2xl font-bold text-[#334155]">{title}</h3>
+        <p className="text-lg text-[#2563eb] font-semibold mb-3">{company}</p>
+        <ul className="list-disc list-inside text-[#4b5563] space-y-2">
             {details.map((item, index) => <li key={index}>{item}</li>)}
         </ul>
     </motion.div>
@@ -276,7 +267,7 @@ const TimelineItem = ({ date, title, company, details }) => (
 
 const Experience = () => (
     <AnimatedSection id="experience">
-        <h2 className="text-4xl font-bold text-gray-800 text-center">Experience</h2>
+        <h2 className="text-4xl font-bold text-[#334155] text-center">Experience</h2>
         <AnimatedDivider />
         <div className="max-w-3xl mx-auto space-y-12">
             <TimelineItem
@@ -347,22 +338,22 @@ const Skills = () => {
 
     return (
         <AnimatedSection id="skills">
-            <h2 className="text-4xl font-bold text-gray-800 text-center">My Skills</h2>
+            <h2 className="text-4xl font-bold text-[#334155] text-center">My Skills</h2>
             <AnimatedDivider />
             <div ref={ref} className="p-8 md:p-12 max-w-5xl mx-auto rounded-2xl glass-card space-y-12">
                 {Object.entries(categorizedSkills).map(([category, skills]) => (
                     <div key={category}>
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-4">{category}</h3>
+                        <h3 className="text-2xl font-semibold text-[#334155] mb-4">{category}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {skills.map((skill, index) => (
                                 <div key={skill.name}>
                                     <div className="flex justify-between mb-1">
-                                        <span className="text-lg font-semibold text-gray-700">{skill.name}</span>
-                                        <span className="text-sm font-medium text-teal-600">{skill.level}%</span>
+                                        <span className="text-lg font-semibold text-[#4b5563]">{skill.name}</span>
+                                        <span className="text-sm font-medium text-[#2563eb]">{skill.level}%</span>
                                     </div>
-                                    <div className="bg-gray-200 w-full rounded-full h-2.5">
+                                    <div className="bg-gray-300 w-full rounded-full h-2.5">
                                         <motion.div
-                                            className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-teal-400"
+                                            className="h-2.5 rounded-full bg-gradient-to-r from-[#2563eb] to-[#1e3a8a]"
                                             initial={{ width: 0 }}
                                             animate={{ width: isInView ? `${skill.level}%` : 0 }}
                                             transition={{ duration: 1, delay: 0.1 * index, ease: "easeOut" }}
@@ -381,10 +372,10 @@ const Skills = () => {
 // NEW: Achievements Section
 const Achievements = () => (
     <AnimatedSection id="achievements">
-        <h2 className="text-4xl font-bold text-gray-800 text-center">Key Achievements</h2>
+        <h2 className="text-4xl font-bold text-[#334155] text-center">Key Achievements</h2>
         <AnimatedDivider />
         <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card space-y-4">
-            <ul className="list-disc list-inside text-gray-700 space-y-3 text-lg">
+            <ul className="list-disc list-inside text-[#4b5563] space-y-3 text-lg">
                 <li>Completed <strong>60+ Certifications</strong> from IBM, Google, Meta, Microsoft, and Forage.</li>
                 <li>Built and deployed <strong>25+ AI/Data/Full-stack projects</strong> solving real-world problems.</li>
                 <li>Earned top-tier recognitions in job simulations at <strong>BCG, Lloyds, BA, EA, TATA</strong>, and more.</li>
@@ -394,16 +385,13 @@ const Achievements = () => (
     </AnimatedSection>
 );
 
-// REMOVED: The `ToolsTech` component is completely removed from the code.
-// const ToolsTech = () => { ... }
-
 
 // NEW: Learning Journey Section
 const LearningJourney = () => (
     <AnimatedSection id="journey">
-        <h2 className="text-4xl font-bold text-gray-800 text-center">My Learning Journey</h2>
+        <h2 className="text-4xl font-bold text-[#334155] text-center">My Learning Journey</h2>
         <AnimatedDivider />
-        <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card space-y-6 text-gray-700">
+        <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card space-y-6 text-[#4b5563]">
             <p>From mastering foundational concepts to building AI-powered solutions, my journey is marked by continuous growth:</p>
             <ul className="list-disc list-inside space-y-3 text-lg">
                 <li><strong>2024:</strong> Learned Python, Java, and front-end development. Built my first ML models.</li>
@@ -418,7 +406,7 @@ const LearningJourney = () => (
 const Projects = ({ projects }) => (
     // FIX: Removed animateInView prop to ensure the section is always visible
     <AnimatedSection id="projects" animateInView={false}>
-        <h2 className="text-4xl font-bold text-gray-800 text-center">My Projects</h2>
+        <h2 className="text-4xl font-bold text-[#334155] text-center">My Projects</h2>
         <AnimatedDivider />
         <div className="min-h-[60vh] w-full px-4 md:px-0">
             {projects.length > 0 ? (
@@ -441,13 +429,13 @@ const Projects = ({ projects }) => (
                                 alt={project.title}
                                 className="rounded-lg mb-4 aspect-video object-cover border border-gray-200/50"
                             />
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">{project.title}</h3>
-                            <p className="text-gray-600 flex-grow mb-4">{project.description}</p>
+                            <h3 className="text-xl font-bold text-[#334155] mb-2">{project.title}</h3>
+                            <p className="text-[#4b5563] flex-grow mb-4">{project.description}</p>
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {project.tags?.map(tag => (
                                     <span
                                         key={tag}
-                                        className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-1 rounded-full"
+                                        className="bg-[#dbeafe] text-[#1e3a8a] text-xs font-medium px-2.5 py-1 rounded-full"
                                     >
                                         {tag}
                                     </span>
@@ -458,7 +446,7 @@ const Projects = ({ projects }) => (
                                         href={project.projectLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
+                                        className="mt-auto text-center font-semibold text-[#2563eb] border border-[#2563eb] rounded-full py-2 px-4 hover:bg-[#2563eb] hover:text-white transition-all duration-300"
                                         >
                                         View Project
                                         </a>
@@ -468,7 +456,7 @@ const Projects = ({ projects }) => (
                 </div>
             ) : (
                 <div className="min-h-[20vh] flex justify-center items-center">
-                    <p className="text-center text-gray-600 text-lg">
+                    <p className="text-center text-[#4b5563] text-lg">
                         No projects found. Please add some projects from the admin panel.
                     </p>
                 </div>
@@ -480,7 +468,7 @@ const Projects = ({ projects }) => (
 
 const Certifications = ({ licensesPdfUrl, internshipsPdfUrl }) => (
     <AnimatedSection id="certifications">
-        <h2 className="text-4xl font-bold text-gray-800 text-center">Certificates</h2>
+        <h2 className="text-4xl font-bold text-[#334155] text-center">Certificates</h2>
         <AnimatedDivider />
         <div className="text-center flex flex-col md:flex-row justify-center items-center gap-6">
             <motion.a
@@ -488,7 +476,7 @@ const Certifications = ({ licensesPdfUrl, internshipsPdfUrl }) => (
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-blue-500/20 bg-gradient-to-r from-blue-500 to-teal-400 ${!licensesPdfUrl && 'opacity-50 cursor-not-allowed'}`}
+                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!licensesPdfUrl && 'opacity-50 cursor-not-allowed'}`}
             >
                 View Licenses & Certs
             </motion.a>
@@ -497,7 +485,7 @@ const Certifications = ({ licensesPdfUrl, internshipsPdfUrl }) => (
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-blue-500/20 bg-gradient-to-r from-blue-500 to-teal-400 ${!internshipsPdfUrl && 'opacity-50 cursor-not-allowed'}`}
+                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!internshipsPdfUrl && 'opacity-50 cursor-not-allowed'}`}
             >
                 View Internship Certs
             </motion.a>
@@ -506,31 +494,29 @@ const Certifications = ({ licensesPdfUrl, internshipsPdfUrl }) => (
 );
 
 const Contact = () => (
-    <footer id="contact" className="bg-gray-100 border-t border-gray-200 mt-20">
+    <footer id="contact" className="bg-[#e2e8f0] border-t border-gray-300 mt-20">
         <div className="container mx-auto px-6 py-16 text-center">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Let's Connect</h2>
-            {/* UPDATED: Added detailed introductory text */}
-            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+            <h2 className="text-4xl font-bold text-[#334155] mb-4">Let's Connect</h2>
+            <p className="text-[#4b5563] max-w-2xl mx-auto mb-8">
                 As a Data Analyst Intern at SkillFied Mentor, an MCA (AI & ML) Student at Manipal University Jaipur, and the Founder of JHT SMART STEPS LEARNING, I'm always eager to connect. Whether you have a project in mind, a question, or just want to say hi, my inbox is always open.
             </p>
-            <a href="mailto:costaspinto312@gmail.com" className="inline-block text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 hover:opacity-80 transition-opacity mb-6">
+            <a href="mailto:costaspinto312@gmail.com" className="inline-block text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] hover:opacity-80 transition-opacity mb-6">
                 costaspinto312@gmail.com
             </a>
-            {/* NEW: Added social media and portfolio links */}
             <div className="flex justify-center items-center gap-6 mt-6">
-                <a href="https://www.linkedin.com/in/costaspinto/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors">
+                <a href="https://www.linkedin.com/in/costaspinto/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#2563eb] transition-colors">
                     <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
                 </a>
-                <a href="https://github.com/MrCoss" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-800 transition-colors">
+                <a href="https://github.com/MrCoss" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#334155] transition-colors">
                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clipRule="evenodd"/></svg>
                 </a>
-                <a href="https://MrCoss.github.io/Costas_Portfolio" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors">
+                <a href="https://MrCoss.github.io/Costas_Portfolio" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#2563eb] transition-colors">
                     <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
                     </svg>
                 </a>
             </div>
-            <div className="border-t border-gray-200 mt-12 pt-8 text-gray-500">
+            <div className="border-t border-gray-300 mt-12 pt-8 text-[#64748b]">
                 <p>&copy; {new Date().getFullYear()} Costas Pinto. All Rights Reserved.</p>
             </div>
         </div>
@@ -559,9 +545,9 @@ const AdminLogin = ({ onLogin, message, auth }) => { // Pass auth prop
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-[#f5f7fa]">
             <form onSubmit={handleLogin} className="p-8 rounded-2xl w-full max-w-sm glass-card">
-                <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Admin Login</h2>
+                <h2 className="text-2xl font-bold text-[#334155] text-center mb-6">Admin Login</h2>
                 <input
                     type="email"
                     value={email}
@@ -636,19 +622,19 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
 
     return (
         <div className="p-8 rounded-2xl glass-card">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">{isEditing ? 'Edit Project' : 'Add New Project'}</h2>
+            <h2 className="text-2xl font-bold text-[#334155] mb-6">{isEditing ? 'Edit Project' : 'Add New Project'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input type="text" name="title" placeholder="Project Title" value={project.title} onChange={handleChange} className="input-field" required />
                 <textarea name="description" placeholder="Description" value={project.description} onChange={handleChange} className="input-field" required />
                 <input type="text" name="tags" placeholder="Tags (comma-separated)" value={project.tags} onChange={handleChange} className="input-field" />
-                <label className="block text-sm font-medium text-gray-700 mt-4">
+                <label className="block text-sm font-medium text-[#4b5563] mt-4">
                     Image URL (e.g., from Imgur, Cloudinary)
                     <input type="url" name="imageUrl" placeholder="Paste image link here" value={project.imageUrl} onChange={handleChange} className="input-field" />
-                    <p className="text-xs text-gray-500 mt-1">Upload your image to a service like Imgur or Cloudinary and paste the direct link here.</p>
+                    <p className="text-xs text-[#64748b] mt-1">Upload your image to a service like Imgur or Cloudinary and paste the direct link here.</p>
                 </label>
                 <button type="submit" className="btn-primary w-full">{isEditing ? 'Update Project' : 'Add Project'}</button>
                 <button type="button" onClick={onDone} className="btn-secondary w-full">Cancel</button>
-                {message && <p className="text-center mt-4 text-blue-700">{message}</p>}
+                {message && <p className="text-center mt-4 text-[#2563eb]">{message}</p>}
             </form>
         </div>
     );
@@ -693,8 +679,7 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
         try {
             await signOut(auth);
             setMessage('Logged out successfully!');
-            // Redirect to home or login page after logout
-            window.location.hash = ''; // Go back to home page
+            window.location.hash = '';
         } catch (error) {
             console.error("Logout error:", error);
             setMessage(`Logout failed: ${error.message}`);
@@ -704,7 +689,7 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
     return (
         <div className="grid lg:grid-cols-2 gap-8">
             <div className="p-8 rounded-2xl glass-card lg:col-span-2">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Manage Projects</h2>
+                <h2 className="text-2xl font-bold text-[#334155] mb-6">Manage Projects</h2>
                 <button onClick={() => setEditingProject({})} className="btn-primary mb-4">Add New Project</button>
                 <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
                     <AnimatePresence>
@@ -717,9 +702,9 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
                                 exit={{ opacity: 0, x: -100 }}
                                 className="flex justify-between items-center bg-white/50 p-3 rounded-lg"
                             >
-                                <span className="text-gray-700 font-medium">{p.title}</span>
+                                <span className="text-[#4b5563] font-medium">{p.title}</span>
                                 <div className="flex gap-4">
-                                    <button onClick={() => setEditingProject(p)} className="text-blue-500 hover:underline">Edit</button>
+                                    <button onClick={() => setEditingProject(p)} className="text-[#2563eb] hover:underline">Edit</button>
                                     <button onClick={() => handleDeleteClick(p.id)} className="text-red-500 hover:underline">Delete</button>
                                 </div>
                             </motion.div>
@@ -729,7 +714,7 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
             </div>
 
             <div className="p-8 rounded-2xl glass-card">
-                 <h2 className="text-2xl font-bold text-gray-800 mb-6">Update PDFs</h2>
+                 <h2 className="text-2xl font-bold text-[#334155] mb-6">Update PDFs</h2>
                  <form onSubmit={(e) => handleUpdatePdfLink(e, licensesPdfUrl, 'licenses')} className="space-y-4 mb-6">
                      <input type="url" placeholder="Licenses & Certs PDF Link" value={licensesPdfUrl} onChange={e => setLicensesPdfUrl(e.target.value)} className="input-field" required/>
                      <button type="submit" className="btn-primary w-full">Update Licenses</button>
@@ -739,14 +724,14 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
                      <button type="submit" className="btn-primary w-full">Update Internships</button>
                  </form>
             </div>
-            {message && <p className="text-center p-3 rounded-lg bg-blue-500/10 text-blue-700 lg:col-span-2">{message}</p>}
+            {message && <p className="text-center p-3 rounded-lg bg-[#2563eb]/10 text-[#1e3a8a] lg:col-span-2">{message}</p>}
             <button onClick={handleLogout} className="btn-secondary w-full py-2 px-4 text-base mt-8">Logout</button>
         </div>
     );
 };
 
 
-const AdminPanel = ({ db, projects, fetchProjects, auth }) => { // Pass auth prop
+const AdminPanel = ({ db, projects, fetchProjects, auth }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -758,7 +743,7 @@ const AdminPanel = ({ db, projects, fetchProjects, auth }) => { // Pass auth pro
                 setIsAuthenticated(false);
             }
         });
-        return () => unsubscribe(); // Cleanup subscription
+        return () => unsubscribe();
     }, [auth]);
 
     const handleLogin = (success) => {
@@ -767,9 +752,9 @@ const AdminPanel = ({ db, projects, fetchProjects, auth }) => { // Pass auth pro
     };
 
     return (
-      <div className="bg-[#fdfcf9] min-h-screen">
+      <div className="bg-[#f5f7fa] min-h-screen">
         <div className="container mx-auto px-6 py-12">
-            <h1 className="text-4xl font-bold text-gray-800 text-center mb-12">Admin Dashboard</h1>
+            <h1 className="text-4xl font-bold text-[#334155] text-center mb-12">Admin Dashboard</h1>
             {!isAuthenticated ? (
                 <AdminLogin onLogin={handleLogin} message={message} auth={auth} />
             ) : (
@@ -793,7 +778,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app); // Initialize Firebase Auth
+const auth = getAuth(app);
 
 // --- MAIN APP COMPONENT ---
 function App() {
@@ -802,38 +787,34 @@ function App() {
     const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
     const [internshipsPdfUrl, setInternshipsPdfUrl] = useState('');
     const [loading, setLoading] = useState(true);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Effect to control body overflow when mobile menu is open
     useEffect(() => {
         if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden'; // For iOS
+            document.documentElement.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = '';
-            document.documentElement.style.overflow = ''; // For iOS
+            document.documentElement.style.overflow = '';
         }
         return () => {
-            document.body.style.overflow = ''; // Clean up on unmount
-            document.documentElement.style.overflow = ''; // Clean up on unmount
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
         };
     }, [isMobileMenuOpen]);
 
 
     const fetchAllData = async () => {
         try {
-            // Fetch projects
             const projectsSnapshot = await getDocs(collection(db, 'projects'));
             const projectsList = projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setProjects(projectsList);
 
-            // Fetch PDF links
             const licensesDoc = await getDoc(doc(db, "portfolioAssets", "licenses"));
             if (licensesDoc.exists()) setLicensesPdfUrl(licensesDoc.data().pdfUrl);
 
             const internshipsDoc = await getDoc(doc(db, "portfolioAssets", "internships"));
             if (internshipsDoc.exists()) setInternshipsPdfUrl(internshipsDoc.data().pdfUrl);
-
         } catch (error) {
             console.error("Error fetching data: ", error);
         } finally {
@@ -850,7 +831,7 @@ function App() {
         };
 
         window.addEventListener('hashchange', handleHashChange, false);
-        handleHashChange(); // Initial check
+        handleHashChange();
 
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
@@ -863,7 +844,6 @@ function App() {
         }
         return (
             <>
-                {/* Pass mobile menu state and setter to Header */}
                 <Header isMobileMenuOpen={isMobileMenuOpen} closeMobileMenu={() => setIsMobileMenuOpen(false)} toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
                 <main className="relative z-10">
                     <Hero />
@@ -874,13 +854,10 @@ function App() {
                         <SectionSeparator />
                         <Skills />
                         <SectionSeparator />
-                        {/* New sections added here */}
                         <Achievements />
                         <SectionSeparator />
-                        {/* REMOVED: <ToolsTech /> */}
                         <LearningJourney />
                         <SectionSeparator />
-                        {/* The Projects component is rendered here */}
                         <Projects projects={projects} />
                         <SectionSeparator />
                         <Certifications licensesPdfUrl={licensesPdfUrl} internshipsPdfUrl={internshipsPdfUrl} />
@@ -893,8 +870,7 @@ function App() {
 
     return (
         <LazyMotion features={domAnimation}>
-            {/* UPDATED: Changed the main background color to a creamy white */}
-            <div className="bg-[#fcfaf7] text-gray-800 font-sans overflow-x-hidden overflow-y-auto min-h-screen">
+            <div className="bg-[#f5f7fa] text-[#334155] font-sans overflow-x-hidden overflow-y-auto min-h-screen">
                 <GlobalStyles />
                 {renderPage()}
             </div>
