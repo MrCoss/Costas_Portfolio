@@ -114,17 +114,15 @@ const SectionSeparator = () => (
 // REFACTORED Header Component
 const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
     return (
-        <motion.header
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+        // REMOVED `initial` and `animate` props to make it static from the start
+        <header
             className="bg-white/70 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200/80"
         >
             <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <a href="#home" className="flex items-center space-x-2" onClick={closeMobileMenu}>
                     {/* UPDATED: Increased logo size for a more prominent look */}
                     <img src="/Costas_Portfolio/assets/logo.png" alt="Logo" className="h-10 w-auto md:h-12" />
-                    <span className="text-2xl font-bold text-gray-800 hover:text-blue-500 transition-colors"></span>
+                    <span className="text-2xl font-bold text-gray-800 hover:text-blue-500 transition-colors">Mr.Coss</span>
                 </a>
 
                 {/* Desktop Menu */}
@@ -133,7 +131,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
                     <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
                     <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
                     <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
-                    <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
+                    {/* REMOVED: link to the `tools-tech` section */}
                     <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
                     <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
                     <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
@@ -168,7 +166,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
                         <a href="#experience" onClick={closeMobileMenu} className="block hover:text-blue-500">Experience</a>
                         <a href="#skills" onClick={closeMobileMenu} className="block hover:text-blue-500">Skills</a>
                         <a href="#achievements" onClick={closeMobileMenu} className="block hover:text-blue-500">Achievements</a>
-                        <a href="#tools-tech" onClick={closeMobileMenu} className="block hover:text-blue-500">Tech Stack</a>
+                        {/* REMOVED: link to the `tools-tech` section */}
                         <a href="#journey" onClick={closeMobileMenu} className="block hover:text-blue-500">Journey</a>
                         <a href="#projects" onClick={closeMobileMenu} className="block hover:text-blue-500">Projects</a>
                         <a href="#certifications" onClick={closeMobileMenu} className="block hover:text-blue-500">Certificates</a>
@@ -176,10 +174,13 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </motion.header>
+        </header>
     );
 };
 
+// ... (Other components remain the same) ...
+
+// REMOVED: The `ToolsTech` component is no longer used or needed.
 
 const Hero = () => (
     <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fcfaf7]">
@@ -393,27 +394,9 @@ const Achievements = () => (
     </AnimatedSection>
 );
 
-// NEW: Technologies & Tools Section
-const ToolsTech = () => {
-    const tech = [
-        "Python", "Java", "JavaScript", "React", "Node.js", "Firebase",
-        "Power BI", "Excel", "Vite", "Tailwind CSS", "Git", "GitHub", "MySQL"
-    ];
+// REMOVED: The `ToolsTech` component is completely removed from the code.
+// const ToolsTech = () => { ... }
 
-    return (
-        <AnimatedSection id="tools-tech">
-            <h2 className="text-4xl font-bold text-gray-800 text-center">Technologies & Tools</h2>
-            <AnimatedDivider />
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-5xl mx-auto text-center">
-                {tech.map(tool => (
-                    <div key={tool} className="p-4 bg-white/60 rounded-xl shadow hover:shadow-lg transition-all">
-                        <p className="text-lg font-semibold text-gray-700">{tool}</p>
-                    </div>
-                ))}
-            </div>
-        </AnimatedSection>
-    );
-};
 
 // NEW: Learning Journey Section
 const LearningJourney = () => (
@@ -894,8 +877,7 @@ function App() {
                         {/* New sections added here */}
                         <Achievements />
                         <SectionSeparator />
-                        <ToolsTech />
-                        <SectionSeparator />
+                        {/* REMOVED: <ToolsTech /> */}
                         <LearningJourney />
                         <SectionSeparator />
                         {/* The Projects component is rendered here */}
