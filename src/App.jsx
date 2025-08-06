@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react'; // Added lazy and Suspense
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
@@ -174,14 +174,14 @@ const Header = ({ isMobileMenuOpen, closeMobileMenu, toggleMobileMenu }) => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }} // Animate to right
                         transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="md:hidden fixed inset-0 bg-black/50 z-40" // Full screen overlay
+                        className="md:hidden fixed inset-0 bg-black/50 z-40 flex justify-end" // Added flex justify-end
                     >
                         <motion.div
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
-                            className="absolute right-0 top-0 h-full w-3/4 bg-white/95 backdrop-blur-lg shadow-lg py-8 px-6 flex flex-col items-center space-y-6 text-gray-700 font-medium"
+                            className="relative h-full w-3/4 bg-white/95 backdrop-blur-lg shadow-lg py-8 px-6 flex flex-col items-center space-y-6 text-gray-700 font-medium" // Removed absolute right-0 top-0
                         >
                             <button
                                 className="absolute top-4 right-4 text-gray-600 hover:text-blue-500 focus:outline-none"
@@ -578,21 +578,15 @@ const Contact = () => (
 
 // --- ADMIN PANEL COMPONENTS (REFACTORED) ---
 
-const AdminLogin = ({ onLogin, message, auth }) => { // Pass auth prop
-    const [email, setEmail] = useState('');
+const AdminLogin = ({ onLogin, message }) => {
     const [password, setPassword] = useState('');
-    const [loginMessage, setLoginMessage] = useState(message);
 
-    const handleLogin = async (e) => {
+    const handleLogin = (e) => {
         e.preventDefault();
-        setLoginMessage('Logging in...');
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            setLoginMessage('Login successful!');
+        // IMPORTANT: This is NOT secure for production. Use Firebase Auth for real applications.
+        if (password === 'admin123') {
             onLogin(true);
-        } catch (error) {
-            console.error("Login error:", error);
-            setLoginMessage(`Login failed: ${error.message}`);
+        } else {
             onLogin(false);
         }
     };
@@ -601,24 +595,10 @@ const AdminLogin = ({ onLogin, message, auth }) => { // Pass auth prop
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <form onSubmit={handleLogin} className="p-8 rounded-2xl w-full max-w-sm glass-card">
                 <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Admin Login</h2>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
-                    className="input-field mb-4"
-                    required
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    className="input-field mb-4"
-                    required
-                />
-                <button type="submit" className="btn-primary w-full">Login</button>
-                {loginMessage && <p className="text-red-500 text-center mt-4">{loginMessage}</p>}
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"
+                    className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 mb-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                <button type="submit" className="w-full text-white font-bold py-3 px-6 rounded-lg bg-gradient-to-r from-blue-500 to-teal-400">Login</button>
+                {message && <p className="text-red-500 text-center mt-4">{message}</p>}
             </form>
         </div>
     );
@@ -690,7 +670,7 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
 };
 
 
-const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth prop
+const ManageContent = ({ db, projects, fetchProjects }) => {
     const [editingProject, setEditingProject] = useState(null);
     const [message, setMessage] = useState('');
     const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
@@ -721,18 +701,6 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
             if (docId === 'internships') setInternshipsPdfUrl('');
         } catch (error) {
             setMessage(`Error: ${error.message}`);
-        }
-    };
-
-    const handleLogout = async () => {
-        try {
-            await signOut(auth);
-            setMessage('Logged out successfully!');
-            // Redirect to home or login page after logout
-            window.location.hash = ''; // Go back to home page
-        } catch (error) {
-            console.error("Logout error:", error);
-            setMessage(`Logout failed: ${error.message}`);
         }
     };
 
@@ -775,30 +743,18 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
                  </form>
             </div>
             {message && <p className="text-center p-3 rounded-lg bg-blue-500/10 text-blue-700 lg:col-span-2">{message}</p>}
-            <button onClick={handleLogout} className="btn-secondary w-full mt-8">Logout</button>
         </div>
     );
 };
 
 
-const AdminPanel = ({ db, projects, fetchProjects, auth }) => { // Pass auth prop
+const AdminPanel = ({ db, projects, fetchProjects }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [message, setMessage] = useState('');
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setIsAuthenticated(true);
-            } else {
-                setIsAuthenticated(false);
-            }
-        });
-        return () => unsubscribe(); // Cleanup subscription
-    }, [auth]);
-
     const handleLogin = (success) => {
         setIsAuthenticated(success);
-        if (!success) setMessage('Login failed. Please check your credentials.');
+        if (!success) setMessage('Incorrect password.');
     };
 
     return (
@@ -806,9 +762,9 @@ const AdminPanel = ({ db, projects, fetchProjects, auth }) => { // Pass auth pro
         <div className="container mx-auto px-6 py-12">
             <h1 className="text-4xl font-bold text-gray-800 text-center mb-12">Admin Dashboard</h1>
             {!isAuthenticated ? (
-                <AdminLogin onLogin={handleLogin} message={message} auth={auth} />
+                <AdminLogin onLogin={handleLogin} message={message} />
             ) : (
-                <ManageContent db={db} projects={projects} fetchProjects={fetchProjects} auth={auth} />
+                <ManageContent db={db} projects={projects} fetchProjects={fetchProjects} />
             )}
         </div>
       </div>
@@ -828,7 +784,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app); // Initialize Firebase Auth
 
 // --- MAIN APP COMPONENT ---
 function App() {
@@ -837,20 +792,6 @@ function App() {
     const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
     const [internshipsPdfUrl, setInternshipsPdfUrl] = useState('');
     const [loading, setLoading] = useState(true);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
-
-    // Effect to control body overflow when mobile menu is open
-    useEffect(() => {
-        if (isMobileMenuOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = ''; // Clean up on unmount
-        };
-    }, [isMobileMenuOpen]);
-
 
     const fetchAllData = async () => {
         try {
@@ -891,12 +832,11 @@ function App() {
 
     const renderPage = () => {
         if (page === 'admin') {
-            return <AdminPanel db={db} projects={projects} fetchProjects={fetchAllData} auth={auth} />;
+            return <AdminPanel db={db} projects={projects} fetchProjects={fetchAllData} />;
         }
         return (
             <>
-                {/* Pass mobile menu state and setter to Header */}
-                <Header isMobileMenuOpen={isMobileMenuOpen} closeMobileMenu={() => setIsMobileMenuOpen(false)} toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+                <Header />
                 <main className="relative z-10">
                     <Hero />
                     <div className="container mx-auto px-6">
@@ -905,13 +845,6 @@ function App() {
                         <Experience />
                         <SectionSeparator />
                         <Skills />
-                        <SectionSeparator />
-                        {/* New sections added here */}
-                        <Achievements />
-                        <SectionSeparator />
-                        <ToolsTech />
-                        <SectionSeparator />
-                        <LearningJourney />
                         <SectionSeparator />
                         {/* The Projects component is rendered here */}
                         <Projects projects={projects} />
@@ -927,7 +860,7 @@ function App() {
     return (
         <LazyMotion features={domAnimation}>
             {/* UPDATED: Changed the main background color to a creamy white */}
-            <div className="bg-[#fcfaf7] text-gray-800 font-sans overflow-x-hidden overflow-y-auto min-h-screen">
+            <div className="bg-[#fcfaf7] text-gray-800 font-sans">
                 <GlobalStyles />
                 {renderPage()}
             </div>
