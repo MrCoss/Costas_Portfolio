@@ -151,7 +151,7 @@ const Header = () => {
                     <img
                         src="./assets/logo.png" // Ensure this path is correct relative to your public folder
                         alt="Logo"
-                        className="h-7 w-7 object-contain"
+                        className="h-10 w-10 object-contain"
                         onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = 'https://placehold.co/32x32/e2e8f0/334155?text=L'; // Fallback placeholder
