@@ -114,36 +114,42 @@ const SectionSeparator = () => (
 // --- UI COMPONENTS ---
 
 const Header = () => (
-  <motion.header
-    initial={{ y: -100 }}
-    animate={{ y: 0 }}
-    transition={{ duration: 0.8, ease: "easeOut" }}
-    className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80"
-  >
-    <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="#home" className="flex items-center space-x-2">
-        <img
-          src="/Costas_Portfolio/assets/logo.png" // Make sure this path is correct (e.g., inside `public/`)
-          alt="Logo"
-          className="h-8 w-8 object-contain"
-        />
-        <span className="text-xl font-bold text-gray-800 hover:text-blue-500 transition-colors hidden sm:inline">
-          Mr.Coss
-        </span>
-      </a>
-      <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
-        <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
-        <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
-        <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
-        <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
-        <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
-        <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
-        <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
-        <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
-        <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
-      </div>
-    </nav>
-  </motion.header>
+    <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80"
+    >
+        <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" className="flex items-center space-x-2">
+                {/* FIX: Changed logo path to relative URL */}
+                <img
+                    src="./assets/logo.png" // Make sure this path is correct (e.g., inside `public/`)
+                    alt="Logo"
+                    className="h-8 w-8 object-contain"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://placehold.co/32x32/e2e8f0/334155?text=L'; // Fallback placeholder
+                    }}
+                />
+                <span className="text-xl font-bold text-gray-800 hover:text-blue-500 transition-colors hidden sm:inline">
+                    Mr.Coss
+                </span>
+            </a>
+            <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
+                <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
+                <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
+                <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
+                {/* Updated navigation links for new sections */}
+                <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
+                <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
+                <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
+                <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
+                <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
+                <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
+            </div>
+        </nav>
+    </motion.header>
 );
 
 const Hero = () => (
@@ -268,13 +274,6 @@ const Experience = () => (
     </AnimatedSection>
 );
 
-// Removed the duplicate import statements for useRef, useInView, motion, AnimatedSection, AnimatedDivider
-// import { useRef } from 'react';
-// import { useInView } from 'framer-motion';
-// import { motion } from 'framer-motion';
-// import AnimatedSection from './AnimatedSection'; // Assuming these are locally defined, not imported from separate files
-// import AnimatedDivider from './AnimatedDivider'; // Assuming these are locally defined, not imported from separate files
-
 const Skills = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.3 });
@@ -349,8 +348,6 @@ const Skills = () => {
         </AnimatedSection>
     );
 };
-
-// REMOVED: export default Skills;
 
 // NEW: Achievements Section
 const Achievements = () => (
