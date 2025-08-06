@@ -112,101 +112,85 @@ const SectionSeparator = () => (
 );
 
 
-// --- UI COMPONENTS ---
+import { useState } from "react";
+import { motion } from "framer-motion";
 
-const Header = ({ isMobileMenuOpen, closeMobileMenu, toggleMobileMenu }) => {
-    const navLinks = (
-        <>
-            <a href="#about" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>About</a>
-            <a href="#experience" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Experience</a>
-            <a href="#skills" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Skills</a>
-            <a href="#achievements" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Achievements</a>
-            <a href="#tools-tech" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Tech</a>
-            <a href="#journey" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Journey</a>
-            <a href="#projects" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Projects</a>
-            <a href="#certifications" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Certificates</a>
-            <a href="#contact" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Contact</a>
-        </>
-    );
+const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
 
-    return (
-        <motion.header
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="bg-white/70 backdrop-blur-md fixed top-0 left-0 w-full z-40 border-b border-gray-200/80"
-        >
-            <nav className="container mx-auto px-6 py-4 flex justify-between items-center relative">
-                <a href="#home" className="flex items-center space-x-2 z-50">
-                    <img
-                        src="./assets/logo.png"
-                        alt="Logo"
-                        className="h-8 w-8 object-contain"
-                        onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = 'https://placehold.co/32x32/e2e8f0/334155?text=L';
-                        }}
-                    />
-                </a>
+  return (
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80"
+    >
+      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#home">
+          <img
+            src="/Costas_Portfolio/assets/logo.png"
+            alt="Logo"
+            className="h-8 w-8 object-contain"
+          />
+        </a>
 
-                {/* Desktop Navigation */}
-                <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
-                    {navLinks}
-                </div>
+        {/* Desktop Nav */}
+        <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
+          <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
+          <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
+          <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
+          <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
+          <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
+          <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
+          <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
+          <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
+          <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
+        </div>
 
-                {/* Mobile Menu Button (Hamburger) */}
-                <button
-                    className="md:hidden text-gray-600 hover:text-blue-500 focus:outline-none focus:text-blue-500 relative z-50 cursor-pointer"
-                    onClick={toggleMobileMenu}
-                    aria-label="Toggle navigation"
-                >
-                    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </nav>
+        {/* Hamburger Icon */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-gray-700 focus:outline-none"
+            aria-label="Toggle Menu"
+          >
+            {menuOpen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </nav>
 
-            {/* Mobile Menu Overlay */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, x: '100%' }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: '100%' }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="md:hidden fixed inset-0 bg-black/50 z-50 flex justify-end"
-                        onClick={closeMobileMenu} // Click anywhere on overlay to close
-                    >
-                        <motion.div
-                            initial={{ x: '100%' }}
-                            animate={{ x: 0 }}
-                            exit={{ x: '100%' }}
-                            transition={{ duration: 0.3, ease: "easeOut" }}
-                            // Prevent clicks on the menu content from closing the menu immediately
-                            onClick={(e) => e.stopPropagation()}
-                            className="relative h-full w-3/4 bg-white/95 backdrop-blur-lg shadow-lg py-8 px-6 flex flex-col items-center space-y-6 text-gray-700 font-medium"
-                        >
-                            <button
-                                className="absolute top-4 right-4 text-gray-600 hover:text-blue-500 focus:outline-none"
-                                onClick={closeMobileMenu}
-                                aria-label="Close navigation"
-                            >
-                                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                            <div className="mt-10 flex flex-col items-center space-y-6">
-                                {navLinks}
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.header>
-    );
+      {/* Mobile Nav */}
+      {menuOpen && (
+        <div className="md:hidden px-6 pb-4 flex flex-col space-y-4 text-gray-600 font-medium">
+          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+          <a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a>
+          <a href="#skills" onClick={() => setMenuOpen(false)}>Skills</a>
+          <a href="#achievements" onClick={() => setMenuOpen(false)}>Achievements</a>
+          <a href="#tools-tech" onClick={() => setMenuOpen(false)}>Tech Stack</a>
+          <a href="#journey" onClick={() => setMenuOpen(false)}>Journey</a>
+          <a href="#projects" onClick={() => setMenuOpen(false)}>Projects</a>
+          <a href="#certifications" onClick={() => setMenuOpen(false)}>Certificates</a>
+          <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
+        </div>
+      )}
+    </motion.header>
+  );
 };
+ Header;
 
-const Hero = () => (
+ const Hero = () => (
     <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fcfaf7]">
         <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center relative z-10">
             <motion.div
