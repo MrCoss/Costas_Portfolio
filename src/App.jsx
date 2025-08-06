@@ -123,7 +123,7 @@ const Header = () => (
     <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="#home" className="flex items-center space-x-2">
         <img
-          src="/logo.png" // Make sure this path is correct (e.g., inside `public/`)
+          src="/Costas_Portfolio/assets/logo.png" // Make sure this path is correct (e.g., inside `public/`)
           alt="Logo"
           className="h-8 w-8 object-contain"
         />
