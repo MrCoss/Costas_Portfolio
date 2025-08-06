@@ -123,7 +123,7 @@ const Header = ({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
             <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <a href="#home" className="flex items-center space-x-2" onClick={closeMobileMenu}>
                     {/* UPDATED: Increased logo size for a more prominent look */}
-                    <img src="/Costas_Portfolio/assets/Costas.png" alt="Logo" className="h-10 w-auto md:h-12" />
+                    <img src="/Costas_Portfolio/assets/logo.png" alt="Logo" className="h-10 w-auto md:h-12" />
                     <span className="text-2xl font-bold text-gray-800 hover:text-blue-500 transition-colors">Mr.Coss</span>
                 </a>
 
