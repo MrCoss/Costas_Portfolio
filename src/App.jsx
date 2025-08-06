@@ -316,6 +316,7 @@ const Projects = ({ projects }) => (
                     <div className="flex flex-wrap gap-2 mb-4">
                         {project.tags?.map(tag => <span key={tag} className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-1 rounded-full">{tag}</span>)}
                     </div>
+                    {/* FIXED: Conditionally render the link only if it exists */}
                     {project.projectLink && (
                            <a
                                href={project.projectLink}
