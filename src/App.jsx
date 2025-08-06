@@ -69,7 +69,7 @@ const LoadingSpinner = () => (
     </div>
 );
 
-const AnimatedSection = ({ children, id, className = '' }) => {
+const AnimatedSection = ({ children, id, className = '', animateInView = true }) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
 
@@ -77,8 +77,8 @@ const AnimatedSection = ({ children, id, className = '' }) => {
         <motion.section
             id={id}
             ref={ref}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 50 }}
+            initial={animateInView ? { opacity: 0, y: 50 } : false} // Only apply initial animation if animateInView is true
+            animate={animateInView ? { opacity: isInView ? 1 : 0, y: isInView ? 0 : 50 } : { opacity: 1, y: 0 }} // Always visible if not animating
             transition={{ duration: 0.8, ease: "easeOut" }}
             className={`py-20 md:py-24 ${className}`}
         >
@@ -297,38 +297,43 @@ const Skills = () => {
 };
 
 const Projects = ({ projects }) => (
-    <AnimatedSection id="projects">
+    // FIX: Removed animateInView prop to ensure the section is always visible
+    <AnimatedSection id="projects" animateInView={false}>
         <h2 className="text-4xl font-bold text-gray-800 text-center">My Projects</h2>
         <AnimatedDivider />
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, i) => (
-                <motion.div
-                    key={project.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: i * 0.1 }}
-                    whileHover={{ y: -8, scale: 1.03, transition: { type: 'spring', stiffness: 300 } }}
-                    className="p-6 flex flex-col rounded-2xl glass-card overflow-hidden"
-                >
-                    <img src={project.imageUrl || 'https://placehold.co/600x400/e2e8f0/334155?text=Project'} alt={project.title} className="rounded-lg mb-4 aspect-video object-cover border border-gray-200/50"/>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{project.title}</h3>
-                    <p className="text-gray-600 flex-grow mb-4">{project.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {project.tags?.map(tag => <span key={tag} className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-1 rounded-full">{tag}</span>)}
-                    </div>
-                    {project.projectLink && (
-                           <a
-                               href={project.projectLink}
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
-                           >
-                               View Project
-                           </a>
-                    )}
-                </motion.div>
-            ))}
-        </div>
+        {projects.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {projects.map((project, i) => (
+                    <motion.div
+                        key={project.id}
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: i * 0.1 }}
+                        whileHover={{ y: -8, scale: 1.03, transition: { type: 'spring', stiffness: 300 } }}
+                        className="p-6 flex flex-col rounded-2xl glass-card overflow-hidden"
+                    >
+                        <img src={project.imageUrl || 'https://placehold.co/600x400/e2e8f0/334155?text=Project'} alt={project.title} className="rounded-lg mb-4 aspect-video object-cover border border-gray-200/50"/>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">{project.title}</h3>
+                        <p className="text-gray-600 flex-grow mb-4">{project.description}</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {project.tags?.map(tag => <span key={tag} className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-1 rounded-full">{tag}</span>)}
+                        </div>
+                        {project.projectLink && (
+                               <a
+                                   href={project.projectLink}
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
+                               >
+                                   View Project
+                               </a>
+                        )}
+                    </motion.div>
+                ))}
+            </div>
+        ) : (
+            <p className="text-center text-gray-600 text-lg mt-8">No projects found. Please add some projects from the admin panel.</p>
+        )}
     </AnimatedSection>
 );
 
