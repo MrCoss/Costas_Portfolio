@@ -130,7 +130,7 @@ const Header = () => {
             <a href="#experience" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Experience</a>
             <a href="#skills" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Skills</a>
             <a href="#achievements" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Achievements</a>
-            <a href="#tools-tech" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Tech Stack</a>
+            <a href="#tools-tech" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Tech</a>
             <a href="#journey" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Journey</a>
             <a href="#projects" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Projects</a>
             <a href="#certifications" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Certificates</a>
