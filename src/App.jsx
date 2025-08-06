@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
-// Removed getAuth and onAuthStateChanged as they weren't used for the simple password check
 import { motion, useInView, LazyMotion, domAnimation, AnimatePresence } from 'framer-motion';
 
 // --- THEME & STYLES ---
@@ -19,6 +18,45 @@ const GlobalStyles = () => (
         /* REFINED: Smooth scrolling for anchor links */
         html {
             scroll-behavior: smooth;
+        }
+        /* ADMIN PANEL STYLES */
+        .input-field {
+            width: 100%;
+            background-color: rgb(249 250 251 / 1); /* bg-gray-50 */
+            border: 1px solid rgb(209 213 219 / 1); /* border-gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem 1rem;
+            color: rgb(17 24 39 / 1); /* text-gray-900 */
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #14b8a6);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid #d1d5db;
+            color: #4b5563;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
         }
     `}</style>
 );
@@ -49,7 +87,6 @@ const AnimatedSection = ({ children, id, className = '' }) => {
     );
 };
 
-// REFINED: Animated divider for a cleaner look
 const AnimatedDivider = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.5 });
@@ -97,7 +134,6 @@ const Header = () => (
     </motion.header>
 );
 
-// REFINED: Hero section for a more modern and dynamic look
 const Hero = () => (
     <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden">
         <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center relative z-10">
@@ -133,34 +169,31 @@ const Hero = () => (
                 </div>
             </motion.div>
             <motion.div
-  initial={{ opacity: 0, scale: 0.5 }}
-  animate={{ opacity: 1, scale: 1 }}
-  transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
-  className="md:col-span-2 flex justify-center items-center relative"
->
-  <div className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] flex items-center justify-center">
-    
-    <motion.div 
-      animate={{ rotate: 360 }}
-      transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-      className="absolute inset-0 bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl"
-    />
-    
-    <div className="relative z-10 flex justify-center items-center">
-      <img
-  src="/Costas_Portfolio/assets/Costas.png"
-  onError={(e) => {
-    e.target.onerror = null;
-    e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
-  }}
-  alt="Costas Pinto"
-  className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl object-contain z-10"
-/>
-    </div>
-    
-  </div>
-</motion.div>
-
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.4, type: 'spring' }}
+                className="md:col-span-2 flex justify-center items-center relative"
+            >
+                <div className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] flex items-center justify-center">
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+                        className="absolute inset-0 bg-gradient-to-tr from-blue-200 via-teal-200 to-blue-300 rounded-full opacity-40 blur-3xl"
+                    />
+                    <div className="relative z-10 flex justify-center items-center">
+                        {/* FIX: Changed the image path to a relative URL for GitHub Pages compatibility */}
+                        <img
+                            src="./assets/Costas.png"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = 'https://placehold.co/400x400/e2e8f0/334155?text=CP';
+                            }}
+                            alt="Costas Pinto"
+                            className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] shadow-2xl object-contain z-10"
+                        />
+                    </div>
+                </div>
+            </motion.div>
         </div>
     </section>
 );
@@ -177,9 +210,8 @@ const About = () => (
     </AnimatedSection>
 );
 
-// NEW: Reusable TimelineItem component
 const TimelineItem = ({ date, title, company, details }) => (
-    <motion.div 
+    <motion.div
         whileHover={{ x: 5 }}
         transition={{ type: 'spring', stiffness: 300 }}
         className="relative pl-8 py-4 border-l-2 border-blue-200"
@@ -199,7 +231,7 @@ const Experience = () => (
         <h2 className="text-4xl font-bold text-gray-800 text-center">Experience</h2>
         <AnimatedDivider />
         <div className="max-w-3xl mx-auto space-y-12">
-            <TimelineItem 
+            <TimelineItem
                 date="Jul 2025 - Present"
                 title="Data Analyst Intern"
                 company="SkillFied Mentor (Remote)"
@@ -210,7 +242,7 @@ const Experience = () => (
                     "Collaborated with a cross-functional team to build dashboards and reports."
                 ]}
             />
-            <TimelineItem 
+            <TimelineItem
                 date="Aug 2022 - Present"
                 title="Founder"
                 company="JHT SMART STEPS LEARNING (On-site)"
@@ -224,11 +256,9 @@ const Experience = () => (
     </AnimatedSection>
 );
 
-// REFINED: Skills section now uses a data-driven approach
 const Skills = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.3 });
-    // NEW: Storing skills as an array of objects for easier management
     const skills = [
         { name: 'Python', level: 95 },
         { name: 'Data Analysis', level: 90 },
@@ -251,8 +281,8 @@ const Skills = () => {
                                 <span className="text-sm font-medium text-teal-600">{skill.level}%</span>
                             </div>
                             <div className="bg-gray-200 w-full rounded-full h-2.5">
-                                <motion.div 
-                                    className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-teal-400" 
+                                <motion.div
+                                    className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-teal-400"
                                     initial={{ width: 0 }}
                                     animate={{ width: isInView ? `${skill.level}%` : 0 }}
                                     transition={{ duration: 1, delay: 0.1 * index, ease: "easeOut" }}
@@ -272,8 +302,8 @@ const Projects = ({ projects }) => (
         <AnimatedDivider />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, i) => (
-                <motion.div 
-                    key={project.id} 
+                <motion.div
+                    key={project.id}
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: i * 0.1 }}
@@ -287,14 +317,14 @@ const Projects = ({ projects }) => (
                         {project.tags?.map(tag => <span key={tag} className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-1 rounded-full">{tag}</span>)}
                     </div>
                     {project.projectLink && (
-                         <a 
-                            href={project.projectLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
-                        >
-                            View Project
-                        </a>
+                           <a
+                               href={project.projectLink}
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               className="mt-auto text-center font-semibold text-blue-600 border border-blue-500 rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white transition-all duration-300"
+                           >
+                               View Project
+                           </a>
                     )}
                 </motion.div>
             ))}
@@ -307,18 +337,18 @@ const Certifications = ({ licensesPdfUrl, internshipsPdfUrl }) => (
         <h2 className="text-4xl font-bold text-gray-800 text-center">Certificates</h2>
         <AnimatedDivider />
         <div className="text-center flex flex-col md:flex-row justify-center items-center gap-6">
-            <motion.a 
+            <motion.a
                 href={licensesPdfUrl || '#'}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} 
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-blue-500/20 bg-gradient-to-r from-blue-500 to-teal-400 ${!licensesPdfUrl && 'opacity-50 cursor-not-allowed'}`}
             >
                 View Licenses & Certs
             </motion.a>
             <motion.a
                 href={internshipsPdfUrl || '#'}
-                target="_blank" 
+                target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-blue-500/20 bg-gradient-to-r from-blue-500 to-teal-400 ${!internshipsPdfUrl && 'opacity-50 cursor-not-allowed'}`}
@@ -352,13 +382,13 @@ const AdminLogin = ({ onLogin, message }) => {
     const handleLogin = (e) => {
         e.preventDefault();
         // IMPORTANT: This is NOT secure for production. Use Firebase Auth for real applications.
-        if (password === 'admin123') { 
+        if (password === 'admin123') {
             onLogin(true);
         } else {
             onLogin(false);
         }
     };
-    
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <form onSubmit={handleLogin} className="p-8 rounded-2xl w-full max-w-sm glass-card">
@@ -395,7 +425,6 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
         e.preventDefault();
         setMessage(isEditing ? 'Updating...' : 'Adding...');
 
-        // Safely split tags (ignore empty or whitespace-only entries)
         const tagsArray = (project.tags || '')
             .split(',')
             .map(tag => tag.trim())
@@ -429,7 +458,6 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
                 <textarea name="description" placeholder="Description" value={project.description} onChange={handleChange} className="input-field" required />
                 <input type="text" name="tags" placeholder="Tags (comma-separated)" value={project.tags} onChange={handleChange} className="input-field" />
                 <input type="url" name="projectLink" placeholder="Project Link (URL)" value={project.projectLink} onChange={handleChange} className="input-field" />
-                {/* NEW: Field for image URL */}
                 <input type="url" name="imageUrl" placeholder="Image URL (e.g., from Imgur, Cloudinary)" value={project.imageUrl} onChange={handleChange} className="input-field" />
                 <button type="submit" className="btn-primary w-full">{isEditing ? 'Update Project' : 'Add Project'}</button>
                 <button type="button" onClick={onDone} className="btn-secondary w-full">Cancel</button>
@@ -443,7 +471,6 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
 const ManageContent = ({ db, projects, fetchProjects }) => {
     const [editingProject, setEditingProject] = useState(null);
     const [message, setMessage] = useState('');
-    
     const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
     const [internshipsPdfUrl, setInternshipsPdfUrl] = useState('');
 
@@ -463,7 +490,7 @@ const ManageContent = ({ db, projects, fetchProjects }) => {
             }
         }
     };
-    
+
     const handleUpdatePdfLink = async (e, pdfUrl, docId) => {
         e.preventDefault();
         setMessage(`Updating ${docId}...`);
@@ -503,19 +530,19 @@ const ManageContent = ({ db, projects, fetchProjects }) => {
                     </AnimatePresence>
                 </div>
             </div>
-            
+
             <div className="p-8 rounded-2xl glass-card">
                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Update PDFs</h2>
                  <form onSubmit={(e) => handleUpdatePdfLink(e, licensesPdfUrl, 'licenses')} className="space-y-4 mb-6">
-                    <input type="url" placeholder="Licenses & Certs PDF Link" value={licensesPdfUrl} onChange={e => setLicensesPdfUrl(e.target.value)} className="input-field" required/>
-                    <button type="submit" className="btn-primary w-full">Update Licenses</button>
+                     <input type="url" placeholder="Licenses & Certs PDF Link" value={licensesPdfUrl} onChange={e => setLicensesPdfUrl(e.target.value)} className="input-field" required/>
+                     <button type="submit" className="btn-primary w-full">Update Licenses</button>
                  </form>
                  <form onSubmit={(e) => handleUpdatePdfLink(e, internshipsPdfUrl, 'internships')} className="space-y-4">
-                    <input type="url" placeholder="Internships PDF Link" value={internshipsPdfUrl} onChange={e => setInternshipsPdfUrl(e.target.value)} className="input-field" required/>
-                    <button type="submit" className="btn-primary w-full">Update Internships</button>
+                     <input type="url" placeholder="Internships PDF Link" value={internshipsPdfUrl} onChange={e => setInternshipsPdfUrl(e.target.value)} className="input-field" required/>
+                     <button type="submit" className="btn-primary w-full">Update Internships</button>
                  </form>
             </div>
-            {message && <p className="text-center p-3 rounded-lg bg-blue-500/10 text-blue-700">{message}</p>}
+            {message && <p className="text-center p-3 rounded-lg bg-blue-500/10 text-blue-700 lg:col-span-2">{message}</p>}
         </div>
     );
 };
@@ -529,28 +556,30 @@ const AdminPanel = ({ db, projects, fetchProjects }) => {
         setIsAuthenticated(success);
         if (!success) setMessage('Incorrect password.');
     };
-    
-    if (!isAuthenticated) {
-        return <AdminLogin onLogin={handleLogin} message={message} />;
-    }
 
     return (
+      <div className="bg-[#fdfcf9] min-h-screen">
         <div className="container mx-auto px-6 py-12">
             <h1 className="text-4xl font-bold text-gray-800 text-center mb-12">Admin Dashboard</h1>
-            <ManageContent db={db} projects={projects} fetchProjects={fetchProjects} />
+            {!isAuthenticated ? (
+                <AdminLogin onLogin={handleLogin} message={message} />
+            ) : (
+                <ManageContent db={db} projects={projects} fetchProjects={fetchProjects} />
+            )}
         </div>
+      </div>
     );
 };
 
 // --- FIREBASE CONFIGURATION ---
 const firebaseConfig = {
-  apiKey: "AIzaSyAZjJnEruroTDXYEjbne6-BHPA-lJMRw1c",
-  authDomain: "costas-portfolio.firebaseapp.com",
-  projectId: "costas-portfolio",
-  storageBucket: "costas-portfolio.appspot.com",
-  messagingSenderId: "958634149930",
-  appId: "1:958634149930:web:b847a2bc997021711a5b53",
-  measurementId: "G-5ZT1KDPJPT"
+    apiKey: "AIzaSyAZjJnEruroTDXYEjbne6-BHPA-lJMRw1c",
+    authDomain: "costas-portfolio.firebaseapp.com",
+    projectId: "costas-portfolio",
+    storageBucket: "costas-portfolio.appspot.com",
+    messagingSenderId: "958634149930",
+    appId: "1:958634149930:web:b847a2bc997021711a5b53",
+    measurementId: "G-5ZT1KDPJPT"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -570,11 +599,11 @@ function App() {
             const projectsSnapshot = await getDocs(collection(db, 'projects'));
             const projectsList = projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setProjects(projectsList);
-            
+
             // Fetch PDF links
             const licensesDoc = await getDoc(doc(db, "portfolioAssets", "licenses"));
             if (licensesDoc.exists()) setLicensesPdfUrl(licensesDoc.data().pdfUrl);
-            
+
             const internshipsDoc = await getDoc(doc(db, "portfolioAssets", "internships"));
             if (internshipsDoc.exists()) setInternshipsPdfUrl(internshipsDoc.data().pdfUrl);
 
@@ -600,7 +629,7 @@ function App() {
     }, []);
 
     if (loading) return <LoadingSpinner />;
-    
+
     const renderPage = () => {
         if (page === 'admin') {
             return <AdminPanel db={db} projects={projects} fetchProjects={fetchAllData} />;
@@ -631,32 +660,6 @@ function App() {
         <LazyMotion features={domAnimation}>
             <div className="bg-[#fdfcf9] text-gray-800 font-sans">
                 <GlobalStyles />
-                {/* CSS classes for reusability */}
-                <style>{`
-                  .input-field {
-                    width: 100%;
-                    background-color: rgb(249 250 251 / 1); /* bg-gray-50 */
-                    border: 1px solid rgb(209 213 219 / 1); /* border-gray-300 */
-                    border-radius: 0.5rem; /* rounded-lg */
-                    padding: 0.75rem 1rem;
-                    color: rgb(17 24 39 / 1); /* text-gray-900 */
-                  }
-                  .btn-primary {
-                    background-image: linear-gradient(to right, #3b82f6, #14b8a6);
-                    color: white;
-                    font-weight: bold;
-                    padding: 0.75rem 1.5rem;
-                    border-radius: 9999px;
-                  }
-                   .btn-secondary {
-                    background-color: transparent;
-                    border: 1px solid #d1d5db;
-                    color: #4b5563;
-                    font-weight: bold;
-                    padding: 0.75rem 1.5rem;
-                    border-radius: 9999px;
-                  }
-                `}</style>
                 {renderPage()}
             </div>
         </LazyMotion>
