@@ -113,44 +113,88 @@ const SectionSeparator = () => (
 
 // --- UI COMPONENTS ---
 
-const Header = () => (
-    <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80"
-    >
-        <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#home" className="flex items-center space-x-2">
-                {/* FIX: Changed logo path to relative URL */}
-                <img
-                    src="./assets/logo.png" // Make sure this path is correct (e.g., inside `public/`)
-                    alt="Logo"
-                    className="h-8 w-8 object-contain"
-                    onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = 'https://placehold.co/32x32/e2e8f0/334155?text=L'; // Fallback placeholder
-                    }}
-                />
-                <span className="text-xl font-bold text-gray-800 hover:text-blue-500 transition-colors hidden sm:inline">
-                    Mr.Coss
-                </span>
-            </a>
-            <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
-                <a href="#about" className="hover:text-blue-500 transition-colors">About</a>
-                <a href="#experience" className="hover:text-blue-500 transition-colors">Experience</a>
-                <a href="#skills" className="hover:text-blue-500 transition-colors">Skills</a>
-                {/* Updated navigation links for new sections */}
-                <a href="#achievements" className="hover:text-blue-500 transition-colors">Achievements</a>
-                <a href="#tools-tech" className="hover:text-blue-500 transition-colors">Tech Stack</a>
-                <a href="#journey" className="hover:text-blue-500 transition-colors">Journey</a>
-                <a href="#projects" className="hover:text-blue-500 transition-colors">Projects</a>
-                <a href="#certifications" className="hover:text-blue-500 transition-colors">Certificates</a>
-                <a href="#contact" className="hover:text-blue-500 transition-colors">Contact</a>
-            </div>
-        </nav>
-    </motion.header>
-);
+const Header = () => {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
+    const navLinks = (
+        <>
+            <a href="#about" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>About</a>
+            <a href="#experience" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Experience</a>
+            <a href="#skills" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Skills</a>
+            <a href="#achievements" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Achievements</a>
+            <a href="#tools-tech" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Tech Stack</a>
+            <a href="#journey" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Journey</a>
+            <a href="#projects" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Projects</a>
+            <a href="#certifications" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Certificates</a>
+            <a href="#contact" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>Contact</a>
+        </>
+    );
+
+    return (
+        <motion.header
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80"
+        >
+            <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#home" className="flex items-center space-x-2">
+                    {/* Only the logo image is present now */}
+                    <img
+                        src="./assets/logo.png" // Ensure this path is correct relative to your public folder
+                        alt="Logo"
+                        className="h-7 w-7 object-contain"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'https://placehold.co/32x32/e2e8f0/334155?text=L'; // Fallback placeholder
+                        }}
+                    />
+                </a>
+
+                {/* Desktop Navigation */}
+                <div className="hidden md:flex space-x-8 items-center text-gray-600 font-medium">
+                    {navLinks}
+                </div>
+
+                {/* Mobile Menu Button (Hamburger) */}
+                <button
+                    className="md:hidden text-gray-600 hover:text-blue-500 focus:outline-none focus:text-blue-500"
+                    onClick={toggleMobileMenu}
+                    aria-label="Toggle navigation"
+                >
+                    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </nav>
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -50 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="md:hidden absolute top-full left-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200/80 shadow-lg py-4 z-40"
+                    >
+                        <div className="flex flex-col items-center space-y-4 text-gray-700 font-medium">
+                            {navLinks}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.header>
+    );
+};
 
 const Hero = () => (
     <section id="home" className="min-h-screen flex items-center justify-center text-center md:text-left relative overflow-hidden bg-[#fcfaf7]">
@@ -699,7 +743,7 @@ const AdminPanel = ({ db, projects, fetchProjects }) => {
             {!isAuthenticated ? (
                 <AdminLogin onLogin={handleLogin} message={message} />
             ) : (
-                <ManageContent db={db} projects={projects} fetchProjects={fetchProjects} />
+                <ManageContent db={db} projects={projects} fetchProjects={fetchAllData} />
             )}
         </div>
       </div>
