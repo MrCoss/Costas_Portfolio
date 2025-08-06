@@ -111,10 +111,6 @@ const SectionSeparator = () => (
     </div>
 );
 
-
-import { useState } from "react";
-import { motion } from "framer-motion";
-
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
