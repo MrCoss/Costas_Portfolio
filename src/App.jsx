@@ -260,45 +260,89 @@ const Experience = () => (
     </AnimatedSection>
 );
 
+// Removed the duplicate import statements for useRef, useInView, motion, AnimatedSection, AnimatedDivider
+// import { useRef } from 'react';
+// import { useInView } from 'framer-motion';
+// import { motion } from 'framer-motion';
+// import AnimatedSection from './AnimatedSection'; // Assuming these are locally defined, not imported from separate files
+// import AnimatedDivider from './AnimatedDivider'; // Assuming these are locally defined, not imported from separate files
+
 const Skills = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.3 });
-    const skills = [
-        { name: 'Python', level: 95 },
-        { name: 'Data Analysis', level: 90 },
-        { name: 'Power BI', level: 85 },
-        { name: 'Machine Learning', level: 80 },
-        { name: 'SQL', level: 88 },
-        { name: 'Excel', level: 92 },
-    ];
+
+    const categorizedSkills = {
+        'Programming Languages': [
+            { name: 'Python', level: 95 },
+            { name: 'Java', level: 85 },
+            { name: 'JavaScript', level: 90 },
+            { name: 'SQL', level: 88 },
+        ],
+        'Data Science & Analytics': [
+            { name: 'Data Analysis', level: 90 },
+            { name: 'Power BI', level: 85 },
+            { name: 'Excel', level: 92 },
+            { name: 'Machine Learning', level: 80 },
+            { name: 'PostgreSQL', level: 78 },
+            { name: 'MongoDB', level: 80 },
+        ],
+        'Web & App Development': [
+            { name: 'React', level: 88 },
+            { name: 'Firebase', level: 85 },
+            { name: 'Tailwind CSS', level: 80 },
+            { name: 'Vite', level: 75 },
+            { name: 'Streamlit', level: 82 },
+        ],
+        'AI & Generative AI': [
+            { name: 'Generative AI', level: 88 },
+            { name: 'Prompt Engineering', level: 90 },
+            { name: 'LangChain', level: 85 },
+            { name: 'LLMs & RAG', level: 80 },
+        ],
+        'Design & Presentation': [
+            { name: 'UI/UX Design', level: 87 },
+            { name: 'PowerPoint & Reporting', level: 90 },
+        ],
+        'Tools & Workflow': [
+            { name: 'Git & GitHub', level: 95 },
+            { name: 'Version Control', level: 94 },
+        ]
+    };
 
     return (
         <AnimatedSection id="skills">
             <h2 className="text-4xl font-bold text-gray-800 text-center">My Skills</h2>
             <AnimatedDivider />
-            <div ref={ref} className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {skills.map((skill, index) => (
-                        <div key={skill.name}>
-                            <div className="flex justify-between mb-1">
-                                <span className="text-lg font-semibold text-gray-700">{skill.name}</span>
-                                <span className="text-sm font-medium text-teal-600">{skill.level}%</span>
-                            </div>
-                            <div className="bg-gray-200 w-full rounded-full h-2.5">
-                                <motion.div
-                                    className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-teal-400"
-                                    initial={{ width: 0 }}
-                                    animate={{ width: isInView ? `${skill.level}%` : 0 }}
-                                    transition={{ duration: 1, delay: 0.1 * index, ease: "easeOut" }}
-                                />
-                            </div>
+            <div ref={ref} className="p-8 md:p-12 max-w-5xl mx-auto rounded-2xl glass-card space-y-12">
+                {Object.entries(categorizedSkills).map(([category, skills]) => (
+                    <div key={category}>
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-4">{category}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {skills.map((skill, index) => (
+                                <div key={skill.name}>
+                                    <div className="flex justify-between mb-1">
+                                        <span className="text-lg font-semibold text-gray-700">{skill.name}</span>
+                                        <span className="text-sm font-medium text-teal-600">{skill.level}%</span>
+                                    </div>
+                                    <div className="bg-gray-200 w-full rounded-full h-2.5">
+                                        <motion.div
+                                            className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-teal-400"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: isInView ? `${skill.level}%` : 0 }}
+                                            transition={{ duration: 1, delay: 0.1 * index, ease: "easeOut" }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
         </AnimatedSection>
     );
 };
+
+// REMOVED: export default Skills;
 
 // NEW: Achievements Section
 const Achievements = () => (
