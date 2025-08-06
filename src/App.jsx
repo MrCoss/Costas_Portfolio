@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'; // Import Auth methods
 import { motion, useInView, LazyMotion, domAnimation, AnimatePresence } from 'framer-motion';
 
 // --- THEME & STYLES ---
@@ -113,17 +114,7 @@ const SectionSeparator = () => (
 
 // --- UI COMPONENTS ---
 
-const Header = () => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-    };
-
-    const closeMobileMenu = () => {
-        setIsMobileMenuOpen(false);
-    };
-
+const Header = ({ isMobileMenuOpen, closeMobileMenu, toggleMobileMenu }) => {
     const navLinks = (
         <>
             <a href="#about" className="hover:text-blue-500 transition-colors" onClick={closeMobileMenu}>About</a>
@@ -143,11 +134,10 @@ const Header = () => {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="bg-white/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80"
+            className="bg-white/70 backdrop-blur-md fixed top-0 left-0 w-full z-50 border-b border-gray-200/80"
         >
             <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <a href="#home" className="flex items-center space-x-2">
-                    {/* Only the logo image is present now */}
                     <img
                         src="./assets/logo.png" // Ensure this path is correct relative to your public folder
                         alt="Logo"
@@ -167,7 +157,7 @@ const Header = () => {
                 {/* Mobile Menu Button (Hamburger) */}
                 <button
                     className="md:hidden text-gray-600 hover:text-blue-500 focus:outline-none focus:text-blue-500"
-                    onClick={toggleMobileMenu}
+                    onClick={toggleMobileMenu} // Use the passed toggleMobileMenu prop
                     aria-label="Toggle navigation"
                 >
                     <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -180,15 +170,32 @@ const Header = () => {
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: -50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -50 }}
+                        initial={{ opacity: 0, x: '100%' }} // Animate from right
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: '100%' }} // Animate to right
                         transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="md:hidden absolute top-full left-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200/80 shadow-lg py-4 z-40"
+                        className="md:hidden fixed inset-0 bg-black/50 z-40" // Full screen overlay
                     >
-                        <div className="flex flex-col items-center space-y-4 text-gray-700 font-medium">
-                            {navLinks}
-                        </div>
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="absolute right-0 top-0 h-full w-3/4 bg-white/95 backdrop-blur-lg shadow-lg py-8 px-6 flex flex-col items-center space-y-6 text-gray-700 font-medium"
+                        >
+                            <button
+                                className="absolute top-4 right-4 text-gray-600 hover:text-blue-500 focus:outline-none"
+                                onClick={closeMobileMenu}
+                                aria-label="Close navigation"
+                            >
+                                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                            <div className="mt-10 flex flex-col items-center space-y-6">
+                                {navLinks}
+                            </div>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -321,7 +328,6 @@ const Experience = () => (
 const Skills = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.3 });
-
     const categorizedSkills = {
         'Programming Languages': [
             { name: 'Python', level: 95 },
@@ -542,10 +548,27 @@ const Contact = () => (
     <footer id="contact" className="bg-gray-100 border-t border-gray-200 mt-20">
         <div className="container mx-auto px-6 py-16 text-center">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Let's Connect</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-8">Have a project in mind, a question, or just want to say hi? My inbox is always open.</p>
-            <a href="mailto:costaspinto312@gmail.com" className="inline-block text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 hover:opacity-80 transition-opacity">
+            {/* UPDATED: Added detailed introductory text */}
+            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+                As a Data Analyst Intern at SkillFied Mentor, an MCA (AI & ML) Student at Manipal University Jaipur, and the Founder of JHT SMART STEPS LEARNING, I'm always eager to connect. Whether you have a project in mind, a question, or just want to say hi, my inbox is always open.
+            </p>
+            <a href="mailto:costaspinto312@gmail.com" className="inline-block text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 hover:opacity-80 transition-opacity mb-6">
                 costaspinto312@gmail.com
             </a>
+            {/* NEW: Added social media and portfolio links */}
+            <div className="flex justify-center items-center gap-6 mt-6">
+                <a href="https://www.linkedin.com/in/costaspinto/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors">
+                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+                </a>
+                <a href="https://github.com/MrCoss" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-800 transition-colors">
+                   <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clipRule="evenodd"/></svg>
+                </a>
+                <a href="https://MrCoss.github.io/Costas_Portfolio" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors">
+                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </a>
+            </div>
             <div className="border-t border-gray-200 mt-12 pt-8 text-gray-500">
                 <p>&copy; {new Date().getFullYear()} Costas Pinto. All Rights Reserved.</p>
             </div>
@@ -555,15 +578,21 @@ const Contact = () => (
 
 // --- ADMIN PANEL COMPONENTS (REFACTORED) ---
 
-const AdminLogin = ({ onLogin, message }) => {
+const AdminLogin = ({ onLogin, message, auth }) => { // Pass auth prop
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loginMessage, setLoginMessage] = useState(message);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // IMPORTANT: This is NOT secure for production. Use Firebase Auth for real applications.
-        if (password === 'admin123') {
+        setLoginMessage('Logging in...');
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            setLoginMessage('Login successful!');
             onLogin(true);
-        } else {
+        } catch (error) {
+            console.error("Login error:", error);
+            setLoginMessage(`Login failed: ${error.message}`);
             onLogin(false);
         }
     };
@@ -572,10 +601,24 @@ const AdminLogin = ({ onLogin, message }) => {
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <form onSubmit={handleLogin} className="p-8 rounded-2xl w-full max-w-sm glass-card">
                 <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Admin Login</h2>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"
-                    className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 mb-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                <button type="submit" className="w-full text-white font-bold py-3 px-6 rounded-lg bg-gradient-to-r from-blue-500 to-teal-400">Login</button>
-                {message && <p className="text-red-500 text-center mt-4">{message}</p>}
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                    className="input-field mb-4"
+                    required
+                />
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    className="input-field mb-4"
+                    required
+                />
+                <button type="submit" className="btn-primary w-full">Login</button>
+                {loginMessage && <p className="text-red-500 text-center mt-4">{loginMessage}</p>}
             </form>
         </div>
     );
@@ -647,7 +690,7 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
 };
 
 
-const ManageContent = ({ db, projects, fetchProjects }) => {
+const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth prop
     const [editingProject, setEditingProject] = useState(null);
     const [message, setMessage] = useState('');
     const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
@@ -658,8 +701,6 @@ const ManageContent = ({ db, projects, fetchProjects }) => {
     }
 
     const handleDeleteClick = async (projectId) => {
-        // IMPORTANT: Replaced window.confirm with a custom modal/message box for better UX in a web app.
-        // For simplicity, I'm using a direct message here, but in a real app, you'd show a custom dialog.
         setMessage('Deleting...');
         try {
             await deleteDoc(doc(db, 'projects', projectId));
@@ -680,6 +721,18 @@ const ManageContent = ({ db, projects, fetchProjects }) => {
             if (docId === 'internships') setInternshipsPdfUrl('');
         } catch (error) {
             setMessage(`Error: ${error.message}`);
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            setMessage('Logged out successfully!');
+            // Redirect to home or login page after logout
+            window.location.hash = ''; // Go back to home page
+        } catch (error) {
+            console.error("Logout error:", error);
+            setMessage(`Logout failed: ${error.message}`);
         }
     };
 
@@ -722,18 +775,30 @@ const ManageContent = ({ db, projects, fetchProjects }) => {
                  </form>
             </div>
             {message && <p className="text-center p-3 rounded-lg bg-blue-500/10 text-blue-700 lg:col-span-2">{message}</p>}
+            <button onClick={handleLogout} className="btn-secondary w-full mt-8">Logout</button>
         </div>
     );
 };
 
 
-const AdminPanel = ({ db, projects, fetchProjects }) => {
+const AdminPanel = ({ db, projects, fetchProjects, auth }) => { // Pass auth prop
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [message, setMessage] = useState('');
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+            }
+        });
+        return () => unsubscribe(); // Cleanup subscription
+    }, [auth]);
+
     const handleLogin = (success) => {
         setIsAuthenticated(success);
-        if (!success) setMessage('Incorrect password.');
+        if (!success) setMessage('Login failed. Please check your credentials.');
     };
 
     return (
@@ -741,9 +806,9 @@ const AdminPanel = ({ db, projects, fetchProjects }) => {
         <div className="container mx-auto px-6 py-12">
             <h1 className="text-4xl font-bold text-gray-800 text-center mb-12">Admin Dashboard</h1>
             {!isAuthenticated ? (
-                <AdminLogin onLogin={handleLogin} message={message} />
+                <AdminLogin onLogin={handleLogin} message={message} auth={auth} />
             ) : (
-                <ManageContent db={db} projects={projects} fetchProjects={fetchAllData} />
+                <ManageContent db={db} projects={projects} fetchProjects={fetchProjects} auth={auth} />
             )}
         </div>
       </div>
@@ -763,6 +828,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app); // Initialize Firebase Auth
 
 // --- MAIN APP COMPONENT ---
 function App() {
@@ -771,6 +837,20 @@ function App() {
     const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
     const [internshipsPdfUrl, setInternshipsPdfUrl] = useState('');
     const [loading, setLoading] = useState(true);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+
+    // Effect to control body overflow when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = ''; // Clean up on unmount
+        };
+    }, [isMobileMenuOpen]);
+
 
     const fetchAllData = async () => {
         try {
@@ -811,11 +891,13 @@ function App() {
 
     const renderPage = () => {
         if (page === 'admin') {
-            return <AdminPanel db={db} projects={projects} fetchProjects={fetchAllData} />;
+            // FIX: Removed the extra curly brace at the end of the line
+            return <AdminPanel db={db} projects={projects} fetchProjects={fetchAllData} auth={auth} />;
         }
         return (
             <>
-                <Header />
+                {/* Pass mobile menu state and setter to Header */}
+                <Header isMobileMenuOpen={isMobileMenuOpen} closeMobileMenu={() => setIsMobileMenuOpen(false)} toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
                 <main className="relative z-10">
                     <Hero />
                     <div className="container mx-auto px-6">
