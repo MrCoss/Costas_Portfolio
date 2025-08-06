@@ -134,17 +134,17 @@ const Header = ({ isMobileMenuOpen, closeMobileMenu, toggleMobileMenu }) => {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="bg-white/70 backdrop-blur-md fixed top-0 left-0 w-full z-40 border-b border-gray-200/80" // Changed z-50 to z-40
+            className="bg-white/70 backdrop-blur-md fixed top-0 left-0 w-full z-40 border-b border-gray-200/80"
         >
-            <nav className="container mx-auto px-6 py-4 flex justify-between items-center relative"> {/* Added relative here */}
-                <a href="#home" className="flex items-center space-x-2 z-50"> {/* Added z-50 to logo link */}
+            <nav className="container mx-auto px-6 py-4 flex justify-between items-center relative">
+                <a href="#home" className="flex items-center space-x-2 z-50">
                     <img
-                        src="./assets/logo.png" // Ensure this path is correct relative to your public folder
+                        src="./assets/logo.png"
                         alt="Logo"
-                        className="h-8 w-8 object-contain" // Adjusted size to h-8 w-8
+                        className="h-8 w-8 object-contain"
                         onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = 'https://placehold.co/32x32/e2e8f0/334155?text=L'; // Fallback placeholder
+                            e.target.src = 'https://placehold.co/32x32/e2e8f0/334155?text=L';
                         }}
                     />
                 </a>
@@ -156,8 +156,8 @@ const Header = ({ isMobileMenuOpen, closeMobileMenu, toggleMobileMenu }) => {
 
                 {/* Mobile Menu Button (Hamburger) */}
                 <button
-                    className="md:hidden text-gray-600 hover:text-blue-500 focus:outline-none focus:text-blue-500 relative z-50 cursor-pointer" // Added relative z-50 cursor-pointer
-                    onClick={toggleMobileMenu} // Use the passed toggleMobileMenu prop
+                    className="md:hidden text-gray-600 hover:text-blue-500 focus:outline-none focus:text-blue-500 relative z-50 cursor-pointer"
+                    onClick={toggleMobileMenu}
                     aria-label="Toggle navigation"
                 >
                     <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -170,18 +170,21 @@ const Header = ({ isMobileMenuOpen, closeMobileMenu, toggleMobileMenu }) => {
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
-                        initial={{ opacity: 0, x: '100%' }} // Animate from right
+                        initial={{ opacity: 0, x: '100%' }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: '100%' }} // Animate to right
+                        exit={{ opacity: 0, x: '100%' }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="md:hidden fixed inset-0 bg-black/50 z-50 flex justify-end" // Changed z-40 to z-50, added flex justify-end
+                        className="md:hidden fixed inset-0 bg-black/50 z-50 flex justify-end"
+                        onClick={closeMobileMenu} // Click anywhere on overlay to close
                     >
                         <motion.div
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
-                            className="relative h-full w-3/4 bg-white/95 backdrop-blur-lg shadow-lg py-8 px-6 flex flex-col items-center space-y-6 text-gray-700 font-medium" // Removed absolute right-0 top-0
+                            // Prevent clicks on the menu content from closing the menu immediately
+                            onClick={(e) => e.stopPropagation()}
+                            className="relative h-full w-3/4 bg-white/95 backdrop-blur-lg shadow-lg py-8 px-6 flex flex-col items-center space-y-6 text-gray-700 font-medium"
                         >
                             <button
                                 className="absolute top-4 right-4 text-gray-600 hover:text-blue-500 focus:outline-none"
@@ -666,7 +669,8 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
             setMessage(`Project ${isEditing ? 'updated' : 'added'} successfully!`);
             fetchProjects();
             setTimeout(() => onDone(), 1500);
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             setMessage(`Error: ${error.message}`);
         }
@@ -778,7 +782,7 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
                  </form>
             </div>
             {message && <p className="text-center p-3 rounded-lg bg-blue-500/10 text-blue-700 lg:col-span-2">{message}</p>}
-            <button onClick={handleLogout} className="btn-secondary w-full py-2 px-4 text-base mt-8">Logout</button> {/* Adjusted size */}
+            <button onClick={handleLogout} className="btn-secondary w-full py-2 px-4 text-base mt-8">Logout</button>
         </div>
     );
 };
@@ -846,11 +850,14 @@ function App() {
     useEffect(() => {
         if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden'; // For iOS
         } else {
             document.body.style.overflow = '';
+            document.documentElement.style.overflow = ''; // For iOS
         }
         return () => {
             document.body.style.overflow = ''; // Clean up on unmount
+            document.documentElement.style.overflow = ''; // Clean up on unmount
         };
     }, [isMobileMenuOpen]);
 
