@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense, useCallback } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -65,7 +65,7 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
         <header className="bg-white/70 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200/80">
             <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <a href="#home" className="flex items-center space-x-2" onClick={handleLinkClick}>
-                    <span className="text-xl font-semibold text-gray-800">Home</span>
+                    <img src="/Costas_Portfolio/assets/logo.png" alt="Logo" className="h-10 w-auto md:h-12" />
                 </a>
                 <div className="hidden md:flex space-x-8 items-center text-[#4b5563] font-medium">
                     <a href="#about" className="hover:text-[#2563eb] transition-colors">About</a>
@@ -224,7 +224,6 @@ const Skills = React.memo(() => {
     );
 });
 
-// FIX: Re-added missing component definition
 const Achievements = React.memo(() => (
     <AnimatedSection id="achievements">
         <h2 className="text-4xl font-bold text-[#334155] text-center">Key Achievements</h2>
@@ -240,7 +239,6 @@ const Achievements = React.memo(() => (
     </AnimatedSection>
 ));
 
-// FIX: Re-added missing component definition
 const LearningJourney = React.memo(() => (
     <AnimatedSection id="journey">
         <h2 className="text-4xl font-bold text-[#334155] text-center">My Learning Journey</h2>
@@ -284,34 +282,20 @@ const Projects = React.memo(({ projects }) => (
     </AnimatedSection>
 ));
 
-// FIX: Re-added missing component definition
 const Certifications = React.memo(({ licensesPdfUrl, internshipsPdfUrl }) => (
     <AnimatedSection id="certifications">
         <h2 className="text-4xl font-bold text-[#334155] text-center">Certificates</h2>
         <AnimatedDivider />
         <div className="text-center flex flex-col md:flex-row justify-center items-center gap-6">
-            <motion.a
-                href={licensesPdfUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!licensesPdfUrl && 'opacity-50 cursor-not-allowed'}`}
-            >
+            <motion.a href={licensesPdfUrl || '#'} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!licensesPdfUrl && 'opacity-50 cursor-not-allowed'}`}>
                 View Licenses & Certs
             </motion.a>
-            <motion.a
-                href={internshipsPdfUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!internshipsPdfUrl && 'opacity-50 cursor-not-allowed'}`}
-            >
+            <motion.a href={internshipsPdfUrl || '#'} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!internshipsPdfUrl && 'opacity-50 cursor-not-allowed'}`}>
                 View Internship Certs
             </motion.a>
         </div>
     </AnimatedSection>
 ));
-
 
 const Contact = React.memo(() => (
     <footer id="contact" className="bg-[#e2e8f0] border-t border-gray-300 mt-20">
@@ -355,24 +339,27 @@ function App() {
     const [loading, setLoading] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+    // FIX: Moved fetchAllData outside of useEffect so it can be passed as a prop.
+    // OPTIMIZATION: Wrapped in useCallback to prevent it from being redefined on every render.
+    const fetchAllData = useCallback(async () => {
+        setLoading(true);
+        try {
+            const projectsSnapshot = await getDocs(collection(db, 'projects'));
+            setProjects(projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+            const licensesDoc = await getDoc(doc(db, "portfolioAssets", "licenses"));
+            if (licensesDoc.exists()) setLicensesPdfUrl(licensesDoc.data().pdfUrl);
+
+            const internshipsDoc = await getDoc(doc(db, "portfolioAssets", "internships"));
+            if (internshipsDoc.exists()) setInternshipsPdfUrl(internshipsDoc.data().pdfUrl);
+        } catch (error) {
+            console.error("Error fetching data: ", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []); // Empty dependency array ensures this function is created only once.
+
     useEffect(() => {
-        const fetchAllData = async () => {
-            try {
-                const projectsSnapshot = await getDocs(collection(db, 'projects'));
-                setProjects(projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-
-                const licensesDoc = await getDoc(doc(db, "portfolioAssets", "licenses"));
-                if (licensesDoc.exists()) setLicensesPdfUrl(licensesDoc.data().pdfUrl);
-
-                const internshipsDoc = await getDoc(doc(db, "portfolioAssets", "internships"));
-                if (internshipsDoc.exists()) setInternshipsPdfUrl(internshipsDoc.data().pdfUrl);
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchAllData();
 
         const handleHashChange = () => {
@@ -384,7 +371,7 @@ function App() {
         handleHashChange();
 
         return () => window.removeEventListener('hashchange', handleHashChange);
-    }, []);
+    }, [fetchAllData]);
 
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
     const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev);
