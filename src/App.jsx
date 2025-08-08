@@ -81,7 +81,8 @@ const AnimatedSection = ({ children, id, className = '', animateInView = true })
             initial={animateInView ? { opacity: 0, y: 50 } : false}
             animate={animateInView ? { opacity: isInView ? 1 : 0, y: isInView ? 0 : 50 } : { opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className={`py-20 md:py-24 min-h-[50vh] ${className}`}
+            // FIX: Reduced vertical padding and removed min-height for a more compact layout.
+            className={`py-12 md:py-16 ${className}`}
         >
             {children}
         </motion.section>
@@ -105,6 +106,7 @@ const AnimatedDivider = () => {
     );
 };
 
+// FIX: This component was removed from the layout to reduce spacing, but is kept here in case you want to use it elsewhere.
 const SectionSeparator = () => (
     <div className="my-8 md:my-12">
         <hr className="border-t border-gray-300/80 max-w-4xl mx-auto" />
@@ -369,7 +371,6 @@ const Skills = () => {
     );
 };
 
-// NEW: Achievements Section
 const Achievements = () => (
     <AnimatedSection id="achievements">
         <h2 className="text-4xl font-bold text-[#334155] text-center">Key Achievements</h2>
@@ -385,8 +386,6 @@ const Achievements = () => (
     </AnimatedSection>
 );
 
-
-// NEW: Learning Journey Section
 const LearningJourney = () => (
     <AnimatedSection id="journey">
         <h2 className="text-4xl font-bold text-[#334155] text-center">My Learning Journey</h2>
@@ -402,9 +401,7 @@ const LearningJourney = () => (
     </AnimatedSection>
 );
 
-
 const Projects = ({ projects }) => (
-    // FIX: Removed animateInView prop to ensure the section is always visible
     <AnimatedSection id="projects" animateInView={false}>
         <h2 className="text-4xl font-bold text-[#334155] text-center">My Projects</h2>
         <AnimatedDivider />
@@ -442,14 +439,14 @@ const Projects = ({ projects }) => (
                                 ))}
                             </div>
                             {project.projectLink && (
-                                       <a
-                                        href={project.projectLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="mt-auto text-center font-semibold text-[#2563eb] border border-[#2563eb] rounded-full py-2 px-4 hover:bg-[#2563eb] hover:text-white transition-all duration-300"
-                                        >
-                                        View Project
-                                        </a>
+                                    <a
+                                    href={project.projectLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mt-auto text-center font-semibold text-[#2563eb] border border-[#2563eb] rounded-full py-2 px-4 hover:bg-[#2563eb] hover:text-white transition-all duration-300"
+                                    >
+                                    View Project
+                                    </a>
                             )}
                         </motion.div>
                     ))}
@@ -464,7 +461,6 @@ const Projects = ({ projects }) => (
         </div>
     </AnimatedSection>
 );
-
 
 const Certifications = ({ licensesPdfUrl, internshipsPdfUrl }) => (
     <AnimatedSection id="certifications">
@@ -652,6 +648,7 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
     }
 
     const handleDeleteClick = async (projectId) => {
+        if (!window.confirm('Are you sure you want to delete this project?')) return;
         setMessage('Deleting...');
         try {
             await deleteDoc(doc(db, 'projects', projectId));
@@ -679,7 +676,7 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
         try {
             await signOut(auth);
             setMessage('Logged out successfully!');
-            window.location.hash = '';
+            window.location.hash = ''; // Navigate back to home page
         } catch (error) {
             console.error("Logout error:", error);
             setMessage(`Logout failed: ${error.message}`);
@@ -725,7 +722,9 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => { // Pass auth 
                  </form>
             </div>
             {message && <p className="text-center p-3 rounded-lg bg-[#2563eb]/10 text-[#1e3a8a] lg:col-span-2">{message}</p>}
-            <button onClick={handleLogout} className="btn-secondary w-full py-2 px-4 text-base mt-8">Logout</button>
+             <div className="lg:col-span-2 flex justify-end">
+                <button onClick={handleLogout} className="btn-secondary py-2 px-4 text-base mt-4">Logout</button>
+             </div>
         </div>
     );
 };
@@ -789,20 +788,8 @@ function App() {
     const [loading, setLoading] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    useEffect(() => {
-        if (isMobileMenuOpen) {
-            document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-            document.documentElement.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-            document.documentElement.style.overflow = '';
-        };
-    }, [isMobileMenuOpen]);
-
+    // FIX: Removed useEffect for body scroll to ensure mobile nav links work reliably.
+    // This effect was preventing the browser's default anchor link scrolling behavior.
 
     const fetchAllData = async () => {
         try {
@@ -831,7 +818,7 @@ function App() {
         };
 
         window.addEventListener('hashchange', handleHashChange, false);
-        handleHashChange();
+        handleHashChange(); // Check hash on initial load
 
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
@@ -849,17 +836,11 @@ function App() {
                     <Hero />
                     <div className="container mx-auto px-6">
                         <About />
-                        <SectionSeparator />
                         <Experience />
-                        <SectionSeparator />
                         <Skills />
-                        <SectionSeparator />
                         <Achievements />
-                        <SectionSeparator />
                         <LearningJourney />
-                        <SectionSeparator />
                         <Projects projects={projects} />
-                        <SectionSeparator />
                         <Certifications licensesPdfUrl={licensesPdfUrl} internshipsPdfUrl={internshipsPdfUrl} />
                     </div>
                 </main>
@@ -870,7 +851,7 @@ function App() {
 
     return (
         <LazyMotion features={domAnimation}>
-            <div className="bg-[#f5f7fa] text-[#334155] font-sans overflow-x-hidden overflow-y-auto min-h-screen">
+            <div className="bg-[#f5f7fa] text-[#334155] font-sans overflow-x-hidden">
                 <GlobalStyles />
                 {renderPage()}
             </div>
