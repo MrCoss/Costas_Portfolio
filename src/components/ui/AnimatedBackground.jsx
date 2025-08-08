@@ -10,12 +10,23 @@
 import React from 'react';
 
 const AnimatedBackground = React.memo(() => (
+    // This div is fixed to the background and covers the entire viewport.
+    // The -z-10 utility class ensures it stays behind all other content.
     <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden bg-[#f5f7fa]">
         <style>{`
+            /* * Defines the keyframes for the rotation animation.
+             * It smoothly rotates the element 360 degrees.
+             */
             @keyframes move {
                 0% { transform: translate(-50%, -50%) rotate(0deg); }
                 100% { transform: translate(-50%, -50%) rotate(360deg); }
             }
+
+            /* * Styles the element that will be animated. It's made oversized
+             * (150vmax) to ensure it covers the screen even on large displays.
+             * The background is composed of two soft radial gradients to create
+             * an abstract, nebula-like effect.
+             */
             .gradient-bg {
                 width: 150vmax;
                 height: 150vmax;

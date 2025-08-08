@@ -1,5 +1,5 @@
 // =================================================================================
-// FILE: src/components/Contact.jsx
+// FILE: src/Contact.jsx
 // =================================================================================
 // This component renders the footer and contact form section.
 // It uses Formspree for a serverless contact form and manages form state
@@ -7,6 +7,11 @@
 // =================================================================================
 
 import React, { useState, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx';
 
 const Contact = React.memo(() => {
   // State to manage the form submission process
@@ -16,7 +21,7 @@ const Contact = React.memo(() => {
     error: null,
   });
 
-  // Handles the form submission
+  // Handles the form submission using an async function
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setFormState({ submitting: true, succeeded: false, error: null });

@@ -1,5 +1,5 @@
 // =================================================================================
-// FILE: src/components/Hero.jsx
+// FILE: src/Hero.jsx
 // =================================================================================
 // This component renders the main hero section (the top banner) of the portfolio.
 // It features an eye-catching typing animation for the subtitle to highlight
@@ -9,6 +9,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx'; 
 
 const Hero = React.memo(() => {
   return (
@@ -43,9 +47,9 @@ const Hero = React.memo(() => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
-            {/* FIX: The href path has been corrected.
-              ACTION REQUIRED: Make sure your CV file is named 'CostasPinto_CV.pdf' 
-              and is placed inside the '/public/assets/' folder.
+            {/* ACTION REQUIRED: 
+              1. Place your CV file inside the '/public/assets/' folder.
+              2. Make sure the file is named 'CostasPinto_CV.pdf'.
             */}
             <motion.a
               href="/assets/CostasPinto_CV.pdf"

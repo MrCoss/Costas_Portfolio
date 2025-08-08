@@ -1,5 +1,5 @@
 // =================================================================================
-// FILE: src/components/Skills.jsx
+// FILE: src/Skills.jsx
 // =================================================================================
 // This component displays technical skills in an interactive accordion format.
 // It allows users to click on a category to reveal the skills within,
@@ -8,7 +8,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AnimatedSection, AnimatedDivider } from './ui'; // Imports reusable UI components
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx';
 
 const Skills = React.memo(() => {
   // State to manage which category is currently open

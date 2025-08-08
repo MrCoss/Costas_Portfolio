@@ -1,5 +1,5 @@
 // =================================================================================
-// FILE: src/components/About.jsx
+// FILE: src/About.jsx
 // =================================================================================
 // This component renders the "About Me" section of the portfolio.
 // It is memoized with React.memo to prevent unnecessary re-renders,
@@ -7,7 +7,10 @@
 // =================================================================================
 
 import React from 'react';
-import { AnimatedSection, AnimatedDivider } from './ui'; // Imports reusable UI components
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx';
 
 const About = React.memo(() => {
   return (

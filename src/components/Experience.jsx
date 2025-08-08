@@ -1,5 +1,5 @@
 // =================================================================================
-// FILE: src/components/Experience.jsx
+// FILE: src/Experience.jsx
 // =================================================================================
 // This component renders the professional experience section using a vertical
 // timeline format. It is composed of reusable TimelineItem sub-components.
@@ -8,7 +8,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AnimatedSection, AnimatedDivider } from './ui'; // Imports reusable UI components
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx';
 
 // The TimelineItem is a sub-component used to display each individual job or role.
 const TimelineItem = React.memo(({ date, title, company, details }) => (

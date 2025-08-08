@@ -1,5 +1,5 @@
 // =================================================================================
-// FILE: src/components/Achievements.jsx
+// FILE: src/Achievements.jsx
 // =================================================================================
 // This component displays a summary of key achievements in a glass-card format.
 // It is memoized with React.memo for performance optimization, preventing
@@ -7,7 +7,10 @@
 // =================================================================================
 
 import React from 'react';
-import { AnimatedSection, AnimatedDivider } from './ui'; // Imports reusable UI components
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx';
 
 const Achievements = React.memo(() => {
   return (

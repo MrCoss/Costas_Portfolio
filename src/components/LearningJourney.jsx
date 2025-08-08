@@ -1,35 +1,71 @@
 // =================================================================================
-// FILE: src/components/LearningJourney.jsx
+// FILE: src/LearningJourney.jsx
 // =================================================================================
-// This component outlines the educational and self-learning milestones.
-// It is memoized for performance and uses the standard animated reveal effect.
+// This component outlines the educational and self-learning milestones in a
+// visually engaging timeline format. It is memoized for performance.
 // =================================================================================
 
 import React from 'react';
-import { AnimatedSection, AnimatedDivider } from './ui'; // Imports reusable UI components
+import { motion } from 'framer-motion';
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx';
+
+// A dedicated TimelineItem for the learning journey, including an icon
+const JourneyTimelineItem = React.memo(({ year, title, details, icon }) => (
+    <motion.div
+        className="relative pl-12 py-4 border-l-2 border-blue-200"
+        initial={{ opacity: 0, x: -20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.6 }}
+    >
+        <div className="absolute -left-[26px] top-4 w-12 h-12 bg-white rounded-full border-4 border-blue-200 flex items-center justify-center">
+            {icon}
+        </div>
+        <p className="text-blue-500 mb-1 font-semibold">{year}</p>
+        <h3 className="text-2xl font-bold text-[#334155]">{title}</h3>
+        <p className="text-[#4b5563] mt-1">{details}</p>
+    </motion.div>
+));
 
 const LearningJourney = React.memo(() => {
-  return (
-    <AnimatedSection id="journey">
-      <h2 className="text-4xl font-bold text-[#334155] text-center">My Learning Journey</h2>
-      <AnimatedDivider />
-      <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card">
-        <div className="glow-effect"></div>
-        <p className="text-lg text-center text-[#4b5563] mb-6">From mastering foundational concepts to building AI-powered solutions, my journey is marked by continuous growth:</p>
-        <ul className="list-disc list-inside text-[#4b5563] space-y-3 text-lg mx-auto max-w-2xl">
-          <li>
-            <strong>2023:</strong> Dived into foundational programming with Python and Java, while building a strong understanding of front-end development and creating my first machine learning models.
-          </li>
-          <li>
-            <strong>2024:</strong> Accelerated my learning by completing over 60 certifications in AI, Data Science, UX Design, and Full-Stack Development from industry leaders.
-          </li>
-          <li>
-            <strong>Ongoing:</strong> Actively applying knowledge through daily practice on real-world challenges, contributing to GitHub repositories, and gaining practical experience via internships.
-          </li>
-        </ul>
-      </div>
-    </AnimatedSection>
-  );
+    const journeyData = [
+        {
+            year: "2023",
+            title: "Foundation & Exploration",
+            details: "Built a strong programming foundation in Python and Java while exploring front-end development. Developed and trained my first predictive models, sparking a passion for machine learning.",
+            icon: <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+        },
+        {
+            year: "2024",
+            title: "Accelerated Growth & Specialization",
+            details: "Completed over 60 certifications from industry leaders like Google, IBM, and Meta, specializing in AI, Data Science, and Full-Stack Development to deepen my expertise.",
+            icon: <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+        },
+        {
+            year: "Ongoing",
+            title: "Application & Innovation",
+            details: "Actively applying knowledge through internships and real-world projects. Continuously exploring new AI architectures and contributing to open-source repositories to stay at the forefront of technology.",
+            icon: <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+        }
+    ];
+
+    return (
+        <AnimatedSection id="journey">
+            <h2 className="text-4xl font-bold text-[#334155] text-center">My Learning Journey</h2>
+            <AnimatedDivider />
+            <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card">
+                <div className="glow-effect"></div>
+                <div className="space-y-12">
+                    {journeyData.map((item) => (
+                        <JourneyTimelineItem key={item.title} {...item} />
+                    ))}
+                </div>
+            </div>
+        </AnimatedSection>
+    );
 });
 
 export default LearningJourney;

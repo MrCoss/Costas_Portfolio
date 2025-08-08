@@ -3,8 +3,8 @@
 // =================================================================================
 // This component displays a custom, AI-themed loading animation. It is shown
 // while the initial data for the portfolio is being fetched from Firebase.
-// The SVG animation is lightweight and styled to match the site's aesthetic.
-// It is memoized for performance.
+// The animation is created with pure CSS for maximum performance.
+// It is memoized to prevent unnecessary re-renders.
 // =================================================================================
 
 import React from 'react';
@@ -12,32 +12,61 @@ import React from 'react';
 const LoadingSpinner = React.memo(() => {
   return (
     <div className="flex justify-center items-center h-screen bg-[#f5f7fa]">
-      <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="#1e3a8a">
-        {/* The animation styles are embedded directly in the SVG for simplicity */}
+      <div className="relative w-24 h-24">
         <style>{`
-          .spinner_V8m1 {
-            transform-origin: center;
-            animation: spinner_zKoa 2s linear infinite;
-          }
-          .spinner_zKoa {
-            animation-timing-function: steps(8, end);
-          }
-          @keyframes spinner_zKoa {
+          /* Defines the main spinning animation for the rings */
+          @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
           }
+          
+          /* Defines the pulsing animation for the central dot */
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+          }
+
+          /* Base styles for the orbiting rings */
+          .orb {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: #2563eb; /* Primary blue color */
+            animation: spin 1.5s linear infinite;
+          }
+
+          /* Second ring with a delayed animation and different color */
+          .orb-2 {
+            animation-delay: -0.5s;
+            border-top-color: #1e3a8a; /* Darker blue */
+          }
+
+          /* Third ring with another delay and color for a layered effect */
+          .orb-3 {
+            animation-delay: -1s;
+            border-top-color: #60a5fa; /* Lighter blue */
+          }
+
+          /* The central pulsing dot */
+          .dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #2563eb;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            margin: -5px 0 0 -5px; /* Center the dot perfectly */
+            animation: pulse 1.5s ease-in-out infinite;
+          }
         `}</style>
-        <g className="spinner_V8m1">
-          <rect x="47" y="24" width="6" height="12" rx="3"></rect>
-          <rect x="47" y="24" width="6" height="12" rx="3" transform="rotate(45 50 50)"></rect>
-          <rect x="47" y="24" width="6" height="12" rx="3" transform="rotate(90 50 50)"></rect>
-          <rect x="47" y="24" width="6" height="12" rx="3" transform="rotate(135 50 50)"></rect>
-          <rect x="47" y="24" width="6" height="12" rx="3" transform="rotate(180 50 50)"></rect>
-          <rect x="47" y="24" width="6" height="12" rx="3" transform="rotate(225 50 50)"></rect>
-          <rect x="47" y="24" width="6" height="12" rx="3" transform="rotate(270 50 50)"></rect>
-          <rect x="47" y="24" width="6" height="12" rx="3" transform="rotate(315 50 50)"></rect>
-        </g>
-      </svg>
+        <div className="orb"></div>
+        <div className="orb orb-2"></div>
+        <div className="orb orb-3"></div>
+        <div className="dot"></div>
+      </div>
     </div>
   );
 });

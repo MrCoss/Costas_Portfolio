@@ -2,16 +2,25 @@
 // FILE: src/main.jsx
 // =================================================================================
 // This is the main entry point for the React application.
-// It renders the root App component to the DOM.
-// It also wraps the entire application in an ErrorBoundary to catch runtime
-// errors and prevent the application from crashing completely.
+// It renders the root App component to the DOM and wraps it in an ErrorBoundary
+// to catch runtime errors and prevent the application from crashing completely.
 // =================================================================================
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
+// Import Path: './App.jsx'
+// This imports the main App component. The './' means it's looking for
+// 'App.jsx' in the SAME directory as this file (src/).
 import App from './App.jsx';
+
+// Import Path: './ErrorBoundary.jsx'
+// This imports the ErrorBoundary component from the SAME directory (src/).
 import ErrorBoundary from './ErrorBoundary.jsx';
-import './index.css'; // Imports global styles, including Tailwind CSS
+
+// Import Path: './index.css'
+// This imports the global stylesheet from the SAME directory (src/).
+import './index.css'; 
 
 // The root DOM element where the React app will be mounted.
 const rootElement = document.getElementById('root');
@@ -24,4 +33,3 @@ ReactDOM.createRoot(rootElement).render(
     </ErrorBoundary>
   </React.StrictMode>,
 );
-// This setup ensures that any errors in the component tree will be caught by the ErrorBoundary,

@@ -1,16 +1,19 @@
 // =================================================================================
-// FILE: src/components/Projects.jsx
+// FILE: src/Projects.jsx
 // =================================================================================
 // This component displays the portfolio projects in a responsive grid.
 // It uses a robust, mobile-first animation strategy to ensure visibility on all
 // devices by animating each card individually as it scrolls into view.
 // =================================================================================
 
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { AnimatedSection, AnimatedDivider } from './ui'; // Imports reusable UI components
+import React, { memo } from 'react';
+import { motion } from 'framer-motion';
+import AnimatedSection from './ui/AnimatedSection.jsx';
+import AnimatedBackground from './ui/AnimatedBackground.jsx';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import AnimatedDivider from './ui/AnimatedDivider.jsx';
 
-const Projects = React.memo(({ projects, isMobile }) => {
+const Projects = memo(({ projects, isMobile }) => {
   // Animation variants for the container and individual cards
   const containerVariants = {
     hidden: { opacity: 0 },
