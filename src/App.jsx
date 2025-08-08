@@ -65,7 +65,7 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
         <header className="bg-white/70 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200/80">
             <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
                 <a href="#home" className="flex items-center space-x-2" onClick={handleLinkClick}>
-                    <img src="/Costas_Portfolio/assets/logo.png" alt="Logo" className="h-10 w-auto md:h-12" />
+                    <span className="text-xl font-semibold text-gray-800">Home</span>
                 </a>
                 <div className="hidden md:flex space-x-8 items-center text-[#4b5563] font-medium">
                     <a href="#about" className="hover:text-[#2563eb] transition-colors">About</a>
