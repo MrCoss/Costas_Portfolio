@@ -1,0 +1,12 @@
+/* =================================================================================
+ * FILE: src/index.css
+ * =================================================================================
+ * This is the main CSS entry point for the application.
+ * It uses the @tailwind directive to inject Tailwind's base, components, and
+ * utilities styles into your CSS. This is the standard setup for a project
+ * using Tailwind CSS with a build tool like Vite.
+ * ================================================================================= */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

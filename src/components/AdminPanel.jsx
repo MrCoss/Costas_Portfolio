@@ -1,3 +1,11 @@
+// =================================================================================
+// FILE: src/components/AdminPanel.jsx
+// =================================================================================
+// This component provides a secure admin interface for managing portfolio content.
+// It handles user authentication, and CRUD operations for projects and assets.
+// All sub-components are memoized for performance.
+// =================================================================================
+
 import React, { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
@@ -101,7 +109,6 @@ const ManageContent = React.memo(({ db, projects, fetchProjects, auth }) => {
     const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
     const [internshipsPdfUrl, setInternshipsPdfUrl] = useState('');
 
-    // UPDATE: Messages now auto-dismiss after 4 seconds
     useEffect(() => {
         if (message) {
             const timer = setTimeout(() => setMessage(''), 4000);
