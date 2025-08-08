@@ -224,6 +224,38 @@ const Skills = React.memo(() => {
     );
 });
 
+// FIX: Re-added missing component definition
+const Achievements = React.memo(() => (
+    <AnimatedSection id="achievements">
+        <h2 className="text-4xl font-bold text-[#334155] text-center">Key Achievements</h2>
+        <AnimatedDivider />
+        <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card space-y-4">
+            <ul className="list-disc list-inside text-[#4b5563] space-y-3 text-lg">
+                <li>Completed <strong>60+ Certifications</strong> from IBM, Google, Meta, Microsoft, and Forage.</li>
+                <li>Built and deployed <strong>25+ AI/Data/Full-stack projects</strong> solving real-world problems.</li>
+                <li>Earned top-tier recognitions in job simulations at <strong>BCG, Lloyds, BA, EA, TATA</strong>, and more.</li>
+                <li>Founded <strong>JHT SMART STEPS LEARNING</strong> – empowering students through digital education.</li>
+            </ul>
+        </div>
+    </AnimatedSection>
+));
+
+// FIX: Re-added missing component definition
+const LearningJourney = React.memo(() => (
+    <AnimatedSection id="journey">
+        <h2 className="text-4xl font-bold text-[#334155] text-center">My Learning Journey</h2>
+        <AnimatedDivider />
+        <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card space-y-6 text-[#4b5563]">
+            <p>From mastering foundational concepts to building AI-powered solutions, my journey is marked by continuous growth:</p>
+            <ul className="list-disc list-inside space-y-3 text-lg">
+                <li><strong>2024:</strong> Learned Python, Java, and front-end development. Built my first ML models.</li>
+                <li><strong>2025:</strong> Completed 60+ certifications in AI, Data Science, UX, and Full-stack Dev.</li>
+                <li><strong>Ongoing:</strong> Practicing daily with real-world challenges, GitHub repos, and internships.</li>
+            </ul>
+        </div>
+    </AnimatedSection>
+));
+
 const Projects = React.memo(({ projects }) => (
     <AnimatedSection id="projects" className="!py-0">
         <h2 className="text-4xl font-bold text-[#334155] text-center">My Projects</h2>
@@ -251,6 +283,35 @@ const Projects = React.memo(({ projects }) => (
         </div>
     </AnimatedSection>
 ));
+
+// FIX: Re-added missing component definition
+const Certifications = React.memo(({ licensesPdfUrl, internshipsPdfUrl }) => (
+    <AnimatedSection id="certifications">
+        <h2 className="text-4xl font-bold text-[#334155] text-center">Certificates</h2>
+        <AnimatedDivider />
+        <div className="text-center flex flex-col md:flex-row justify-center items-center gap-6">
+            <motion.a
+                href={licensesPdfUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!licensesPdfUrl && 'opacity-50 cursor-not-allowed'}`}
+            >
+                View Licenses & Certs
+            </motion.a>
+            <motion.a
+                href={internshipsPdfUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                className={`inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-[#2563eb]/20 bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] ${!internshipsPdfUrl && 'opacity-50 cursor-not-allowed'}`}
+            >
+                View Internship Certs
+            </motion.a>
+        </div>
+    </AnimatedSection>
+));
+
 
 const Contact = React.memo(() => (
     <footer id="contact" className="bg-[#e2e8f0] border-t border-gray-300 mt-20">
@@ -294,25 +355,24 @@ function App() {
     const [loading, setLoading] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const fetchAllData = async () => {
-        try {
-            const projectsSnapshot = await getDocs(collection(db, 'projects'));
-            const projectsList = projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setProjects(projectsList);
-
-            const licensesDoc = await getDoc(doc(db, "portfolioAssets", "licenses"));
-            if (licensesDoc.exists()) setLicensesPdfUrl(licensesDoc.data().pdfUrl);
-
-            const internshipsDoc = await getDoc(doc(db, "portfolioAssets", "internships"));
-            if (internshipsDoc.exists()) setInternshipsPdfUrl(internshipsDoc.data().pdfUrl);
-        } catch (error) {
-            console.error("Error fetching data: ", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchAllData = async () => {
+            try {
+                const projectsSnapshot = await getDocs(collection(db, 'projects'));
+                setProjects(projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+                const licensesDoc = await getDoc(doc(db, "portfolioAssets", "licenses"));
+                if (licensesDoc.exists()) setLicensesPdfUrl(licensesDoc.data().pdfUrl);
+
+                const internshipsDoc = await getDoc(doc(db, "portfolioAssets", "internships"));
+                if (internshipsDoc.exists()) setInternshipsPdfUrl(internshipsDoc.data().pdfUrl);
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchAllData();
 
         const handleHashChange = () => {
@@ -348,10 +408,9 @@ function App() {
                                 <About />
                                 <Experience />
                                 <Skills />
-                                <Projects projects={projects} />
-                                {/* You were missing Achievements and other sections here, I've added them back */}
                                 <Achievements />
                                 <LearningJourney />
+                                <Projects projects={projects} />
                                 <Certifications licensesPdfUrl={licensesPdfUrl} internshipsPdfUrl={internshipsPdfUrl} />
                             </div>
                         </main>

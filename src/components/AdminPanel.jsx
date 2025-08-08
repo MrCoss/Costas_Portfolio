@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -96,6 +96,8 @@ const ProjectForm = ({ db, fetchProjects, existingProject, onDone }) => {
 const ManageContent = ({ db, projects, fetchProjects, auth }) => {
     const [editingProject, setEditingProject] = useState(null);
     const [message, setMessage] = useState('');
+    const [licensesPdfUrl, setLicensesPdfUrl] = useState('');
+    const [internshipsPdfUrl, setInternshipsPdfUrl] = useState('');
 
     if (editingProject) {
         return <ProjectForm db={db} fetchProjects={fetchProjects} existingProject={editingProject} onDone={() => setEditingProject(null)} />;
@@ -113,6 +115,22 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => {
         }
     };
 
+    const handleUpdatePdfLink = async (e, pdfUrl, docId) => {
+        e.preventDefault();
+        if (!pdfUrl) return;
+        setMessage(`Updating ${docId}...`);
+        try {
+            await setDoc(doc(db, "portfolioAssets", docId), { pdfUrl });
+            setMessage(`${docId} link updated successfully!`);
+            if (docId === 'licenses') setLicensesPdfUrl('');
+            if (docId === 'internships') setInternshipsPdfUrl('');
+            // We call fetchProjects to also refetch portfolio assets
+            fetchProjects();
+        } catch (error) {
+            setMessage(`Error: ${error.message}`);
+        }
+    };
+
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -123,8 +141,8 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => {
     };
 
     return (
-        <div className="space-y-8">
-            <div className="p-8 rounded-2xl glass-card">
+        <div className="grid lg:grid-cols-2 gap-8">
+            <div className="p-8 rounded-2xl glass-card lg:col-span-2">
                 <h2 className="text-2xl font-bold text-[#334155] mb-6">Manage Projects</h2>
                 <button onClick={() => setEditingProject({})} className="btn-primary mb-4">Add New Project</button>
                 <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
@@ -141,9 +159,25 @@ const ManageContent = ({ db, projects, fetchProjects, auth }) => {
                     </AnimatePresence>
                 </div>
             </div>
-            {message && <p className="text-center p-3 rounded-lg bg-[#2563eb]/10 text-[#1e3a8a]">{message}</p>}
-            <div className="flex justify-end">
-                <button onClick={handleLogout} className="btn-secondary">Logout</button>
+
+            {/* FIX: Re-added the PDF update form */}
+            <div className="p-8 rounded-2xl glass-card">
+                <h2 className="text-2xl font-bold text-[#334155] mb-6">Update Certificate PDFs</h2>
+                <form onSubmit={(e) => handleUpdatePdfLink(e, licensesPdfUrl, 'licenses')} className="space-y-4 mb-6">
+                    <input type="url" placeholder="Licenses & Certs PDF Link" value={licensesPdfUrl} onChange={e => setLicensesPdfUrl(e.target.value)} className="input-field" required />
+                    <button type="submit" className="btn-primary w-full">Update Licenses</button>
+                </form>
+                <form onSubmit={(e) => handleUpdatePdfLink(e, internshipsPdfUrl, 'internships')} className="space-y-4">
+                    <input type="url" placeholder="Internships PDF Link" value={internshipsPdfUrl} onChange={e => setInternshipsPdfUrl(e.target.value)} className="input-field" required />
+                    <button type="submit" className="btn-primary w-full">Update Internships</button>
+                </form>
+            </div>
+
+            <div className="lg:col-span-2 space-y-4">
+                {message && <p className="text-center p-3 rounded-lg bg-[#2563eb]/10 text-[#1e3a8a]">{message}</p>}
+                <div className="flex justify-end">
+                    <button onClick={handleLogout} className="btn-secondary">Logout</button>
+                </div>
             </div>
         </div>
     );
