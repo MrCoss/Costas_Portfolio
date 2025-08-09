@@ -17,6 +17,12 @@ export default defineConfig({
   // this value, ensuring that files are loaded correctly from the sub-directory.
   base: '/Costas_Portfolio/', 
 
+  // This tells Vite to use the 'public' directory for static assets. Any files
+  // in this directory will be copied to the root of the build output directory.
+  // This is essential for assets like favicons, robots.txt, or the 404.html hack
+  // for single-page app routing on GitHub Pages.
+  publicDir: 'public',
+
   plugins: [
     // The official Vite plugin for React. It enables features like Fast Refresh
     // (Hot Module Replacement) for a better development experience and handles

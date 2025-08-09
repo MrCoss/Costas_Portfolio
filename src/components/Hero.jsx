@@ -130,9 +130,10 @@ const Hero = React.memo(() => {
                         <TypeAnimation
                             sequence={[
                                 'AI Innovator', 2000,
-                                'Full-Stack Developer', 2000,
+                                'Data Analyst', 2000,
                                 'Data Scientist', 2000,
                                 'Problem Solver', 2000,
+                                'Creative Thinker', 2000,
                             ]}
                             wrapper="p"
                             speed={50}
@@ -197,7 +198,6 @@ const Hero = React.memo(() => {
                     animate={{
                         opacity: 1,
                         scale: 1,
-                        y: [0, -15, 0], // Creates a subtle floating effect
                     }}
                     transition={{
                         opacity: { duration: 0.8, delay: 0.4 },

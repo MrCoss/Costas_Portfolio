@@ -3,12 +3,12 @@
 // =================================================================================
 // This is the root component of the portfolio application. It orchestrates the
 // entire application by handling Firebase initialization, data fetching, routing,
-// and rendering all the main sections and pages. It now includes an ErrorBoundary
-// for improved application stability.
+// and rendering all the main sections and pages. It now includes a fix for
+// handling client-side routing on GitHub Pages.
 // =================================================================================
 
 import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -16,11 +16,8 @@ import { getStorage } from 'firebase/storage';
 import { LazyMotion, domAnimation } from 'framer-motion';
 
 // --- COMPONENT IMPORTS ---
-// Import the new ErrorBoundary component.
 import ErrorBoundary from './ErrorBoundary.jsx';
-// Lazily load the AdminPanel to keep the initial bundle size small.
 const AdminPanel = lazy(() => import('./components/AdminPanel.jsx'));
-// Import UI and section components with correct relative paths.
 import AnimatedBackground from './components/ui/AnimatedBackground.jsx';
 import LoadingSpinner from './components/ui/LoadingSpinner.jsx';
 import Header from './components/Header.jsx';
@@ -34,8 +31,22 @@ import Projects from './components/Projects.jsx';
 import Certifications from './components/Certifications.jsx';
 import Contact from './components/Contact.jsx';
 
+// --- GITHUB PAGES ROUTING FIX ---
+// This component handles the redirect logic from the 404.html page.
+const RedirectHandler = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const redirectPath = sessionStorage.getItem('redirect');
+    if (redirectPath) {
+      sessionStorage.removeItem('redirect');
+      const pathWithoutBase = redirectPath.replace(/^\/Costas_Portfolio/, '');
+      navigate(pathWithoutBase || '/', { replace: true });
+    }
+  }, [navigate]);
+  return null;
+};
+
 // --- FIREBASE CONFIGURATION ---
-// Load Firebase configuration from environment variables.
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -46,14 +57,12 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Validate environment variables to ensure Firebase can initialize correctly.
 Object.entries(firebaseConfig).forEach(([key, value]) => {
   if (!value) {
     console.error(`❌ Missing Firebase environment variable: ${key}. Please check your .env file.`);
   }
 });
 
-// Initialize Firebase services within a try-catch block for robust error handling.
 let app, db, auth, storage;
 try {
   app = initializeApp(firebaseConfig);
@@ -65,7 +74,6 @@ try {
 }
 
 // --- CUSTOM HOOKS ---
-// A custom hook to determine if the current viewport is mobile-sized.
 const useIsMobile = (breakpoint = 768) => {
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -85,7 +93,6 @@ const useIsMobile = (breakpoint = 768) => {
 };
 
 // --- HOME PAGE COMPONENT ---
-// A dedicated component for the main portfolio page layout.
 const HomePage = ({ projects = [], licensesPdfUrl = '', internshipsPdfUrl = '', isMobile }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
@@ -122,7 +129,6 @@ function App() {
   const [error, setError] = useState(null);
   const isMobile = useIsMobile();
 
-  // Fetches all necessary data from Firestore in a single, efficient operation.
   const fetchAllData = useCallback(async () => {
     if (!db) {
       setError('Firebase is not initialized. Check your .env settings.');
@@ -131,11 +137,9 @@ function App() {
     }
 
     try {
-      // Fetch all projects from the 'projects' collection.
       const projectsSnapshot = await getDocs(collection(db, 'projects'));
       const projects = projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      // Fetch PDF URLs from a dedicated 'portfolioAssets' document.
       const assetsDocRef = doc(db, 'portfolioAssets', 'main');
       const assetsDocSnap = await getDoc(assetsDocRef);
       const assetsData = assetsDocSnap.exists() ? assetsDocSnap.data() : {};
@@ -157,10 +161,8 @@ function App() {
     fetchAllData();
   }, [fetchAllData]);
 
-  // Display a loading spinner during the initial data fetch.
   if (loading) return <LoadingSpinner />;
 
-  // Display a clear error message if data fetching fails.
   if (error) {
     return (
       <div className="text-center mt-20 p-4">
@@ -170,16 +172,15 @@ function App() {
   }
 
   return (
-    // LazyMotion enables Framer Motion features on demand for better performance.
     <LazyMotion features={domAnimation}>
       <AnimatedBackground />
       <div className="relative text-slate-800 font-sans overflow-x-hidden">
-        {/* The ErrorBoundary wraps the entire Router to catch any rendering errors. */}
         <ErrorBoundary>
-          <Router>
-            {/* Suspense provides a fallback while lazy-loaded components are fetched. */}
+          <Router basename="/Costas_Portfolio/">
+            <RedirectHandler />
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
+                {/* FIX: Changed path from "/*" to "/" to make it specific. */}
                 <Route
                   path="/"
                   element={
@@ -191,6 +192,7 @@ function App() {
                     />
                   }
                 />
+                {/* The /admin route can now be matched correctly. */}
                 <Route
                   path="/admin"
                   element={<AdminPanel db={db} auth={auth} storage={storage} />}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Costas Portfolio - Redirecting...</title>
+    <script type="text/javascript">
+      // This script is part of a workaround for client-side routing on GitHub Pages.
+      // It captures the path that the user was trying to access.
+      const path = window.location.pathname;
+
+      // It then stores this path in sessionStorage.
+      sessionStorage.redirect = path;
+
+      // FIX: Construct a full, valid URL for the redirect. 
+      // window.location.origin provides the protocol and domain (e.g., "https://mrcoss.github.io"),
+      // which is then combined with your repository's base path.
+      window.location.replace(window.location.origin + '/Costas_Portfolio/');
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

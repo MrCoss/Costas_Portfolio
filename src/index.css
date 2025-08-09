@@ -1,12 +1,27 @@
 /* =================================================================================
- * FILE: src/index.css
- * =================================================================================
- * This is the main CSS entry point for the application.
- * It uses the @tailwind directive to inject Tailwind's base, components, and
- * utilities styles into your CSS. This is the standard setup for a project
- * using Tailwind CSS with a build tool like Vite.
- * ================================================================================= */
+   FILE: src/index.css
+   =================================================================================
+   This is the main CSS entry point for the application. It uses the @tailwind
+   directive to inject Tailwind's base, components, and utilities styles.
+   It also includes base styles for a more polished and consistent look and feel.
+   ================================================================================= */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+  Apply anti-aliasing for smoother font rendering across the application.
+  This provides a more professional and readable typography.
+*/
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+  Enable smooth scrolling for all anchor links (#) within the application.
+*/
+html {
+  scroll-behavior: smooth;
+}
