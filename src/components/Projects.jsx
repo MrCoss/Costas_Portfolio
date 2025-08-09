@@ -1,26 +1,25 @@
 // =================================================================================
-// FILE: src/Projects.jsx
+// FILE: src/components/Projects.jsx
 // =================================================================================
-// This component displays the portfolio projects in a responsive grid.
-// It uses a robust, mobile-first animation strategy to ensure visibility on all
-// devices by animating each card individually as it scrolls into view.
+// This component displays the portfolio projects in a responsive, animated grid.
+// It uses a robust, mobile-first animation strategy with Framer Motion to ensure
+// visibility and engagement on all devices by animating each card individually
+// as it scrolls into view.
 // =================================================================================
 
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import AnimatedSection from './ui/AnimatedSection.jsx';
-import AnimatedBackground from './ui/AnimatedBackground.jsx';
-import LoadingSpinner from './ui/LoadingSpinner.jsx';
-import AnimatedDivider from './ui/AnimatedDivider.jsx';
+import AnimatedSection from './ui/AnimatedSection';
+import AnimatedDivider from './ui/AnimatedDivider';
 
-const Projects = memo(({ projects, isMobile }) => {
-  // Animation variants for the container and individual cards
+const Projects = memo(({ projects }) => {
+  // Animation variants for the grid container and individual project cards.
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15, // Creates a staggered animation effect
+        staggerChildren: 0.15, // Creates a subtle, staggered animation effect.
       },
     },
   };
@@ -31,37 +30,36 @@ const Projects = memo(({ projects, isMobile }) => {
   };
 
   return (
-    <AnimatedSection id="projects" className="!py-0">
-      <h2 className="text-4xl font-bold text-[#334155] text-center">My Projects</h2>
+    <AnimatedSection id="projects">
+      <h2 className="text-4xl font-bold text-slate-700 text-center">My Projects</h2>
       <AnimatedDivider />
       <div className="min-h-[60vh] w-full px-4 md:px-0">
         {projects.length > 0 ? (
           <motion.div
             variants={containerVariants}
-            // On mobile, animate instantly. On desktop, trigger on scroll for a better effect.
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }} // Trigger when 10% of the grid is visible
+            // Trigger animation when 10% of the grid is visible for a smooth entrance.
+            viewport={{ once: true, amount: 0.1 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {projects.map((project) => (
               <motion.div
                 variants={itemVariants}
                 key={project.id}
-                className="p-6 flex flex-col rounded-2xl glass-card overflow-hidden"
+                className="relative p-6 flex flex-col rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-1 overflow-hidden"
               >
-                <div className="glow-effect"></div>
                 <img
-                  loading="lazy" // Lazy loading for better performance
+                  loading="lazy" // Native lazy loading for better performance.
                   src={project.imageUrl || 'https://placehold.co/600x400/e2e8f0/334155?text=Project'}
                   alt={project.title}
-                  className="rounded-lg mb-4 aspect-video object-cover border border-gray-200/50"
+                  className="rounded-lg mb-4 aspect-video object-cover border border-slate-200/50"
                 />
-                <h3 className="text-xl font-bold text-[#334155] mb-2">{project.title}</h3>
-                <p className="text-[#4b5563] flex-grow mb-4">{project.description}</p>
+                <h3 className="text-xl font-bold text-slate-700 mb-2">{project.title}</h3>
+                <p className="text-slate-600 flex-grow mb-4">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags?.map(tag => (
-                    <span key={tag} className="bg-[#dbeafe] text-[#1e3a8a] text-xs font-medium px-2.5 py-1 rounded-full">
+                    <span key={tag} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">
                       {tag}
                     </span>
                   ))}
@@ -71,7 +69,7 @@ const Projects = memo(({ projects, isMobile }) => {
                     href={project.projectLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-auto text-center font-semibold text-[#2563eb] border border-[#2563eb] rounded-full py-2 px-4 hover:bg-[#2563eb] hover:text-white transition-all duration-300 z-10"
+                    className="mt-auto text-center font-semibold text-blue-600 border border-blue-600 rounded-full py-2 px-4 hover:bg-blue-600 hover:text-white transition-all duration-300 z-10"
                   >
                     View Project
                   </a>
@@ -81,8 +79,8 @@ const Projects = memo(({ projects, isMobile }) => {
           </motion.div>
         ) : (
           <div className="min-h-[20vh] flex justify-center items-center">
-            <p className="text-center text-[#4b5563] text-lg">
-              No projects found. Please add some projects from the admin panel.
+            <p className="text-center text-slate-500 text-lg">
+              No projects found. Please add some from the admin panel.
             </p>
           </div>
         )}

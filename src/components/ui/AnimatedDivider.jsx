@@ -1,33 +1,50 @@
 // =================================================================================
 // FILE: src/components/ui/AnimatedDivider.jsx
 // =================================================================================
-// This component renders a simple horizontal divider line that animates into
-// view when it becomes visible on the screen. It is used to visually separate
-// section titles from their content. It is memoized for performance.
+// This component renders a horizontal divider that animates into view when it
+// becomes visible on the screen. It leverages the Framer Motion library for a
+// smooth, physics-based animation and is memoized for optimal performance.
 // =================================================================================
 
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 const AnimatedDivider = React.memo(() => {
-  // A ref to attach to the element for tracking its visibility
+  // Create a ref to attach to the component's root element. This allows us to
+  // track its position and visibility in the viewport.
   const ref = useRef(null);
-  
-  // useInView hook from Framer Motion tracks when the element enters the viewport.
-  // 'once: true' ensures the animation only runs one time.
+
+  // The useInView hook from Framer Motion returns `true` when the referenced
+  // element enters the viewport.
+  // - `once: true`: Ensures the animation only triggers a single time.
+  // - `amount: 0.5`: Triggers the animation when 50% of the element is visible.
   const isInView = useInView(ref, { once: true, amount: 0.5 });
 
+  // Variants define the animation states for the motion component. This keeps
+  // the animation logic clean and separate from the JSX.
+  const dividerVariants = {
+    hidden: { scaleX: 0 },
+    visible: {
+      scaleX: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 1, 0.5, 1], // A custom ease-out cubic bezier for a snappy feel
+      },
+    },
+  };
+
   return (
+    // The outer div acts as the container and the trigger for the useInView hook.
     <div ref={ref} className="h-1 w-24 mx-auto my-8">
       <motion.div
-        className="h-full bg-gradient-to-r from-[#2563eb] to-[#1e3a8a] rounded-full"
-        // The animation starts with a scaleX of 0 (invisible)
-        initial={{ scaleX: 0 }}
-        // When in view, it animates to a scaleX of 1 (fully visible)
-        animate={{ scaleX: isInView ? 1 : 0 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        // Ensures the line grows from the center
+        className="h-full bg-gradient-to-r from-blue-600 to-blue-800 rounded-full"
+        // The `transformOrigin` is set to 'center' to ensure the line scales
+        // outwards from its middle point.
         style={{ transformOrigin: 'center' }}
+        variants={dividerVariants}
+        initial="hidden"
+        // The `animate` prop dynamically changes to "visible" when `isInView` is true.
+        animate={isInView ? 'visible' : 'hidden'}
       />
     </div>
   );

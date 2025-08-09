@@ -1,71 +1,37 @@
 // =================================================================================
 // FILE: src/components/ui/LoadingSpinner.jsx
 // =================================================================================
-// This component displays a custom, AI-themed loading animation. It is shown
-// while the initial data for the portfolio is being fetched from Firebase.
-// The animation is created with pure CSS for maximum performance.
-// It is memoized to prevent unnecessary re-renders.
+// This component displays a custom, AI-themed loading animation using utilities
+// from the centralized tailwind.config.js. This approach ensures maximum
+// performance and maintainability. It is memoized to prevent re-renders.
 // =================================================================================
 
 import React from 'react';
 
 const LoadingSpinner = React.memo(() => {
   return (
+    // The main container, centering the spinner on the screen.
     <div className="flex justify-center items-center h-screen bg-[#f5f7fa]">
       <div className="relative w-24 h-24">
-        <style>{`
-          /* Defines the main spinning animation for the rings */
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-          
-          /* Defines the pulsing animation for the central dot */
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.7; }
-          }
+        {/*
+          The central pulsing dot, representing a core or "brain".
+          - It's centered using absolute positioning and translate utilities.
+          - `animate-loading-pulse` applies the custom pulse animation.
+        */}
+        <div className="absolute top-1/2 left-1/2 w-2.5 h-2.5 -translate-x-1/2 -translate-y-1/2 bg-blue-600 rounded-full animate-loading-pulse"></div>
 
-          /* Base styles for the orbiting rings */
-          .orb {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            border-top-color: #2563eb; /* Primary blue color */
-            animation: spin 1.5s linear infinite;
-          }
-
-          /* Second ring with a delayed animation and different color */
-          .orb-2 {
-            animation-delay: -0.5s;
-            border-top-color: #1e3a8a; /* Darker blue */
-          }
-
-          /* Third ring with another delay and color for a layered effect */
-          .orb-3 {
-            animation-delay: -1s;
-            border-top-color: #60a5fa; /* Lighter blue */
-          }
-
-          /* The central pulsing dot */
-          .dot {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #2563eb;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            margin: -5px 0 0 -5px; /* Center the dot perfectly */
-            animation: pulse 1.5s ease-in-out infinite;
-          }
-        `}</style>
-        <div className="orb"></div>
-        <div className="orb orb-2"></div>
-        <div className="orb orb-3"></div>
-        <div className="dot"></div>
+        {/*
+          The orbiting rings, representing data or neural pathways.
+          - Each ring is an absolutely positioned, full-sized div.
+          - `border-2 border-transparent` creates the base for the ring.
+          - `border-t-blue-600` gives the top part of the border color, creating the arc effect.
+          - `animate-loading-spin` applies the custom spinning animation.
+          - Arbitrary values `[animation-delay:-0.5s]` are a modern Tailwind feature used
+            to offset the animations without needing extra config, creating a layered effect.
+        */}
+        <div className="absolute w-full h-full rounded-full border-2 border-transparent border-t-blue-600 animate-loading-spin"></div>
+        <div className="absolute w-full h-full rounded-full border-2 border-transparent border-t-blue-800 animate-loading-spin [animation-delay:-0.5s]"></div>
+        <div className="absolute w-full h-full rounded-full border-2 border-transparent border-t-blue-400 animate-loading-spin [animation-delay:-1s]"></div>
       </div>
     </div>
   );

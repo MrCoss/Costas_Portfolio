@@ -1,18 +1,20 @@
 // =================================================================================
-// FILE: src/LearningJourney.jsx
+// FILE: src/components/LearningJourney.jsx
 // =================================================================================
 // This component outlines the educational and self-learning milestones in a
-// visually engaging timeline format. It is memoized for performance.
+// visually engaging timeline format. It is memoized for performance and styled
+// for consistency with the portfolio's design system.
 // =================================================================================
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import AnimatedSection from './ui/AnimatedSection.jsx';
-import AnimatedBackground from './ui/AnimatedBackground.jsx';
-import LoadingSpinner from './ui/LoadingSpinner.jsx';
-import AnimatedDivider from './ui/AnimatedDivider.jsx';
+import AnimatedSection from './ui/AnimatedSection';
+import AnimatedDivider from './ui/AnimatedDivider';
 
-// A dedicated TimelineItem for the learning journey, including an icon
+// =================================================================================
+// Sub-component: JourneyTimelineItem
+// A dedicated timeline item for the learning journey, including a custom icon.
+// =================================================================================
 const JourneyTimelineItem = React.memo(({ year, title, details, icon }) => (
     <motion.div
         className="relative pl-12 py-4 border-l-2 border-blue-200"
@@ -21,15 +23,19 @@ const JourneyTimelineItem = React.memo(({ year, title, details, icon }) => (
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.6 }}
     >
-        <div className="absolute -left-[26px] top-4 w-12 h-12 bg-white rounded-full border-4 border-blue-200 flex items-center justify-center">
+        <div className="absolute -left-[26px] top-4 w-12 h-12 bg-white rounded-full border-4 border-blue-200 flex items-center justify-center shadow-md">
             {icon}
         </div>
-        <p className="text-blue-500 mb-1 font-semibold">{year}</p>
-        <h3 className="text-2xl font-bold text-[#334155]">{title}</h3>
-        <p className="text-[#4b5563] mt-1">{details}</p>
+        <p className="text-blue-600 mb-1 font-semibold">{year}</p>
+        <h3 className="text-2xl font-bold text-slate-700">{title}</h3>
+        <p className="text-slate-600 mt-1">{details}</p>
     </motion.div>
 ));
 
+// =================================================================================
+// Main Component: LearningJourney
+// Assembles the timeline from a structured data array.
+// =================================================================================
 const LearningJourney = React.memo(() => {
     const journeyData = [
         {
@@ -54,10 +60,10 @@ const LearningJourney = React.memo(() => {
 
     return (
         <AnimatedSection id="journey">
-            <h2 className="text-4xl font-bold text-[#334155] text-center">My Learning Journey</h2>
+            <h2 className="text-4xl font-bold text-slate-700 text-center">My Learning Journey</h2>
             <AnimatedDivider />
-            <div className="p-8 md:p-12 max-w-4xl mx-auto rounded-2xl glass-card">
-                <div className="glow-effect"></div>
+            {/* This container provides the consistent "glass card" effect. */}
+            <div className="relative p-8 md:p-12 max-w-4xl mx-auto rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-1">
                 <div className="space-y-12">
                     {journeyData.map((item) => (
                         <JourneyTimelineItem key={item.title} {...item} />

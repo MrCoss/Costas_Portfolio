@@ -20,6 +20,8 @@ import ErrorBoundary from './ErrorBoundary.jsx';
 
 // Import Path: './index.css'
 // This imports the global stylesheet from the SAME directory (src/).
+// Note: You will need to create this file and add your base styles,
+// such as Tailwind directives.
 import './index.css'; 
 
 // The root DOM element where the React app will be mounted.

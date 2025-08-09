@@ -1,5 +1,13 @@
+// =================================================================================
+// FILE: src/components/Contact.jsx
+// =================================================================================
+// This component provides a comprehensive "Contact Me" section, including a
+// functional contact form powered by Formspree, social media links, and a
+// professional footer. It's designed with a modern UI and robust state
+// management for a seamless user experience.
+// =================================================================================
+
 import React, { useState, useCallback } from 'react';
-// Import icons from react-icons
 import {
   FaInstagram,
   FaDribbble,
@@ -12,16 +20,21 @@ import {
   FaExclamationTriangle,
 } from 'react-icons/fa';
 import { MdContentCopy } from 'react-icons/md';
-
+import AnimatedSection from './ui/AnimatedSection';
+import AnimatedDivider from './ui/AnimatedDivider';
 
 const Contact = React.memo(() => {
+  // State to manage the contact form's status (submitting, success, error).
   const [formState, setFormState] = useState({
     submitting: false,
     succeeded: false,
     error: null,
   });
+
+  // State for the "copied to clipboard" feedback message.
   const [copyMessage, setCopyMessage] = useState(null);
 
+  // Handles the form submission logic using Formspree.
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setFormState({ submitting: true, succeeded: false, error: null });
@@ -39,7 +52,8 @@ const Contact = React.memo(() => {
       if (response.ok) {
         setFormState({ submitting: false, succeeded: true, error: null });
         form.reset();
-        setTimeout(() => setFormState(s => ({ ...s, succeeded: false })), 5000); // Hide success message after 5s
+        // Hide success message after 5 seconds for a clean UI.
+        setTimeout(() => setFormState(s => ({ ...s, succeeded: false })), 5000);
       } else {
         const responseData = await response.json();
         const errorMessage =
@@ -49,23 +63,25 @@ const Contact = React.memo(() => {
       }
     } catch (error) {
       setFormState({ submitting: false, succeeded: false, error: error.message });
-      setTimeout(() => setFormState(s => ({ ...s, error: null })), 5000); // Hide error message after 5s
+      // Hide error message after 5 seconds.
+      setTimeout(() => setFormState(s => ({ ...s, error: null })), 5000);
     }
   }, []);
 
+  // Copies the email address to the clipboard using the modern Navigator API.
   const handleCopyEmail = useCallback(() => {
-    // Use the modern Navigator Clipboard API for better security and UX
     const email = 'costaspinto312@gmail.com';
     navigator.clipboard.writeText(email).then(() => {
       setCopyMessage('Email copied to clipboard!');
       setTimeout(() => setCopyMessage(null), 3000);
     }).catch(err => {
+      console.error("Clipboard copy failed:", err);
       setCopyMessage('Could not copy email.');
       setTimeout(() => setCopyMessage(null), 3000);
     });
   }, []);
 
-  // Social Links Data
+  // Data array for social media links for easy rendering and maintenance.
   const socialLinks = [
     { name: 'Instagram', icon: <FaInstagram />, url: 'https://instagram.com/costaspinto' },
     { name: 'Dribbble', icon: <FaDribbble />, url: 'https://dribbble.com/costaspinto' },
@@ -74,101 +90,87 @@ const Contact = React.memo(() => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-[#e6efff] to-[#f8fbff] text-[#0f172a] font-sans">
-      <main className="container mx-auto px-6 py-20 max-w-7xl flex flex-col lg:flex-row justify-between items-start gap-16">
-        {/* Left Panel */}
-        <div className="flex-1 space-y-10">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Let’s get connected!</h1>
-          <p className="text-lg text-slate-600 max-w-md">
-            Have a project in mind or just want to say hello? Fill out the form or follow me on my social media.
-          </p>
-          <div>
-            <p className="text-lg font-semibold mb-4">Follow Me</p>
-            <div className="flex items-center gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.name}
-                  className="text-slate-500 hover:text-blue-600 transition-colors duration-300 text-2xl"
-                >
-                  {social.icon}
-                </a>
-              ))}
+    <AnimatedSection id="contact" className="bg-gradient-to-br from-[#e6efff] to-[#f8fbff] text-[#0f172a] font-sans !py-0">
+      <div className="container mx-auto px-6 py-20 max-w-7xl">
+        <h2 className="text-4xl font-bold text-slate-700 text-center">Let’s Get Connected!</h2>
+        <AnimatedDivider />
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-16">
+          {/* Left Panel: Information and Social Links */}
+          <div className="flex-1 space-y-10">
+            <p className="text-lg text-slate-600 max-w-md">
+              Have a project in mind or just want to say hello? Fill out the form or follow me on my social media.
+            </p>
+            <div>
+              <p className="text-lg font-semibold mb-4">Follow Me</p>
+              <div className="flex items-center gap-4">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.name}
+                    className="text-slate-500 hover:text-blue-600 transition-colors duration-300 text-2xl"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Right Form */}
-        <div className="flex-1 bg-white/90 backdrop-blur-md p-8 rounded-[40px] shadow-2xl w-full max-w-lg">
-          <form
-            action="https://formspree.io/f/mwpqwdnq"
-            method="POST"
-            onSubmit={handleSubmit}
-            className="space-y-6"
-          >
-            {/* Input with Icon */}
-            <div className="relative">
-              <label className="block font-medium mb-1">Your Name *</label>
-              <FaUser className="absolute left-3 top-10 text-slate-400" />
-              <input
-                name="name"
-                required
-                className="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="relative">
-              <label className="block font-medium mb-1">Your Email *</label>
-              <FaEnvelope className="absolute left-3 top-10 text-slate-400" />
-              <input
-                name="email"
-                type="email"
-                required
-                className="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="relative">
-              <label className="block font-medium mb-1">Service you are looking for *</label>
-              <FaCog className="absolute left-3 top-10 text-slate-400" />
-              <input
-                name="service"
-                required
-                className="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block font-medium mb-1">Your Message</label>
-              <textarea
-                name="message"
-                rows="4"
-                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-[#2563eb] to-[#3b82f6] text-white font-semibold py-3 px-4 rounded-xl hover:brightness-110 transition-transform duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={formState.submitting}
+          {/* Right Panel: Contact Form */}
+          <div className="flex-1 bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-lg border border-white/30">
+            <form
+              action="https://formspree.io/f/mwpqwdnq"
+              method="POST"
+              onSubmit={handleSubmit}
+              className="space-y-6"
             >
-              {formState.submitting ? 'Submitting...' : 'Submit'}
-            </button>
+              {/* Form Input Fields with Icons */}
+              <div className="relative">
+                <label className="block font-medium mb-1 text-slate-600">Your Name *</label>
+                <FaUser className="absolute left-3 top-10 text-slate-400" />
+                <input name="name" required className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div className="relative">
+                <label className="block font-medium mb-1 text-slate-600">Your Email *</label>
+                <FaEnvelope className="absolute left-3 top-10 text-slate-400" />
+                <input name="email" type="email" required className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div className="relative">
+                <label className="block font-medium mb-1 text-slate-600">Service you are looking for *</label>
+                <FaCog className="absolute left-3 top-10 text-slate-400" />
+                <input name="service" required className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div>
+                <label className="block font-medium mb-1 text-slate-600">Your Message</label>
+                <textarea name="message" rows="4" className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
 
-            {/* Form Feedback Messages with Icons */}
-            {formState.succeeded && (
-              <p className="flex items-center gap-2 text-green-600 text-sm mt-2">
-                <FaCheckCircle /> Thanks for your feedback! I'll get back to you soon.
-              </p>
-            )}
-            {formState.error && (
-              <p className="flex items-center gap-2 text-red-600 text-sm mt-2">
-                <FaExclamationTriangle /> Error: {formState.error}
-              </p>
-            )}
-          </form>
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 px-4 rounded-xl hover:brightness-110 transition-transform duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={formState.submitting}
+              >
+                {formState.submitting ? 'Submitting...' : 'Submit'}
+              </button>
+
+              {/* Form Submission Feedback Messages */}
+              {formState.succeeded && (
+                <p className="flex items-center gap-2 text-green-600 text-sm mt-2">
+                  <FaCheckCircle /> Thanks for your message! I'll get back to you soon.
+                </p>
+              )}
+              {formState.error && (
+                <p className="flex items-center gap-2 text-red-600 text-sm mt-2">
+                  <FaExclamationTriangle /> Error: {formState.error}
+                </p>
+              )}
+            </form>
+          </div>
         </div>
-      </main>
+      </div>
 
       {/* Footer Section */}
       <footer className="bg-[#0f172a] text-white py-12 mt-20">
@@ -202,9 +204,9 @@ const Contact = React.memo(() => {
             </nav>
             <div className="flex items-center gap-4">
               {socialLinks.map((social) => (
-                 <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition text-lg">
-                   {social.icon}
-                 </a>
+                   <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition text-lg">
+                     {social.icon}
+                   </a>
               ))}
             </div>
           </div>
@@ -213,7 +215,7 @@ const Contact = React.memo(() => {
           </p>
         </div>
       </footer>
-    </div>
+    </AnimatedSection>
   );
 });
 

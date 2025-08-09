@@ -1,29 +1,47 @@
-// =================================================================================
-// FILE: tailwind.config.js
-// =================================================================================
-// This is the configuration file for Tailwind CSS. It allows you to customize
-// every aspect of the framework, from your color palette to breakpoints, and
-// importantly, tells Tailwind which files to scan for class names.
-// =================================================================================
-
 /** @type {import('tailwindcss').Config} */
 export default {
-  // The 'content' array tells Tailwind where to look for class names.
-  // It's configured to scan your main HTML file and all JavaScript/JSX
-  // files within the 'src' directory to ensure all used classes are generated.
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-
-  // The 'theme' object is where you would customize Tailwind's default design system.
-  // The 'extend' key allows you to add new values without overwriting the defaults.
-  // For example, you could add custom colors, fonts, or spacing here.
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        move: {
+          '0%': { transform: 'translate(-50%, -50%) rotate(0deg)' },
+          '100%': { transform: 'translate(-50%, -50%) rotate(360deg)' },
+        },
+        'move-alt': {
+          '0%': { transform: 'translate(-50%, -50%) rotate(0deg)' },
+          '100%': { transform: 'translate(-50%, -50%) rotate(-360deg)' },
+        },
+        'pulse-soft': {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.6' },
+        },
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        pulse: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.5)', opacity: '0.7' },
+        }
+      },
+      animation: {
+        'slow-spin': 'move 35s linear infinite',
+        'reverse-spin': 'move-alt 45s linear infinite',
+        'soft-pulse': 'pulse-soft 10s ease-in-out infinite',
+        // New combined animation to resolve the conflict
+        'spin-pulse-combo': 'move 35s linear infinite, pulse-soft 10s ease-in-out infinite',
+        'loading-spin': 'spin 1.5s linear infinite',
+        'loading-pulse': 'pulse 1.5s ease-in-out infinite',
+      },
+      backgroundImage: {
+        'radial-gradient-blue': 'radial-gradient(circle, rgba(37, 99, 235, 0.1), transparent 50%), radial-gradient(circle, rgba(29, 78, 216, 0.08), transparent 60%)',
+        'radial-gradient-purple': 'radial-gradient(circle, rgba(124, 58, 237, 0.08), transparent 50%), radial-gradient(circle, rgba(109, 40, 217, 0.07), transparent 60%)',
+      },
+    },
   },
-
-  // The 'plugins' array is where you can add official or third-party plugins
-  // to extend Tailwind's functionality, such as for typography or forms.
   plugins: [],
 }

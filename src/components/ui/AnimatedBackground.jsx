@@ -1,45 +1,37 @@
 // =================================================================================
 // FILE: src/components/ui/AnimatedBackground.jsx
 // =================================================================================
-// This component creates a subtle, performant, and abstract background animation
-// using pure CSS. It's designed to evoke a sense of data flow or neural
-// network activity, fitting the AI/ML theme of the portfolio.
+// This component creates a dynamic, multi-layered, and abstract background
+// animation. It uses custom utilities defined in the tailwind.config.js file
+// to create a sense of depth and motion, evoking data flows or cosmic nebulae.
 // It is memoized for performance.
 // =================================================================================
 
 import React from 'react';
 
 const AnimatedBackground = React.memo(() => (
-    // This div is fixed to the background and covers the entire viewport.
-    // The -z-10 utility class ensures it stays behind all other content.
+    // This div is fixed to the background, covers the entire viewport, and is
+    // placed behind all other content using -z-10.
     <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden bg-[#f5f7fa]">
-        <style>{`
-            /* * Defines the keyframes for the rotation animation.
-             * It smoothly rotates the element 360 degrees.
-             */
-            @keyframes move {
-                0% { transform: translate(-50%, -50%) rotate(0deg); }
-                100% { transform: translate(-50%, -50%) rotate(360deg); }
-            }
-
-            /* * Styles the element that will be animated. It's made oversized
-             * (150vmax) to ensure it covers the screen even on large displays.
-             * The background is composed of two soft radial gradients to create
-             * an abstract, nebula-like effect.
-             */
-            .gradient-bg {
-                width: 150vmax;
-                height: 150vmax;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                background: radial-gradient(circle, rgba(37, 99, 235, 0.15), transparent 50%),
-                            radial-gradient(circle, rgba(29, 78, 216, 0.1), transparent 60%);
-                animation: move 25s linear infinite;
-                opacity: 0.5;
-            }
-        `}</style>
-        <div className="gradient-bg"></div>
+        {/*
+          This is the primary, larger animated gradient.
+          - It uses `animate-spin-pulse-combo`, a custom utility that combines
+            a slow rotation and a soft pulse into a single, conflict-free animation.
+          - The gradient is defined by `bg-radial-gradient-blue`.
+        */}
+        <div
+            className="absolute top-1/2 left-1/2 w-[150vmax] h-[150vmax] bg-radial-gradient-blue animate-spin-pulse-combo"
+        />
+        {/*
+          This is the secondary, smaller animated gradient that adds depth.
+          - It's slightly smaller (`w-[120vmax]`) to layer behind the primary one.
+          - It uses `reverse-spin` to rotate in the opposite direction, creating a parallax effect.
+          - The `bg-radial-gradient-purple` provides a subtle color variation.
+          - A base opacity is applied to blend it smoothly.
+        */}
+        <div
+            className="absolute top-1/2 left-1/2 w-[120vmax] h-[120vmax] bg-radial-gradient-purple animate-reverse-spin opacity-40"
+        />
     </div>
 ));
 
