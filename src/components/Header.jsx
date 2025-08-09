@@ -1,17 +1,5 @@
-// =================================================================================
-// FILE: src/Header.jsx
-// =================================================================================
-// This component renders the main navigation header for the site.
-// It features an icon-based desktop menu with hover-to-reveal text labels
-// and a standard text-based menu for mobile.
-// =================================================================================
-
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import AnimatedSection from './ui/AnimatedSection.jsx';
-import AnimatedBackground from './ui/AnimatedBackground.jsx';
-import LoadingSpinner from './ui/LoadingSpinner.jsx';
-import AnimatedDivider from './ui/AnimatedDivider.jsx';
 
 // A new, reusable sub-component for each navigation item.
 // This makes the main Header component cleaner and easier to read.
@@ -42,27 +30,18 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
   return (
     <header className="bg-white/70 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200/80">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#home" className="flex items-center space-x-2" onClick={handleLinkClick}>
-          <img src="/Costas_Portfolio/assets/logo.png" alt="Logo" className="h-10 w-auto md:h-12" />
-        </a>
+        {/* Home Icon Link */}
+        <NavItem href="#home" label="Home" onClick={handleLinkClick}>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1z" /></svg>
+        </NavItem>
         
-        {/* UPDATE: Desktop Navigation now uses icons with hover labels */}
-        <div className="hidden md:flex space-x-4 items-center">
-          <NavItem href="#about" label="About" onClick={handleLinkClick}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-          </NavItem>
-          <NavItem href="#experience" label="Experience" onClick={handleLinkClick}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-          </NavItem>
-          <NavItem href="#skills" label="Skills" onClick={handleLinkClick}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-          </NavItem>
-          <NavItem href="#projects" label="Projects" onClick={handleLinkClick}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-          </NavItem>
-          <NavItem href="#contact" label="Contact" onClick={handleLinkClick}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-          </NavItem>
+        {/* Desktop Navigation now uses only text links */}
+        <div className="hidden md:flex space-x-4 items-center font-medium text-[#4b5563]">
+          <a href="#about" onClick={handleLinkClick} className="hover:text-[#2563eb] transition-colors">About</a>
+          <a href="#experience" onClick={handleLinkClick} className="hover:text-[#2563eb] transition-colors">Experience</a>
+          <a href="#skills" onClick={handleLinkClick} className="hover:text-[#2563eb] transition-colors">Skills</a>
+          <a href="#projects" onClick={handleLinkClick} className="hover:text-[#2563eb] transition-colors">Projects</a>
+          <a href="#contact" onClick={handleLinkClick} className="hover:text-[#2563eb] transition-colors">Contact</a>
         </div>
         
         {/* Mobile Menu Button (Hamburger) */}

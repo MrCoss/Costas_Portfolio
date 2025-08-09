@@ -31,19 +31,33 @@ class ErrorBoundary extends React.Component {
     // If an error has been caught, render the fallback UI.
     if (this.state.hasError) {
       return (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          padding: '2rem',
-          textAlign: 'center',
-          fontFamily: 'sans-serif',
-          color: '#334155'
-        }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Something went wrong.</h1>
-          <p>Please refresh the page. The error has been logged to the developer console.</p>
+        <div className="bg-[#f8fafc] text-[#334155] min-h-screen flex flex-col justify-center items-center p-6 text-center font-sans">
+          <div className="max-w-md mx-auto">
+            <div className="mb-8">
+              {/* This SVG is a visual representation of an error, similar to the image */}
+              <svg className="w-24 h-24 mx-auto text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold mb-4">Oops, something went wrong!</h1>
+            <p className="text-lg text-[#4b5563] mb-6">
+              An unexpected error has occurred. Please refresh the page or try again later.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-[#2563eb] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#1e40af] transition-colors"
+              >
+                Refresh Page
+              </button>
+              <a 
+                href="/"
+                className="bg-gray-200 text-[#334155] px-6 py-3 rounded-md font-semibold hover:bg-gray-300 transition-colors"
+              >
+                Go to Home
+              </a>
+            </div>
+          </div>
         </div>
       );
     }
