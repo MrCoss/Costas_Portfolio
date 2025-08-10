@@ -1,10 +1,9 @@
 // =================================================================================
 // FILE: src/components/Projects.jsx
 // =================================================================================
-// This component displays the portfolio projects in a responsive, animated grid.
-// It uses a robust, mobile-first animation strategy with Framer Motion to ensure
-// visibility and engagement on all devices by animating each card individually
-// as it scrolls into view.
+// This component displays the portfolio projects in a responsive, animated layout.
+// It features a mobile-first design with a clean, stacked card UI for smaller
+// screens, and transitions to a multi-column grid on larger devices.
 // =================================================================================
 
 import React, { memo } from 'react';
@@ -13,13 +12,13 @@ import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
 const Projects = memo(({ projects }) => {
-  // Animation variants for the grid container and individual project cards.
+  // Animation variants for the container and individual project cards.
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15, // Creates a subtle, staggered animation effect.
+        staggerChildren: 0.15,
       },
     },
   };
@@ -33,24 +32,26 @@ const Projects = memo(({ projects }) => {
     <AnimatedSection id="projects">
       <h2 className="text-4xl font-bold text-slate-700 text-center">My Projects</h2>
       <AnimatedDivider />
-      <div className="min-h-[60vh] w-full px-4 md:px-0">
+      <div className="min-h-[60vh] w-full">
         {projects.length > 0 ? (
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            // Trigger animation when 10% of the grid is visible for a smooth entrance.
             viewport={{ once: true, amount: 0.1 }}
+            // On mobile, this will be a single column. On medium screens and up, it becomes a grid.
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {projects.map((project) => (
               <motion.div
                 variants={itemVariants}
                 key={project.id}
-                className="relative p-6 flex flex-col rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-1 overflow-hidden"
+                // MOBILE STYLES: A solid background for better readability.
+                // DESKTOP STYLES (md:): Transitions to the glass card effect.
+                className="p-6 flex flex-col rounded-2xl bg-white shadow-lg md:bg-white/20 md:backdrop-blur-lg md:border md:border-white/30 transition-all duration-300 md:hover:shadow-2xl md:hover:shadow-blue-500/20 md:hover:-translate-y-1 overflow-hidden"
               >
                 <img
-                  loading="lazy" // Native lazy loading for better performance.
+                  loading="lazy"
                   src={project.imageUrl || 'https://placehold.co/600x400/e2e8f0/334155?text=Project'}
                   alt={project.title}
                   className="rounded-lg mb-4 aspect-video object-cover border border-slate-200/50"

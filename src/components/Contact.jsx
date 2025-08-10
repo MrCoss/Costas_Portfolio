@@ -200,7 +200,6 @@ const Contact = React.memo(() => {
             <nav className="flex gap-6">
               <a href="#home" className="hover:text-blue-500 transition">Home</a>
               <a href="#about" className="hover:text-blue-500 transition">About</a>
-              <a href="#portfolio" className="hover:text-blue-500 transition">Portfolio</a>
             </nav>
             <div className="flex items-center gap-4">
               {socialLinks.map((social) => (
@@ -211,7 +210,7 @@ const Contact = React.memo(() => {
             </div>
           </div>
           <p className="text-center text-xs text-gray-500 pt-4">
-            &copy; {new Date().getFullYear()} Costas Pinto. All Rights Reserved.
+            &copy; {new Date().getFullYear()} Costas Pinto.
           </p>
         </div>
       </footer>

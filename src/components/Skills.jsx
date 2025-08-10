@@ -8,6 +8,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaCode, FaChartBar, FaReact, FaBrain, FaTools, FaChevronDown } from 'react-icons/fa'; // Import icons
 import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
@@ -51,6 +52,15 @@ const Skills = React.memo(() => {
     ]
   };
 
+  // Map categories to their respective icons for easy rendering.
+  const categoryIcons = {
+    'Programming Languages': <FaCode className="mr-3 text-blue-600" />,
+    'Data Science & Analytics': <FaChartBar className="mr-3 text-green-600" />,
+    'Web & App Development': <FaReact className="mr-3 text-sky-500" />,
+    'AI & Generative AI': <FaBrain className="mr-3 text-purple-600" />,
+    'Tools & Workflow': <FaTools className="mr-3 text-gray-600" />,
+  };
+
   // Animation variants for staggering the skill items' entrance.
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -78,9 +88,14 @@ const Skills = React.memo(() => {
                 onClick={() => handleToggle(category)}
                 className="w-full flex justify-between items-center py-4 text-left text-xl font-semibold text-slate-700 focus:outline-none"
               >
-                <span>{category}</span>
+                {/* MODIFICATION: Added a flex container for the icon and text */}
+                <span className="flex items-center">
+                  {categoryIcons[category]} {/* Render the icon */}
+                  {category}
+                </span>
                 <motion.span animate={{ rotate: openCategory === category ? 180 : 0 }}>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"></path></svg>
+                  {/* MODIFICATION: Replaced SVG with a consistent react-icon */}
+                  <FaChevronDown className="w-5 h-5 transition-colors duration-300 text-slate-500" />
                 </motion.span>
               </button>
               <AnimatePresence>
