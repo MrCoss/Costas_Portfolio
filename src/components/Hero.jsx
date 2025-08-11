@@ -2,8 +2,8 @@
 // FILE: src/components/Hero.jsx
 // =================================================================================
 // This component renders a clean and dynamic hero section with a modern dark theme.
-// It uses Framer Motion for animations, React Type Animation for the headline,
-// and custom styling to create a glowing circular border for the hero image.
+// It uses simple animations for a professional feel, featuring a typing
+// animation for the headline and a subtle glow for the hero image.
 // =================================================================================
 
 import React from 'react';
@@ -13,24 +13,6 @@ import { FaLinkedin, FaGithub, FaDownload } from 'react-icons/fa';
 import heroImage from '../assets/Hero.png';
 
 const Hero = React.memo(() => {
-  // Framer Motion variants for orchestrating entrance animations.
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.3 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 100 },
-    },
-  };
-
   // Inline style for the subtle grid background pattern.
   const gridBackgroundStyle = {
     '--grid-color': 'rgba(100, 116, 139, 0.2)', // slate-600 with opacity
@@ -46,30 +28,24 @@ const Hero = React.memo(() => {
   return (
     <section
       id="home"
-      // MODIFICATION: Switched to a dark theme and added a grid background.
       className="min-h-screen flex items-center justify-center text-center md:text-left bg-slate-900 overflow-hidden"
       style={gridBackgroundStyle}
     >
       <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center">
         {/* Left Column: Text Content */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+        <div
           className="md:col-span-3"
         >
-          <motion.h1
-            variants={itemVariants}
-            // MODIFICATION: Updated text colors for dark background.
+          <h1
             className="text-5xl md:text-7xl font-extrabold text-slate-100 mb-4"
           >
             <span className="block mb-2 text-xl font-medium text-slate-400">
               Hello, I'm
             </span>
             Costas Pinto
-          </motion.h1>
+          </h1>
 
-          <motion.div variants={itemVariants}>
+          <div>
             <TypeAnimation
               sequence={[
                 'AI Innovator', 2000,
@@ -80,24 +56,20 @@ const Hero = React.memo(() => {
               ]}
               wrapper="p"
               speed={50}
-              // MODIFICATION: Adjusted gradient for better visibility on dark theme.
               className="text-2xl md:text-3xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 h-10"
               repeat={Infinity}
             />
-          </motion.div>
+          </div>
 
-          <motion.p
-            variants={itemVariants}
-            // MODIFICATION: Updated text color.
+          <p
             className="max-w-xl text-slate-300 leading-relaxed mb-8 mx-auto md:mx-0"
           >
             Transforming raw data into actionable insights. I build
             intelligent systems and solve complex problems with a
             passion for machine learning and data visualization.
-          </motion.p>
+          </p>
 
-          <motion.div
-            variants={itemVariants}
+          <div
             className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-6"
           >
             <motion.a
@@ -108,7 +80,6 @@ const Hero = React.memo(() => {
                 boxShadow: '0px 10px 30px rgba(99, 102, 241, 0.4)', // Purple shadow
               }}
               whileTap={{ scale: 0.95 }}
-              // MODIFICATION: New button style for dark theme.
               className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all"
             >
               <FaDownload />
@@ -121,7 +92,6 @@ const Hero = React.memo(() => {
                 href="https://www.linkedin.com/in/costaspinto/"
                 target="_blank"
                 rel="noopener noreferrer"
-                // MODIFICATION: Updated icon colors.
                 className="text-slate-400 hover:text-purple-400 transition-colors"
               >
                 <FaLinkedin size={32} />
@@ -136,29 +106,27 @@ const Hero = React.memo(() => {
                 <FaGithub size={32} />
               </motion.a>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Right Column: Animated Image with Glow Effect */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
+          initial={{ opacity: 0, scale: 0.8 }}
           animate={{
             opacity: 1,
             scale: 1,
-            // Re-enabled floating animation
-            y: [-8, 8],
           }}
           transition={{
-            opacity: { duration: 0.8, delay: 0.4 },
-            scale: { duration: 0.8, delay: 0.4, type: 'spring' },
-            y: { duration: 3, repeat: Infinity, ease: 'easeInOut', repeatType: "reverse" },
+            duration: 0.8,
+            delay: 0.2,
+            ease: [0, 0.71, 0.2, 1.01]
           }}
           className="md:col-span-2 flex justify-center items-center"
         >
           {/* MODIFICATION: New structure for circular image with glow */}
           <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px]">
-            {/* The Glow Effect */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full blur-2xl opacity-60 animate-pulse"></div>
+            {/* The Glow Effect (MODIFICATION: Removed pulse animation) */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full blur-2xl opacity-60"></div>
             {/* The Image itself, clipped to a circle */}
             <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border-2 border-slate-700">
               <img
