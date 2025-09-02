@@ -12,14 +12,16 @@ const LoadingSpinner = React.memo(() => {
   // A reusable component for each animated dot.
   const Dot = ({ delay }) => (
     <div
-      className="w-4 h-4 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full animate-pulse-bounce"
+      // UPDATED: Gradient changed from blue to the primary (emerald) and secondary (pink) theme colors.
+      className="w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full animate-pulse-bounce"
       style={{ animationDelay: delay }}
     />
   );
 
   return (
     // The main container, centering the spinner on the screen.
-    <div className="flex justify-center items-center h-screen bg-[#f5f7fa]">
+    // UPDATED: Background color changed to the theme's 'bg-background' (white).
+    <div className="flex justify-center items-center h-screen bg-background">
       <div className="flex items-center justify-center space-x-2">
         {/* Render multiple dots with staggered animation delays */}
         <Dot delay="0s" />

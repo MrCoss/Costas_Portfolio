@@ -1,9 +1,8 @@
 // =================================================================================
 // FILE: src/components/Hero.jsx
 // =================================================================================
-// This component renders a clean and dynamic hero section with a modern dark theme.
-// It uses simple animations for a professional feel, featuring a typing
-// animation for the headline and a subtle glow for the hero image.
+// This component renders a clean and dynamic hero section. It has been updated
+// to a bright, modern theme featuring the emerald, pink, and white color palette.
 // =================================================================================
 
 import React from 'react';
@@ -13,9 +12,9 @@ import { FaLinkedin, FaGithub, FaDownload } from 'react-icons/fa';
 import heroImage from '../assets/Hero.png';
 
 const Hero = React.memo(() => {
-  // Inline style for the subtle grid background pattern.
+  // UPDATED: Inline style for a subtle grid on a light background.
   const gridBackgroundStyle = {
-    '--grid-color': 'rgba(100, 116, 139, 0.2)', // slate-600 with opacity
+    '--grid-color': 'rgba(30, 41, 59, 0.05)', // A very light version of text-primary
     '--grid-size': '40px',
     backgroundImage: `
       linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
@@ -24,22 +23,21 @@ const Hero = React.memo(() => {
     backgroundSize: 'var(--grid-size) var(--grid-size)',
   };
 
-
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center justify-center text-center md:text-left bg-slate-900 overflow-hidden"
+      // UPDATED: Section background is now the theme's 'bg-background' (white).
+      className="min-h-screen flex items-center justify-center text-center md:text-left bg-background overflow-hidden"
       style={gridBackgroundStyle}
     >
       <div className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-8 items-center">
         {/* Left Column: Text Content */}
-        <div
-          className="md:col-span-3"
-        >
+        <div className="md:col-span-3">
           <h1
-            className="text-5xl md:text-7xl font-extrabold text-slate-100 mb-4"
+            // UPDATED: Heading now uses theme colors for primary and secondary text.
+            className="text-5xl md:text-7xl font-extrabold text-text-primary mb-4"
           >
-            <span className="block mb-2 text-xl font-medium text-slate-400">
+            <span className="block mb-2 text-xl font-medium text-text-secondary">
               Hello, I'm
             </span>
             Costas Pinto
@@ -56,13 +54,15 @@ const Hero = React.memo(() => {
               ]}
               wrapper="p"
               speed={50}
-              className="text-2xl md:text-3xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 h-10"
+              // UPDATED: Typewriter animation gradient is now primary (emerald) to secondary (pink).
+              className="text-2xl md:text-3xl font-semibold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary h-10"
               repeat={Infinity}
             />
           </div>
 
           <p
-            className="max-w-xl text-slate-300 leading-relaxed mb-8 mx-auto md:mx-0"
+            // UPDATED: Paragraph text now uses the theme's secondary text color.
+            className="max-w-xl text-text-secondary leading-relaxed mb-8 mx-auto md:mx-0"
           >
             Transforming raw data into actionable insights. I build
             intelligent systems and solve complex problems with a
@@ -77,10 +77,12 @@ const Hero = React.memo(() => {
               download="CostasPinto_CV.pdf"
               whileHover={{
                 scale: 1.05,
-                boxShadow: '0px 10px 30px rgba(99, 102, 241, 0.4)', // Purple shadow
+                // UPDATED: Hover shadow now uses the primary (emerald) color.
+                boxShadow: '0px 10px 30px rgba(16, 185, 129, 0.3)',
               }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all"
+              // UPDATED: Download button now uses the primary-to-secondary gradient.
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-secondary text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all"
             >
               <FaDownload />
               Download CV
@@ -92,7 +94,8 @@ const Hero = React.memo(() => {
                 href="https://www.linkedin.com/in/costaspinto/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 hover:text-purple-400 transition-colors"
+                // UPDATED: Social icons now use theme colors with a pink hover effect.
+                className="text-text-secondary hover:text-secondary transition-colors"
               >
                 <FaLinkedin size={32} />
               </motion.a>
@@ -101,7 +104,7 @@ const Hero = React.memo(() => {
                 href="https://github.com/MrCoss"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-text-secondary hover:text-secondary transition-colors"
               >
                 <FaGithub size={32} />
               </motion.a>
@@ -112,10 +115,7 @@ const Hero = React.memo(() => {
         {/* Right Column: Animated Image with Glow Effect */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{
             duration: 0.8,
             delay: 0.2,
@@ -123,20 +123,19 @@ const Hero = React.memo(() => {
           }}
           className="md:col-span-2 flex justify-center items-center"
         >
-          {/* MODIFICATION: New structure for circular image with glow */}
           <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px]">
-            {/* The Glow Effect (MODIFICATION: Removed pulse animation) */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full blur-2xl opacity-60"></div>
-            {/* The Image itself, clipped to a circle */}
-            <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border-2 border-slate-700">
+            {/* UPDATED: The glow effect now uses the primary-to-secondary gradient. */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-primary to-secondary rounded-full blur-2xl opacity-50"></div>
+            {/* UPDATED: Image border now uses a subtle shade of the primary color. */}
+            <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border-2 border-primary/20">
               <img
                 loading="lazy"
                 src={heroImage}
                 onError={(e) => {
-                  e.target.src = 'https://placehold.co/400x400/0f172a/94a3b8?text=CP';
+                  e.target.src = 'https://placehold.co/400x400/ffffff/1e293b?text=CP';
                 }}
                 alt="Costas Pinto"
-                className="w-full h-full object-cover" // Ensures the image fills the circle
+                className="w-full h-full object-cover"
               />
             </div>
           </div>

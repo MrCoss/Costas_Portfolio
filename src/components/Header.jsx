@@ -18,12 +18,14 @@ const NavItem = ({ href, label, children, onClick }) => (
   <a
     href={href}
     onClick={onClick}
-    className="group relative flex items-center justify-center p-2 rounded-full text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition-all duration-300"
+    // UPDATED: NavItem now uses theme colors with a primary (emerald) hover effect.
+    className="group relative flex items-center justify-center p-2 rounded-full text-text-secondary hover:bg-primary/10 hover:text-primary transition-all duration-300"
     aria-label={label}
   >
     {children}
     {/* The text label tooltip that appears on hover */}
-    <span className="absolute left-full ml-3 px-3 py-1.5 whitespace-nowrap text-sm font-medium text-white bg-slate-800 rounded-md shadow-md opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
+    {/* UPDATED: Tooltip now uses the theme's dark 'text-primary' color for the background. */}
+    <span className="absolute left-full ml-3 px-3 py-1.5 whitespace-nowrap text-sm font-medium text-white bg-text-primary rounded-md shadow-md opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
       {label}
     </span>
   </a>
@@ -54,7 +56,8 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
   };
 
   return (
-    <header className="bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-slate-200/80">
+    // UPDATED: Border color now uses a subtle shade of the primary (emerald) color.
+    <header className="bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-primary/10">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Home Icon Link */}
         <NavItem href="#home" label="Home" onClick={handleLinkClick}>
@@ -62,17 +65,19 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
         </NavItem>
         
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex space-x-6 items-center font-medium text-slate-600">
-          <a href="#about" onClick={handleLinkClick} className="hover:text-blue-600 transition-colors">About</a>
-          <a href="#experience" onClick={handleLinkClick} className="hover:text-blue-600 transition-colors">Experience</a>
-          <a href="#skills" onClick={handleLinkClick} className="hover:text-blue-600 transition-colors">Skills</a>
-          <a href="#projects" onClick={handleLinkClick} className="hover:text-blue-600 transition-colors">Projects</a>
-          <a href="#contact" onClick={handleLinkClick} className="hover:text-blue-600 transition-colors">Contact</a>
+        {/* UPDATED: Desktop links now use theme colors with a secondary (pink) hover effect. */}
+        <div className="hidden md:flex space-x-6 items-center font-medium text-text-secondary">
+          <a href="#about" onClick={handleLinkClick} className="hover:text-secondary transition-colors">About</a>
+          <a href="#experience" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Experience</a>
+          <a href="#skills" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Skills</a>
+          <a href="#projects" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Projects</a>
+          <a href="#contact" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Contact</a>
         </div>
         
         {/* Mobile Menu Button (Hamburger/Close Icon) */}
         <div className="md:hidden">
-          <button onClick={toggleMobileMenu} className="text-slate-600 focus:outline-none p-1">
+          {/* UPDATED: Mobile menu button now uses the theme's primary text color. */}
+          <button onClick={toggleMobileMenu} className="text-text-primary focus:outline-none p-1">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMobileMenuOpen 
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> 
@@ -90,13 +95,14 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="md:hidden absolute top-full left-0 w-full bg-white z-40 shadow-lg px-6 py-4 space-y-3 text-slate-600 font-medium"
+            // UPDATED: Mobile menu now uses theme colors with a secondary (pink) hover effect.
+            className="md:hidden absolute top-full left-0 w-full bg-white z-40 shadow-lg px-6 py-4 space-y-3 text-text-secondary font-medium"
           >
-            <a href="#about" onClick={handleLinkClick} className="block py-2 hover:text-blue-600">About</a>
-            <a href="#experience" onClick={handleLinkClick} className="block py-2 hover:text-blue-600">Experience</a>
-            <a href="#skills" onClick={handleLinkClick} className="block py-2 hover:text-blue-600">Skills</a>
-            <a href="#projects" onClick={handleLinkClick} className="block py-2 hover:text-blue-600">Projects</a>
-            <a href="#contact" onClick={handleLinkClick} className="block py-2 hover:text-blue-600">Contact</a>
+            <a href="#about" onClick={handleLinkClick} className="block py-2 hover:text-secondary">About</a>
+            <a href="#experience" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Experience</a>
+            <a href="#skills" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Skills</a>
+            <a href="#projects" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Projects</a>
+            <a href="#contact" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Contact</a>
           </motion.div>
         )}
       </AnimatePresence>

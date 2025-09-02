@@ -37,7 +37,8 @@ const AnimatedDivider = React.memo(() => {
     // The outer div acts as the container and the trigger for the useInView hook.
     <div ref={ref} className="h-1 w-24 mx-auto my-8">
       <motion.div
-        className="h-full bg-gradient-to-r from-blue-600 to-blue-800 rounded-full"
+        // UPDATED: The gradient is now 'primary' (emerald) to 'secondary' (pink).
+        className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
         // The `transformOrigin` is set to 'center' to ensure the line scales
         // outwards from its middle point.
         style={{ transformOrigin: 'center' }}

@@ -8,7 +8,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaCode, FaChartBar, FaReact, FaBrain, FaTools, FaChevronDown } from 'react-icons/fa'; // Import icons
+import { FaCode, FaChartBar, FaReact, FaBrain, FaTools, FaChevronDown } from 'react-icons/fa';
 import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
@@ -52,13 +52,13 @@ const Skills = React.memo(() => {
     ]
   };
 
-  // Map categories to their respective icons for easy rendering.
+  // UPDATED: Icons now use the new theme colors for consistency and accent.
   const categoryIcons = {
-    'Programming Languages': <FaCode className="mr-3 text-blue-600" />,
-    'Data Science & Analytics': <FaChartBar className="mr-3 text-green-600" />,
-    'Web & App Development': <FaReact className="mr-3 text-sky-500" />,
-    'AI & Generative AI': <FaBrain className="mr-3 text-purple-600" />,
-    'Tools & Workflow': <FaTools className="mr-3 text-gray-600" />,
+    'Programming Languages': <FaCode className="mr-3 text-primary" />,
+    'Data Science & Analytics': <FaChartBar className="mr-3 text-primary" />,
+    'Web & App Development': <FaReact className="mr-3 text-secondary" />,
+    'AI & Generative AI': <FaBrain className="mr-3 text-primary" />,
+    'Tools & Workflow': <FaTools className="mr-3 text-text-secondary" />,
   };
 
   // Animation variants for staggering the skill items' entrance.
@@ -77,25 +77,27 @@ const Skills = React.memo(() => {
 
   return (
     <AnimatedSection id="skills">
-      <h2 className="text-4xl font-bold text-slate-700 text-center">My Skills</h2>
+      {/* UPDATED: Heading now uses the theme's primary text color. */}
+      <h2 className="text-4xl font-bold text-text-primary text-center">My Skills</h2>
       <AnimatedDivider />
-      {/* This container provides the consistent "glass card" effect. */}
-      <div className="relative p-4 md:p-8 max-w-4xl mx-auto rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-1">
+      {/* UPDATED: Glass card now has a primary (emerald) hover glow. */}
+      <div className="relative p-4 md:p-8 max-w-4xl mx-auto rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-1">
         <div className="space-y-2">
           {Object.entries(categorizedSkills).map(([category, skills]) => (
-            <div key={category} className="border-b border-slate-300/50 last:border-b-0">
+            // UPDATED: Border color uses a subtle shade of the primary color.
+            <div key={category} className="border-b border-primary/20 last:border-b-0">
               <button
                 onClick={() => handleToggle(category)}
-                className="w-full flex justify-between items-center py-4 text-left text-xl font-semibold text-slate-700 focus:outline-none"
+                // UPDATED: Text color now uses the theme's primary text color.
+                className="w-full flex justify-between items-center py-4 text-left text-xl font-semibold text-text-primary focus:outline-none"
               >
-                {/* MODIFICATION: Added a flex container for the icon and text */}
                 <span className="flex items-center">
-                  {categoryIcons[category]} {/* Render the icon */}
+                  {categoryIcons[category]}
                   {category}
                 </span>
                 <motion.span animate={{ rotate: openCategory === category ? 180 : 0 }}>
-                  {/* MODIFICATION: Replaced SVG with a consistent react-icon */}
-                  <FaChevronDown className="w-5 h-5 transition-colors duration-300 text-slate-500" />
+                  {/* UPDATED: Chevron icon now uses the theme's secondary text color. */}
+                  <FaChevronDown className="w-5 h-5 transition-colors duration-300 text-text-secondary" />
                 </motion.span>
               </button>
               <AnimatePresence>
@@ -115,10 +117,13 @@ const Skills = React.memo(() => {
                     >
                       {skills.map((skill) => (
                         <motion.div variants={itemVariants} key={skill.name}>
-                          <p className="text-lg font-medium text-slate-600 mb-1">{skill.name}</p>
-                          <div className="bg-slate-300 w-full rounded-full h-2.5">
+                          {/* UPDATED: Skill name now uses the theme's secondary text color. */}
+                          <p className="text-lg font-medium text-text-secondary mb-1">{skill.name}</p>
+                          {/* UPDATED: Progress bar background is now a light shade of the primary color. */}
+                          <div className="bg-primary/10 w-full rounded-full h-2.5">
                             <motion.div
-                              className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-blue-700"
+                              // UPDATED: Progress bar now has the primary-to-secondary gradient.
+                              className="h-2.5 rounded-full bg-gradient-to-r from-primary to-secondary"
                               initial={{ width: 0 }}
                               animate={{ width: `${skill.level}%` }}
                               transition={{ duration: 1, ease: "easeOut" }}

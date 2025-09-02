@@ -1,9 +1,9 @@
 // =================================================================================
-// FILE: src/components/Internship.jsx
+// FILE: src/components/Internships.jsx
 // =================================================================================
 // This component displays a link to open a modal and view the internship
-// certificate PDF. It is a focused version of the Certifications component,
-// refactored for clarity and maintainability.
+// certificate PDF. It is a focused component, refactored for clarity,
+// maintainability, and consistency with the new theme.
 // =================================================================================
 
 import React, { useState } from 'react';
@@ -32,19 +32,23 @@ const PdfViewerModal = ({ url, onClose }) => {
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden"
+            // UPDATED: Modal background uses the theme's 'bg-background'.
+            className="bg-background rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden"
           >
-            <header className="flex justify-between items-center p-4 border-b border-slate-200">
-              <h3 className="font-bold text-lg text-slate-700">Internship Certificate</h3>
+            {/* UPDATED: Header styles updated to match the theme. */}
+            <header className="flex justify-between items-center p-4 border-b border-primary/10">
+              <h3 className="font-bold text-lg text-text-primary">Internship Certificate</h3>
               <button
                 onClick={onClose}
-                className="text-slate-500 hover:text-slate-800 transition-colors p-1 rounded-full hover:bg-slate-100"
+                // UPDATED: Close button now uses theme colors for a consistent look.
+                className="text-text-secondary hover:text-secondary transition-colors p-1 rounded-full hover:bg-secondary/10"
                 aria-label="Close"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
             </header>
-            <div className="flex-grow p-2 bg-slate-50">
+            {/* UPDATED: Iframe container background uses the theme's alternate background. */}
+            <div className="flex-grow p-2 bg-background-alt">
               <iframe
                 src={url}
                 title="Internship Certificate PDF Viewer"
@@ -68,7 +72,8 @@ const Internships = React.memo(({ internshipsPdfUrl }) => {
   return (
     <>
       <AnimatedSection id="internships">
-        <h2 className="text-4xl font-bold text-slate-700 text-center">Internship Certificate</h2>
+        {/* UPDATED: Heading text color now uses text-primary. */}
+        <h2 className="text-4xl font-bold text-text-primary text-center">Internship Certificate</h2>
         <AnimatedDivider />
         <div className="text-center">
           <motion.button
@@ -76,7 +81,8 @@ const Internships = React.memo(({ internshipsPdfUrl }) => {
             disabled={!internshipsPdfUrl}
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-blue-500/20 bg-gradient-to-r from-blue-600 to-blue-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            // UPDATED: Button styles now use the primary (emerald) and secondary (pink) theme colors.
+            className="inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary/30 bg-gradient-to-r from-primary to-secondary transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             View Internship Certificate
           </motion.button>

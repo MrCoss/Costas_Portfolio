@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import colors from 'tailwindcss/colors'; // Make sure to import colors
+
 export default {
   content: [
     "./index.html",
@@ -6,8 +8,25 @@ export default {
   ],
   theme: {
     extend: {
+      // ADDED: This is the new custom color palette for your theme.
+      colors: {
+        primary: {
+          DEFAULT: colors.emerald[600], // Main emerald green
+          hover: colors.emerald[700],
+        },
+        secondary: {
+          DEFAULT: colors.pink[500],   // Main pink for accents
+          hover: colors.pink[600],
+        },
+        background: {
+          DEFAULT: '#ffffff',           // Clean white background
+          alt: '#f8fafc',               // Off-white for section backgrounds
+        },
+        'text-primary': '#1e293b',       // Dark slate for main text
+        'text-secondary': '#64748b',   // Lighter slate for secondary text
+      },
       keyframes: {
-        // Animations for the main background
+        // These animations control movement and opacity, not color, so they remain.
         move: {
           '0%': { transform: 'translate(-50%, -50%) rotate(0deg)' },
           '100%': { transform: 'translate(-50%, -50%) rotate(360deg)' },
@@ -20,7 +39,6 @@ export default {
           '0%, 100%': { opacity: '0.4' },
           '50%': { opacity: '0.6' },
         },
-        // New keyframe for the updated loading spinner
         'pulse-bounce': {
           '0%, 100%': {
             transform: 'scale(1)',
@@ -33,16 +51,15 @@ export default {
         }
       },
       animation: {
-        // Animations for the main background
         'slow-spin': 'move 35s linear infinite',
         'reverse-spin': 'move-alt 45s linear infinite',
         'soft-pulse': 'pulse-soft 10s ease-in-out infinite',
-        // New animation utility for the loading spinner
         'pulse-bounce': 'pulse-bounce 1s ease-in-out infinite',
       },
+      // UPDATED: Replaced blue/purple gradients with the new emerald/pink gradients.
       backgroundImage: {
-        'radial-gradient-blue': 'radial-gradient(circle, rgba(37, 99, 235, 0.1), transparent 50%), radial-gradient(circle, rgba(29, 78, 216, 0.08), transparent 60%)',
-        'radial-gradient-purple': 'radial-gradient(circle, rgba(124, 58, 237, 0.08), transparent 50%), radial-gradient(circle, rgba(109, 40, 217, 0.07), transparent 60%)',
+        'radial-gradient-emerald': 'radial-gradient(circle, rgba(5, 150, 105, 0.2) 0%, rgba(5, 150, 105, 0) 60%)',
+        'radial-gradient-pink': 'radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(236, 72, 153, 0) 50%)',
       },
     },
   },

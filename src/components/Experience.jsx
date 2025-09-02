@@ -39,6 +39,16 @@ const TimelineItem = React.memo(({ date, title, company, details }) => (
 const Experience = React.memo(() => {
   const experiences = [
     {
+      date: "Aug 2025 - Present",
+      title: "Machine Learning Intern",
+      company: "Unified Mentor (Remote)",
+      details: [
+        "Worked on AI-powered solutions and applied advanced ML algorithms to real-world challenges.",
+        "Gained hands-on experience with Python, data preprocessing, and model development.",
+        "Collaborated with industry professionals and received mentorship on best practices in AI/ML."
+      ]
+    },
+    {
       date: "2024 - Present",
       title: "Data Analyst Intern",
       company: "SkillFied Mentor (Remote)",

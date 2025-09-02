@@ -1,15 +1,13 @@
 // =================================================================================
-// FILE: src/App.jsx
+// FILE: src/App.jsx (FIXED & SECURE)
 // =================================================================================
-// This is the root component of the portfolio application. It orchestrates the
-// entire application by handling Firebase initialization, data fetching, routing,
-// and rendering all the main sections and pages. It now includes a fix for
-// handling client-side routing on GitHub Pages.
+// This version moves Firebase initialization into the component lifecycle (useEffect)
+// to safely load credentials from .env and handle errors without crashing.
 // =================================================================================
 
 import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
@@ -32,7 +30,6 @@ import Certifications from './components/Certifications.jsx';
 import Contact from './components/Contact.jsx';
 
 // --- GITHUB PAGES ROUTING FIX ---
-// This component handles the redirect logic from the 404.html page.
 const RedirectHandler = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -47,6 +44,7 @@ const RedirectHandler = () => {
 };
 
 // --- FIREBASE CONFIGURATION ---
+// This object reads the values from your .env file.
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -57,43 +55,19 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-Object.entries(firebaseConfig).forEach(([key, value]) => {
-  if (!value) {
-    console.error(`❌ Missing Firebase environment variable: ${key}. Please check your .env file.`);
-  }
-});
-
-let app, db, auth, storage;
-try {
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-  auth = getAuth(app);
-  storage = getStorage(app);
-} catch (err) {
-  console.error('🔥 Firebase initialization failed:', err);
-}
-
 // --- CUSTOM HOOKS ---
 const useIsMobile = (breakpoint = 768) => {
-  const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth < breakpoint;
-    }
-    return false;
-  });
-
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint);
   useEffect(() => {
-    if (typeof window === 'undefined') return;
     const handleResize = () => setIsMobile(window.innerWidth < breakpoint);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [breakpoint]);
-
   return isMobile;
 };
 
 // --- HOME PAGE COMPONENT ---
-const HomePage = ({ projects = [], licensesPdfUrl = '', internshipsPdfUrl = '', isMobile }) => {
+const HomePage = (props) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
   const toggleMobileMenu = useCallback(() => setIsMobileMenuOpen(prev => !prev), []);
@@ -109,8 +83,8 @@ const HomePage = ({ projects = [], licensesPdfUrl = '', internshipsPdfUrl = '', 
           <Skills />
           <Achievements />
           <LearningJourney />
-          <Projects projects={projects} isMobile={isMobile} />
-          <Certifications licensesPdfUrl={licensesPdfUrl} internshipsPdfUrl={internshipsPdfUrl} />
+          <Projects projects={props.projects} isMobile={props.isMobile} />
+          <Certifications {...props} />
         </div>
       </main>
       <Contact />
@@ -118,24 +92,18 @@ const HomePage = ({ projects = [], licensesPdfUrl = '', internshipsPdfUrl = '', 
   );
 };
 
+
 // --- MAIN APP COMPONENT ---
 function App() {
-  const [portfolioData, setPortfolioData] = useState({
-    projects: [],
-    licensesPdfUrl: '',
-    internshipsPdfUrl: '',
-  });
+  const [portfolioData, setPortfolioData] = useState({ projects: [] });
+  // FIX: New state to hold the initialized Firebase services
+  const [firebaseServices, setFirebaseServices] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const isMobile = useIsMobile();
 
-  const fetchAllData = useCallback(async () => {
-    if (!db) {
-      setError('Firebase is not initialized. Check your .env settings.');
-      setLoading(false);
-      return;
-    }
-
+  // FIX: fetchAllData now accepts the 'db' instance as an argument
+  const fetchAllData = useCallback(async (db) => {
     try {
       const projectsSnapshot = await getDocs(collection(db, 'projects'));
       const projects = projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -151,22 +119,50 @@ function App() {
       });
     } catch (err) {
       console.error('❌ Firebase fetch error:', err);
-      setError('Failed to load portfolio data. Please try again later.');
-    } finally {
-      setLoading(false);
+      setError('Failed to load portfolio data. Please check your Firestore rules and collection names.');
     }
   }, []);
 
+  // FIX: A single useEffect now handles both initialization and data fetching
   useEffect(() => {
-    fetchAllData();
+    const initializeAndFetch = async () => {
+      try {
+        // First, check if all required environment variables are present.
+        if (Object.values(firebaseConfig).some(value => !value)) {
+          throw new Error("One or more Firebase environment variables are missing. Please check your .env file.");
+        }
+
+        // Initialize Firebase safely using the singleton pattern.
+        const app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const storage = getStorage(app);
+        
+        // Store the services in state and then fetch data.
+        setFirebaseServices({ db, auth, storage });
+        await fetchAllData(db);
+
+      } catch (err) {
+        console.error("🔥 Firebase initialization or data fetch failed:", err);
+        setError(`Failed to connect to services. Error: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAndFetch();
   }, [fetchAllData]);
 
   if (loading) return <LoadingSpinner />;
 
+  // If there was an error during initialization or fetch, display it clearly.
   if (error) {
     return (
-      <div className="text-center mt-20 p-4">
-        <h2 className="text-red-600 text-xl font-bold">{error}</h2>
+      <div className="min-h-screen flex items-center justify-center p-4">
+          <div className="text-center bg-red-100/50 border border-red-500 p-8 rounded-lg max-w-lg">
+              <h2 className="text-2xl font-bold text-red-700 mb-4">Application Error</h2>
+              <p className="text-slate-700">{error}</p>
+          </div>
       </div>
     );
   }
@@ -180,7 +176,6 @@ function App() {
             <RedirectHandler />
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
-                {/* FIX: Changed path from "/*" to "/" to make it specific. */}
                 <Route
                   path="/"
                   element={
@@ -192,10 +187,10 @@ function App() {
                     />
                   }
                 />
-                {/* The /admin route can now be matched correctly. */}
                 <Route
                   path="/admin"
-                  element={<AdminPanel db={db} auth={auth} storage={storage} />}
+                  // FIX: Pass firebase services from state to the admin panel
+                  element={firebaseServices && <AdminPanel {...firebaseServices} />}
                 />
               </Routes>
             </Suspense>
