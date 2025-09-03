@@ -1,8 +1,5 @@
 // =================================================================================
-// FILE: src/components/AdminPanel.jsx (FINAL REFACTOR)
-// =================================================================================
-// This component is now updated to handle project media via a URL input,
-// bypassing Firebase Storage uploads entirely to align with your project's needs.
+// FILE: src/components/AdminPanel.jsx (FINAL)
 // =================================================================================
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -14,9 +11,8 @@ import {
 } from "firebase/auth";
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from "./ui/LoadingSpinner.jsx";
-// NOTE: Firebase Storage imports are no longer needed for this version.
 
-// --- SUB-COMPONENTS (Refactored for Semantic Dark Mode) ---
+// --- SUB-COMPONENTS ---
 const Notification = ({ message, type, onDismiss }) => {
   if (!message) return null;
   const baseClasses = "fixed top-5 right-5 p-4 rounded-lg shadow-lg text-text-primary-dark transition-opacity duration-300 z-50";
@@ -56,7 +52,6 @@ const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message }) => (
 );
 
 // --- MAIN ADMIN PANEL COMPONENT ---
-// NOTE: `storage` prop is no longer needed.
 export default function AdminPanel({ db, auth }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -66,10 +61,10 @@ export default function AdminPanel({ db, auth }) {
   const [modalState, setModalState] = useState({ isOpen: false, onConfirm: () => {} });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newProject, setNewProject] = useState({ title: "", description: "", link: "", tags: [], mediaUrl: "" }); // MODIFIED: Added mediaUrl state
+  const [newProject, setNewProject] = useState({ title: "", description: "", link: "", tags: [], mediaUrl: "" });
   const [tagInput, setTagInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadProgress] = useState(0); // This is no longer used, but kept to prevent errors.
+  const [uploadProgress] = useState(0);
 
   const showNotification = useCallback((message, type = 'error') => {
     setNotification({ message, type });
@@ -232,7 +227,6 @@ export default function AdminPanel({ db, auth }) {
                   <input type="text" placeholder="Project Title" value={newProject.title} onChange={(e) => setNewProject({ ...newProject, title: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
                   <textarea placeholder="Description" value={newProject.description} onChange={(e) => setNewProject({ ...newProject, description: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" rows="3"></textarea>
                   <input type="url" placeholder="Project Link (e.g., GitHub)" value={newProject.link} onChange={(e) => setNewProject({ ...newProject, link: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
-                  {/* MODIFIED: New input field for the media URL. */}
                   <input type="url" placeholder="Project Media URL (e.g., GDrive link)" value={newProject.mediaUrl} onChange={(e) => setNewProject({ ...newProject, mediaUrl: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
                   <div>
                     <input type="text" placeholder="Add skills/tags and press Enter" value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={handleAddTag} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
