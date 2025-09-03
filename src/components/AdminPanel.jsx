@@ -1,8 +1,8 @@
 // =================================================================================
 // FILE: src/components/AdminPanel.jsx (FINAL REFACTOR)
 // =================================================================================
-// This component now uses a consistent and fully semantic color palette
-// for a seamless dark mode experience across all UI elements.
+// This component is now updated to handle project media via a URL input,
+// bypassing Firebase Storage uploads entirely to align with your project's needs.
 // =================================================================================
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -12,14 +12,13 @@ import {
 import {
   signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "firebase/auth";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from "./ui/LoadingSpinner.jsx";
+// NOTE: Firebase Storage imports are no longer needed for this version.
 
 // --- SUB-COMPONENTS (Refactored for Semantic Dark Mode) ---
 const Notification = ({ message, type, onDismiss }) => {
   if (!message) return null;
-  // MODIFIED: Use semantic text and background colors for consistency.
   const baseClasses = "fixed top-5 right-5 p-4 rounded-lg shadow-lg text-text-primary-dark transition-opacity duration-300 z-50";
   const typeClasses = type === 'success' ? 'bg-primary-light dark:bg-primary-dark' : 'bg-red-500';
 
@@ -42,14 +41,11 @@ const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message }) => (
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          // MODIFIED: Use semantic background colors.
           className="bg-background-light dark:bg-background-alt-dark rounded-xl shadow-2xl w-full max-w-md p-6"
         >
-          {/* MODIFIED: Use semantic text colors. */}
           <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">{title}</h3>
           <p className="text-text-secondary-light dark:text-text-secondary-dark mb-6">{message}</p>
           <div className="flex justify-end gap-4">
-            {/* MODIFIED: Use semantic button colors. */}
             <button onClick={onCancel} className="px-4 py-2 rounded-lg bg-background-alt-light dark:bg-background-alt-dark hover:bg-slate-300 dark:hover:bg-slate-600 transition text-text-primary-light dark:text-text-primary-dark">Cancel</button>
             <button onClick={onConfirm} className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition">Confirm</button>
           </div>
@@ -60,7 +56,8 @@ const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message }) => (
 );
 
 // --- MAIN ADMIN PANEL COMPONENT ---
-export default function AdminPanel({ db, auth, storage }) {
+// NOTE: `storage` prop is no longer needed.
+export default function AdminPanel({ db, auth }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState([]);
@@ -69,9 +66,7 @@ export default function AdminPanel({ db, auth, storage }) {
   const [modalState, setModalState] = useState({ isOpen: false, onConfirm: () => {} });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newProject, setNewProject] = useState({ title: "", description: "", link: "", tags: [] });
-  const [mediaFile, setMediaFile] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [newProject, setNewProject] = useState({ title: "", description: "", link: "", tags: [], mediaUrl: "" }); // MODIFIED: Added mediaUrl state
   const [tagInput, setTagInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -143,33 +138,21 @@ export default function AdminPanel({ db, auth, storage }) {
     setNewProject({ ...newProject, tags: newProject.tags.filter(tag => tag !== tagToRemove) });
   };
   
-  const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setMediaFile(e.target.files[0]);
-    }
-  };
+  // MODIFIED: This function is no longer needed since we aren't uploading files.
+  // const handleFileChange = (e) => {
+  //   if (e.target.files[0]) {
+  //     setMediaFile(e.target.files[0]);
+  //   }
+  // };
 
+  // REFACTORED: Simplified project addition to use a media URL instead of file uploads.
   const handleAddProject = async (e) => {
     e.preventDefault();
     if (!newProject.title.trim()) return showNotification("Project title is required.");
     setIsSubmitting(true);
-    setUploadProgress(0);
     try {
-      let mediaUrl = "";
-      if (mediaFile) {
-        const storageRef = ref(storage, `project_media/${Date.now()}_${mediaFile.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, mediaFile);
-        mediaUrl = await new Promise((resolve, reject) => {
-          uploadTask.on('state_changed',
-            (snapshot) => setUploadProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100),
-            (error) => reject(error),
-            async () => resolve(await getDownloadURL(uploadTask.snapshot.ref))
-          );
-        });
-      }
-      await addDoc(collection(db, "projects"), { ...newProject, mediaUrl, createdAt: serverTimestamp() });
-      setNewProject({ title: "", description: "", link: "", tags: [] });
-      setMediaFile(null);
+      await addDoc(collection(db, "projects"), { ...newProject, createdAt: serverTimestamp() });
+      setNewProject({ title: "", description: "", link: "", tags: [], mediaUrl: "" });
       e.target.reset();
       showNotification("Project added successfully!", "success");
       fetchProjects();
@@ -177,7 +160,6 @@ export default function AdminPanel({ db, auth, storage }) {
       showNotification("Failed to add project.");
     } finally {
       setIsSubmitting(false);
-      setUploadProgress(0);
     }
   };
 
@@ -220,7 +202,6 @@ export default function AdminPanel({ db, auth, storage }) {
 
   if (!user) {
     return (
-      // MODIFIED: Use semantic background and text colors for the login page.
       <div className="min-h-screen bg-background-alt-light dark:bg-background-alt-dark flex items-center justify-center p-4">
         <Notification message={notification.message} type={notification.type} onDismiss={() => setNotification({ message: '', type: '' })} />
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
@@ -242,7 +223,6 @@ export default function AdminPanel({ db, auth, storage }) {
   return (
     <>
       <ConfirmModal isOpen={modalState.isOpen} onConfirm={modalState.onConfirm} onCancel={() => setModalState({ isOpen: false, onConfirm: () => {} })} title={modalState.title} message={modalState.message} />
-      {/* MODIFIED: Use semantic background colors for the main dashboard container. */}
       <div className="min-h-screen bg-background-alt-light dark:bg-background-alt-dark p-4 sm:p-6 md:p-8">
         <Notification message={notification.message} type={notification.type} onDismiss={() => setNotification({ message: '', type: '' })} />
         <div className="max-w-7xl mx-auto">
@@ -253,20 +233,16 @@ export default function AdminPanel({ db, auth, storage }) {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1 space-y-8">
-              {/* MODIFIED: Use semantic background colors for form cards. */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg">
                 <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">Add New Project</h2>
                 <form onSubmit={handleAddProject} className="space-y-4">
-                  <input type="text" placeholder="Project Title" value={newProject.title} onChange={(e) => setNewProject({ ...newProject, title: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark dark:text-text-primary-dark text-text-primary-light" />
-                  <textarea placeholder="Description" value={newProject.description} onChange={(e) => setNewProject({ ...newProject, description: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark dark:text-text-primary-dark text-text-primary-light" rows="3"></textarea>
-                  <input type="url" placeholder="Project Link (e.g., GitHub)" value={newProject.link} onChange={(e) => setNewProject({ ...newProject, link: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark dark:text-text-primary-dark text-text-primary-light" />
+                  <input type="text" placeholder="Project Title" value={newProject.title} onChange={(e) => setNewProject({ ...newProject, title: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
+                  <textarea placeholder="Description" value={newProject.description} onChange={(e) => setNewProject({ ...newProject, description: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" rows="3"></textarea>
+                  <input type="url" placeholder="Project Link (e.g., GitHub)" value={newProject.link} onChange={(e) => setNewProject({ ...newProject, link: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
+                  {/* MODIFIED: New input field for the media URL. */}
+                  <input type="url" placeholder="Project Media URL (e.g., GDrive link)" value={newProject.mediaUrl} onChange={(e) => setNewProject({ ...newProject, mediaUrl: e.target.value })} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
                   <div>
-                    <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">Project Media (Image/Video)</label>
-                    <input type="file" onChange={handleFileChange} accept="image/*,video/*" className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-light/10 dark:file:bg-primary-dark/10 file:text-primary-light dark:file:text-primary-dark hover:file:bg-primary-light/20 dark:hover:file:bg-primary-dark/20" />
-                    {mediaFile && <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">Selected: {mediaFile.name}</p>}
-                  </div>
-                  <div>
-                    <input type="text" placeholder="Add skills/tags and press Enter" value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={handleAddTag} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark dark:text-text-primary-dark text-text-primary-light" />
+                    <input type="text" placeholder="Add skills/tags and press Enter" value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={handleAddTag} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
                     <div className="flex flex-wrap gap-2 mt-2">
                       {newProject.tags.map(tag => (
                         <span key={tag} className="bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark text-xs font-semibold px-2.5 py-1 rounded-full flex items-center">
@@ -282,7 +258,7 @@ export default function AdminPanel({ db, auth, storage }) {
                     </div>
                   )}
                   <button type="submit" disabled={isSubmitting} className="w-full bg-primary-light dark:bg-primary-dark text-text-primary-dark dark:text-text-primary-light py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
-                    {isSubmitting ? `Uploading... ${Math.round(uploadProgress)}%` : 'Add Project'}
+                    {isSubmitting ? 'Adding Project...' : 'Add Project'}
                   </button>
                 </form>
               </motion.div>
@@ -326,5 +302,5 @@ export default function AdminPanel({ db, auth, storage }) {
         </div>
       </div>
     </>
-  );
+  );
 }
