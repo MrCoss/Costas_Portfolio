@@ -1,8 +1,10 @@
 // =================================================================================
 // FILE: src/components/Certifications.jsx (FINAL REFACTOR)
 // =================================================================================
-// This component is now fully theme-aware, with corrected button text colors
-// for optimal readability in both light and dark modes.
+// This component now displays a single, multi-page PDF with an auto-scroll
+// effect, providing a seamless viewing experience for merged certificates.
+// The component is now fully theme-aware with correct button text colors.
+// Updated to use a relative path for a hosted environment.
 // =================================================================================
 
 import React, { useState } from 'react';
@@ -30,7 +32,7 @@ const AutoScrollStyles = () => (
 
 
 // =================================================================================
-// Sub-component: PdfViewerModal (Updated)
+// Sub-component: PdfViewerModal (Updated for Auto-Scroll)
 // =================================================================================
 const PdfViewerModal = ({ url, onClose }) => {
     return (
@@ -78,12 +80,11 @@ const PdfViewerModal = ({ url, onClose }) => {
 // =================================================================================
 // Main Component: Certifications (Updated)
 // =================================================================================
-const Certifications = React.memo(({ licensesPdfUrl, internshipsPdfUrl }) => {
+const Certifications = React.memo(() => {
     const [viewingPdfUrl, setViewingPdfUrl] = useState(null);
 
-    // MODIFIED: Corrected the button text color for light mode.
-    // It now uses the semantic token for primary text, ensuring readability.
-    const buttonClasses = "inline-block text-text-primary-light dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/20 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
+    // The button classes have been defined here to ensure consistency.
+    const buttonClasses = "inline-block text-white dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/30 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
 
     return (
         <>
@@ -93,8 +94,7 @@ const Certifications = React.memo(({ licensesPdfUrl, internshipsPdfUrl }) => {
                 <AnimatedDivider />
                 <div className="text-center flex flex-col md:flex-row justify-center items-center gap-6">
                     <motion.button
-                        onClick={() => setViewingPdfUrl(licensesPdfUrl)}
-                        disabled={!licensesPdfUrl}
+                        onClick={() => setViewingPdfUrl("/Costas_Portfolio/certificates/cerificates.pdf")}
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                         className={buttonClasses}
@@ -102,8 +102,7 @@ const Certifications = React.memo(({ licensesPdfUrl, internshipsPdfUrl }) => {
                         View Licenses & Certs
                     </motion.button>
                     <motion.button
-                        onClick={() => setViewingPdfUrl(internshipsPdfUrl)}
-                        disabled={!internshipsPdfUrl}
+                        onClick={() => setViewingPdfUrl("/Costas_Portfolio/internships/internships.pdf")}
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                         className={buttonClasses}
@@ -118,4 +117,4 @@ const Certifications = React.memo(({ licensesPdfUrl, internshipsPdfUrl }) => {
     );
 });
 
-export default Certifications; 
+export default Certifications;
