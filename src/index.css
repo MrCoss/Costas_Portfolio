@@ -1,14 +1,24 @@
 /* =================================================================================
-   FILE: src/index.css
-   =================================================================================
-   This is the main CSS entry point for the application. It uses the @tailwind
-   directive to inject Tailwind's base, components, and utilities styles.
-   It also includes base styles for a more polished and consistent look and feel.
-   ================================================================================= */
+  FILE: src/index.css (REFACTORED)
+  =================================================================================
+  This file now applies global theme styles directly to the root HTML element,
+  centralizing the application's base background and text colors.
+  ================================================================================= */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /*
+  REFACTORED: Global theme styles are now applied directly to the html tag.
+  This ensures the entire page, regardless of content length, correctly
+  displays the theme's background and text colors.
+  */
+  html {
+    @apply bg-background-light text-text-primary-light dark:bg-background-dark dark:text-text-primary-dark transition-colors duration-500;
+  }
+}
 
 /*
   Apply anti-aliasing for smoother font rendering across the application.

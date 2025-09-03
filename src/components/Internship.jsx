@@ -1,9 +1,8 @@
 // =================================================================================
-// FILE: src/components/Internships.jsx
+// FILE: src/components/Internships.jsx (FINAL REFACTOR)
 // =================================================================================
-// This component displays a link to open a modal and view the internship
-// certificate PDF. It is a focused component, refactored for clarity,
-// maintainability, and consistency with the new theme.
+// This component now uses a consistent and fully semantic color palette
+// for a seamless dark mode experience and a more maintainable structure.
 // =================================================================================
 
 import React, { useState } from 'react';
@@ -12,8 +11,7 @@ import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
 // =================================================================================
-// Sub-component: PdfViewerModal
-// A self-contained, animated modal for displaying PDF content.
+// Sub-component: PdfViewerModal (Refactored for Semantic Dark Mode)
 // =================================================================================
 const PdfViewerModal = ({ url, onClose }) => {
   return (
@@ -32,23 +30,23 @@ const PdfViewerModal = ({ url, onClose }) => {
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            // UPDATED: Modal background uses the theme's 'bg-background'.
-            className="bg-background rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden"
+            // MODIFIED: Use semantic background colors.
+            className="bg-background-light dark:bg-background-dark rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden"
           >
-            {/* UPDATED: Header styles updated to match the theme. */}
-            <header className="flex justify-between items-center p-4 border-b border-primary/10">
-              <h3 className="font-bold text-lg text-text-primary">Internship Certificate</h3>
+            {/* MODIFIED: Header styles now use semantic color tokens. */}
+            <header className="flex justify-between items-center p-4 border-b border-primary-light/10 dark:border-primary-dark/20">
+              <h3 className="font-bold text-lg text-text-primary-light dark:text-text-primary-dark">Internship Certificate</h3>
               <button
                 onClick={onClose}
-                // UPDATED: Close button now uses theme colors for a consistent look.
-                className="text-text-secondary hover:text-secondary transition-colors p-1 rounded-full hover:bg-secondary/10"
+                // MODIFIED: Use semantic text and hover colors.
+                className="text-text-secondary-light dark:text-text-secondary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors p-1 rounded-full hover:bg-secondary-light/10 dark:hover:bg-secondary-dark/10"
                 aria-label="Close"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
             </header>
-            {/* UPDATED: Iframe container background uses the theme's alternate background. */}
-            <div className="flex-grow p-2 bg-background-alt">
+            {/* MODIFIED: Iframe container now uses semantic background colors. */}
+            <div className="flex-grow p-2 bg-background-alt-light dark:bg-background-alt-dark">
               <iframe
                 src={url}
                 title="Internship Certificate PDF Viewer"
@@ -63,8 +61,7 @@ const PdfViewerModal = ({ url, onClose }) => {
 };
 
 // =================================================================================
-// Main Component: Internships
-// Renders the section and manages the state for the PDF viewer.
+// Main Component: Internships (Refactored for Semantic Dark Mode)
 // =================================================================================
 const Internships = React.memo(({ internshipsPdfUrl }) => {
   const [viewingPdfUrl, setViewingPdfUrl] = useState(null);
@@ -72,8 +69,8 @@ const Internships = React.memo(({ internshipsPdfUrl }) => {
   return (
     <>
       <AnimatedSection id="internships">
-        {/* UPDATED: Heading text color now uses text-primary. */}
-        <h2 className="text-4xl font-bold text-text-primary text-center">Internship Certificate</h2>
+        {/* MODIFIED: Heading now uses semantic text color tokens. */}
+        <h2 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark text-center">Internship Certificate</h2>
         <AnimatedDivider />
         <div className="text-center">
           <motion.button
@@ -81,8 +78,8 @@ const Internships = React.memo(({ internshipsPdfUrl }) => {
             disabled={!internshipsPdfUrl}
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            // UPDATED: Button styles now use the primary (emerald) and secondary (pink) theme colors.
-            className="inline-block text-white font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary/30 bg-gradient-to-r from-primary to-secondary transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            // MODIFIED: Button styles now use semantic color tokens.
+            className="inline-block text-white dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/30 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             View Internship Certificate
           </motion.button>

@@ -1,8 +1,8 @@
 // =================================================================================
-// FILE: src/components/Projects.jsx
+// FILE: src/components/Projects.jsx (FINAL REFACTOR)
 // =================================================================================
-// This component displays the portfolio projects and now includes a versatile
-// media renderer that can display images, videos, or links to PDFs.
+// This component now uses a consistent and fully semantic color palette
+// for a seamless dark mode experience and a more maintainable structure.
 // =================================================================================
 
 import React, { memo } from 'react';
@@ -12,17 +12,17 @@ import AnimatedDivider from './ui/AnimatedDivider';
 import { FaFilePdf } from 'react-icons/fa';
 
 // =================================================================================
-// Sub-component: ProjectMedia
-// Renders the correct media type (image, video, PDF) based on the URL.
+// Sub-component: ProjectMedia (Refactored for Semantic Dark Mode)
 // =================================================================================
 const ProjectMedia = memo(({ mediaUrl, title }) => {
   if (!mediaUrl) {
     return (
+      // MODIFIED: Use semantic border colors.
       <img
         loading="lazy"
         src={'https://placehold.co/600x400/e2e8f0/334155?text=Project'}
         alt={title}
-        className="rounded-lg mb-4 aspect-video object-cover border border-primary/10"
+        className="rounded-lg mb-4 aspect-video object-cover border border-primary-light/10 dark:border-primary-dark/20"
       />
     );
   }
@@ -32,10 +32,11 @@ const ProjectMedia = memo(({ mediaUrl, title }) => {
 
   if (isVideo) {
     return (
+      // MODIFIED: Use semantic border colors.
       <video
         src={mediaUrl}
         controls
-        className="rounded-lg mb-4 aspect-video object-cover border border-primary/10 w-full"
+        className="rounded-lg mb-4 aspect-video object-cover border border-primary-light/10 dark:border-primary-dark/20 w-full"
       >
         Your browser does not support the video tag.
       </video>
@@ -44,40 +45,38 @@ const ProjectMedia = memo(({ mediaUrl, title }) => {
 
   if (isPdf) {
     return (
-      <a 
-        href={mediaUrl} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className="rounded-lg mb-4 aspect-video object-cover border border-primary/10 w-full flex flex-col items-center justify-center bg-slate-100 hover:bg-slate-200 transition-colors"
+      // MODIFIED: Use semantic background, border, and text colors.
+      <a
+        href={mediaUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="rounded-lg mb-4 aspect-video object-cover border border-primary-light/10 dark:border-primary-dark/20 w-full flex flex-col items-center justify-center bg-background-alt-light dark:bg-background-alt-dark hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
       >
         <FaFilePdf className="text-6xl text-red-500" />
-        <span className="mt-2 font-semibold text-text-secondary">View PDF</span>
+        <span className="mt-2 font-semibold text-text-secondary-light dark:text-text-secondary-dark">View PDF</span>
       </a>
     );
   }
   
-  // Default to rendering as an image
   return (
+    // MODIFIED: Use semantic border colors.
     <img
       loading="lazy"
       src={mediaUrl}
       alt={title}
-      className="rounded-lg mb-4 aspect-video object-cover border border-primary/10"
+      className="rounded-lg mb-4 aspect-video object-cover border border-primary-light/10 dark:border-primary-dark/20"
     />
   );
 });
 
 
 // =================================================================================
-// Main Component: Projects
+// Main Component: Projects (Refactored for Semantic Dark Mode)
 // =================================================================================
 const Projects = memo(({ projects }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
   };
 
   const itemVariants = {
@@ -87,7 +86,8 @@ const Projects = memo(({ projects }) => {
 
   return (
     <AnimatedSection id="projects">
-      <h2 className="text-4xl font-bold text-text-primary text-center">My Projects</h2>
+      {/* MODIFIED: Use semantic text color. */}
+      <h2 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark text-center">My Projects</h2>
       <AnimatedDivider />
       <div className="min-h-[60vh] w-full">
         {projects.length > 0 ? (
@@ -102,26 +102,31 @@ const Projects = memo(({ projects }) => {
               <motion.div
                 variants={itemVariants}
                 key={project.id}
-                className="p-6 flex flex-col rounded-2xl bg-white shadow-lg border border-primary/10 md:bg-white/20 md:backdrop-blur-lg md:border-white/30 transition-all duration-300 md:hover:shadow-2xl md:hover:shadow-primary/20 md:hover:-translate-y-1 overflow-hidden"
+              // MODIFIED: Use semantic background, border, and shadow colors consistently.
+                className="p-6 flex flex-col rounded-2xl bg-white dark:bg-background-alt-dark shadow-lg dark:shadow-2xl dark:shadow-slate-900/50 border border-primary-light/10 dark:border-primary-dark/20 md:bg-white/20 md:dark:bg-slate-800/20 md:backdrop-blur-lg md:border-white/30 transition-all duration-300 md:hover:shadow-2xl md:hover:shadow-primary-light/20 md:hover:-translate-y-1 overflow-hidden"
               >
-                {/* MODIFIED: Replaced simple img tag with the new ProjectMedia component */}
                 <ProjectMedia mediaUrl={project.mediaUrl} title={project.title} />
                 
-                <h3 className="text-xl font-bold text-text-primary mb-2">{project.title}</h3>
-                <p className="text-text-secondary flex-grow mb-4">{project.description}</p>
+                {/* MODIFIED: Use semantic text colors. */}
+                <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-2">{project.title}</h3>
+                <p className="text-text-secondary-light dark:text-text-secondary-dark flex-grow mb-4">{project.description}</p>
+                
+                {/* MODIFIED: Use semantic styles for tags. */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags?.map(tag => (
-                    <span key={tag} className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-1 rounded-full">
+                    <span key={tag} className="bg-primary-light/10 dark:bg-primary-dark/10 text-primary-light dark:text-primary-dark text-xs font-medium px-2.5 py-1 rounded-full">
                       {tag}
                     </span>
                   ))}
                 </div>
+
                 {project.link && (
+                  // MODIFIED: Use semantic styles for the button.
                   <a
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-auto text-center font-semibold text-secondary border border-secondary rounded-full py-2 px-4 hover:bg-secondary hover:text-white transition-all duration-300 z-10"
+                    className="mt-auto text-center font-semibold text-secondary-light dark:text-secondary-dark border border-secondary-light dark:border-secondary-dark rounded-full py-2 px-4 hover:bg-secondary-light dark:hover:bg-secondary-dark hover:text-white dark:hover:text-background-dark transition-all duration-300 z-10"
                   >
                     View Project
                   </a>
@@ -131,7 +136,8 @@ const Projects = memo(({ projects }) => {
           </motion.div>
         ) : (
           <div className="min-h-[20vh] flex justify-center items-center">
-            <p className="text-center text-text-secondary text-lg">
+            {/* MODIFIED: Use semantic text color. */}
+            <p className="text-center text-text-secondary-light dark:text-text-secondary-dark text-lg">
               No projects found. Please add some from the admin panel.
             </p>
           </div>

@@ -1,9 +1,9 @@
 // =================================================================================
-// FILE: src/components/ui/LoadingSpinner.jsx
+// FILE: src/components/ui/LoadingSpinner.jsx (FINAL REFACTOR)
 // =================================================================================
 // This component displays a custom, "Newton's Cradle" style loading animation
-// using utilities from the centralized tailwind.config.js. This approach ensures
-// maximum performance and maintainability. It is memoized to prevent re-renders.
+// that is now fully theme-aware and will adapt its colors for both
+// light and dark modes.
 // =================================================================================
 
 import React from 'react';
@@ -11,17 +11,16 @@ import React from 'react';
 const LoadingSpinner = React.memo(() => {
   // A reusable component for each animated dot.
   const Dot = ({ delay }) => (
+    // MODIFIED: The gradient now uses semantic, theme-aware color tokens.
     <div
-      // UPDATED: Gradient changed from blue to the primary (emerald) and secondary (pink) theme colors.
-      className="w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full animate-pulse-bounce"
+      className="w-4 h-4 bg-gradient-to-br from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark rounded-full animate-pulse-bounce"
       style={{ animationDelay: delay }}
     />
   );
 
   return (
-    // The main container, centering the spinner on the screen.
-    // UPDATED: Background color changed to the theme's 'bg-background' (white).
-    <div className="flex justify-center items-center h-screen bg-background">
+    // MODIFIED: The main container's background color uses the new semantic tokens.
+    <div className="flex justify-center items-center h-screen bg-background-light dark:bg-background-dark">
       <div className="flex items-center justify-center space-x-2">
         {/* Render multiple dots with staggered animation delays */}
         <Dot delay="0s" />

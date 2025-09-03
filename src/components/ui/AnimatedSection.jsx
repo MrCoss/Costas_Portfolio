@@ -1,27 +1,15 @@
 // =================================================================================
-// FILE: src/components/ui/AnimatedSection.jsx
+// FILE: src/components/ui/AnimatedSection.jsx (REFACTORED)
 // =================================================================================
-// This is a reusable wrapper component that applies a consistent "fade and slide up"
-// animation to any section as it scrolls into the user's viewport. It uses
-// Framer Motion for efficient, physics-based animations and is memoized for
-// optimal performance.
+// This component now uses Framer Motion's `whileInView` prop for a cleaner,
+// more declarative approach to scroll-triggered animations.
 // =================================================================================
 
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const AnimatedSection = React.memo(({ children, id, className = '' }) => {
-  // A ref to attach to the section element to track its position on the page.
-  const ref = useRef(null);
-
-  // The useInView hook returns `true` when the referenced element is in view.
-  // - `once: true`: Ensures the animation only triggers once.
-  // - `amount: 0.2`: Starts the animation when 20% of the section is visible,
-  //   providing a smoother lead-in.
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
-
-  // Variants define the animation states, separating the animation logic from the JSX
-  // for better readability and maintenance.
+  // Variants define the animation states, separating the animation logic from the JSX.
   const sectionVariants = {
     // The state before the element is in view: invisible and shifted down.
     hidden: { opacity: 0, y: 40 },
@@ -39,13 +27,14 @@ const AnimatedSection = React.memo(({ children, id, className = '' }) => {
   return (
     <motion.section
       id={id}
-      ref={ref}
       // Apply the defined variants.
       variants={sectionVariants}
       // Set the initial state to 'hidden'.
       initial="hidden"
-      // Dynamically animate to the 'visible' state when `isInView` becomes true.
-      animate={isInView ? 'visible' : 'hidden'}
+      // REFACTORED: Use `whileInView` to automatically animate to the 'visible' state.
+      whileInView="visible"
+      // Configure the viewport trigger. This replaces `useInView`.
+      viewport={{ once: true, amount: 0.2 }}
       // Combine default padding with any custom classes passed via props.
       className={`py-16 md:py-20 ${className}`}
     >

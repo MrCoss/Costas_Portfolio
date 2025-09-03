@@ -1,9 +1,8 @@
 // =================================================================================
-// FILE: src/components/Skills.jsx
+// FILE: src/components/Skills.jsx (FINAL REFACTOR)
 // =================================================================================
-// This component displays technical skills in an interactive accordion format.
-// It allows users to click on a category to reveal the skills within,
-// creating a clean and engaging user experience. It is memoized for performance.
+// This component now uses a consistent and fully semantic color palette
+// for a seamless dark mode experience and a more maintainable structure.
 // =================================================================================
 
 import React, { useState } from 'react';
@@ -13,15 +12,12 @@ import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
 const Skills = React.memo(() => {
-  // State to manage which category is currently open. Default to the first.
   const [openCategory, setOpenCategory] = useState('Programming Languages');
 
-  // Toggles the accordion. If the clicked category is already open, it closes it.
   const handleToggle = (category) => {
     setOpenCategory(prevCategory => (prevCategory === category ? null : category));
   };
 
-  // Data structure for skills, organized by category with proficiency levels.
   const categorizedSkills = {
     'Programming Languages': [
       { name: 'Python', level: 90 },
@@ -52,22 +48,18 @@ const Skills = React.memo(() => {
     ]
   };
 
-  // UPDATED: Icons now use the new theme colors for consistency and accent.
+  // MODIFIED: Icons now have semantic color variants.
   const categoryIcons = {
-    'Programming Languages': <FaCode className="mr-3 text-primary" />,
-    'Data Science & Analytics': <FaChartBar className="mr-3 text-primary" />,
-    'Web & App Development': <FaReact className="mr-3 text-secondary" />,
-    'AI & Generative AI': <FaBrain className="mr-3 text-primary" />,
-    'Tools & Workflow': <FaTools className="mr-3 text-text-secondary" />,
+    'Programming Languages': <FaCode className="mr-3 text-primary-light dark:text-primary-dark" />,
+    'Data Science & Analytics': <FaChartBar className="mr-3 text-primary-light dark:text-primary-dark" />,
+    'Web & App Development': <FaReact className="mr-3 text-secondary-light dark:text-secondary-dark" />,
+    'AI & Generative AI': <FaBrain className="mr-3 text-primary-light dark:text-primary-dark" />,
+    'Tools & Workflow': <FaTools className="mr-3 text-text-secondary-light dark:text-text-secondary-dark" />,
   };
 
-  // Animation variants for staggering the skill items' entrance.
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
@@ -77,27 +69,27 @@ const Skills = React.memo(() => {
 
   return (
     <AnimatedSection id="skills">
-      {/* UPDATED: Heading now uses the theme's primary text color. */}
-      <h2 className="text-4xl font-bold text-text-primary text-center">My Skills</h2>
+      {/* MODIFIED: Heading now uses semantic text colors. */}
+      <h2 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark text-center">My Skills</h2>
       <AnimatedDivider />
-      {/* UPDATED: Glass card now has a primary (emerald) hover glow. */}
-      <div className="relative p-4 md:p-8 max-w-4xl mx-auto rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-1">
+      {/* MODIFIED: Glass card now uses semantic colors and hover effects. */}
+      <div className="relative p-4 md:p-8 max-w-4xl mx-auto rounded-2xl bg-white/20 dark:bg-background-alt-dark/20 backdrop-blur-lg border border-white/30 dark:border-white/10 shadow-lg dark:shadow-2xl dark:shadow-primary-dark/10 transition-all duration-300 hover:shadow-2xl hover:shadow-primary-light/20 dark:hover:shadow-primary-dark/20 hover:-translate-y-1">
         <div className="space-y-2">
           {Object.entries(categorizedSkills).map(([category, skills]) => (
-            // UPDATED: Border color uses a subtle shade of the primary color.
-            <div key={category} className="border-b border-primary/20 last:border-b-0">
+            // MODIFIED: Border color now uses semantic names.
+            <div key={category} className="border-b border-primary-light/20 dark:border-primary-dark/20 last:border-b-0">
               <button
                 onClick={() => handleToggle(category)}
-                // UPDATED: Text color now uses the theme's primary text color.
-                className="w-full flex justify-between items-center py-4 text-left text-xl font-semibold text-text-primary focus:outline-none"
+                // MODIFIED: Text color now uses semantic names.
+                className="w-full flex justify-between items-center py-4 text-left text-xl font-semibold text-text-primary-light dark:text-text-primary-dark focus:outline-none"
               >
                 <span className="flex items-center">
                   {categoryIcons[category]}
                   {category}
                 </span>
                 <motion.span animate={{ rotate: openCategory === category ? 180 : 0 }}>
-                  {/* UPDATED: Chevron icon now uses the theme's secondary text color. */}
-                  <FaChevronDown className="w-5 h-5 transition-colors duration-300 text-text-secondary" />
+                  {/* MODIFIED: Chevron icon now uses semantic text colors. */}
+                  <FaChevronDown className="w-5 h-5 transition-colors duration-300 text-text-secondary-light dark:text-text-secondary-dark" />
                 </motion.span>
               </button>
               <AnimatePresence>
@@ -117,13 +109,12 @@ const Skills = React.memo(() => {
                     >
                       {skills.map((skill) => (
                         <motion.div variants={itemVariants} key={skill.name}>
-                          {/* UPDATED: Skill name now uses the theme's secondary text color. */}
-                          <p className="text-lg font-medium text-text-secondary mb-1">{skill.name}</p>
-                          {/* UPDATED: Progress bar background is now a light shade of the primary color. */}
-                          <div className="bg-primary/10 w-full rounded-full h-2.5">
+                          {/* MODIFIED: Skill name now uses semantic text colors. */}
+                          <p className="text-lg font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1">{skill.name}</p>
+                          {/* MODIFIED: Progress bar background and gradient now use semantic names. */}
+                          <div className="bg-primary-light/10 dark:bg-primary-dark/10 w-full rounded-full h-2.5">
                             <motion.div
-                              // UPDATED: Progress bar now has the primary-to-secondary gradient.
-                              className="h-2.5 rounded-full bg-gradient-to-r from-primary to-secondary"
+                              className="h-2.5 rounded-full bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark"
                               initial={{ width: 0 }}
                               animate={{ width: `${skill.level}%` }}
                               transition={{ duration: 1, ease: "easeOut" }}

@@ -1,54 +1,57 @@
 // =================================================================================
-// FILE: src/components/Header.jsx
+// FILE: src/components/Header.jsx (FINAL REFACTOR)
 // =================================================================================
-// This component renders the main navigation header for the portfolio. It is
-// designed to be fully responsive, featuring a clean, text-based navigation for
-// desktop and an animated, slide-down menu for mobile devices. It is memoized
-// for optimal performance.
+// This component is now fully theme-aware and uses React's context API to
+// manage the theme, eliminating prop drilling.
 // =================================================================================
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from './ui/ThemeToggle'; // The toggle component now manages its own state.
 
 // =================================================================================
-// Sub-component: NavItem
-// A reusable component for icon-based navigation links with a hover tooltip.
+// Sub-component: NavItem (Refactored for Semantic Dark Mode)
 // =================================================================================
 const NavItem = ({ href, label, children, onClick }) => (
   <a
     href={href}
     onClick={onClick}
-    // UPDATED: NavItem now uses theme colors with a primary (emerald) hover effect.
-    className="group relative flex items-center justify-center p-2 rounded-full text-text-secondary hover:bg-primary/10 hover:text-primary transition-all duration-300"
+    // MODIFIED: Use semantic text and hover colors.
+    className="group relative flex items-center justify-center p-2 rounded-full text-text-secondary-light dark:text-text-secondary-dark hover:bg-primary-light/10 dark:hover:bg-primary-dark/10 hover:text-primary-light dark:hover:text-primary-dark transition-all duration-300"
     aria-label={label}
   >
     {children}
-    {/* The text label tooltip that appears on hover */}
-    {/* UPDATED: Tooltip now uses the theme's dark 'text-primary' color for the background. */}
-    <span className="absolute left-full ml-3 px-3 py-1.5 whitespace-nowrap text-sm font-medium text-white bg-text-primary rounded-md shadow-md opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
+    {/* Tooltip */}
+    {/* MODIFIED: Use semantic background and text colors. */}
+    <span className="absolute left-full ml-3 px-3 py-1.5 whitespace-nowrap text-sm font-medium text-white dark:text-background-dark bg-text-primary-light dark:bg-text-primary-dark rounded-md shadow-md opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
       {label}
     </span>
   </a>
 );
 
 // =================================================================================
-// Main Component: Header
-// Manages the overall header structure, state, and responsive behavior.
+// Main Component: Header (Final Refactor)
 // =================================================================================
 const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu }) => {
-  // This handler provides smooth scrolling to section anchors and ensures the
-  // mobile menu is closed upon navigation.
+  // REFACTORED: `theme` and `toggleTheme` are no longer passed as props.
+  // The ThemeToggle component will use the `useTheme` hook internally.
+
+  const navLinks = [
+    { href: "#about", label: "About" },
+    { href: "#experience", label: "Experience" },
+    { href: "#skills", label: "Skills" },
+    { href: "#projects", label: "Projects" },
+    { href: "#contact", label: "Contact" },
+  ];
+
   const handleLinkClick = (e) => {
     e.preventDefault();
     const targetId = e.currentTarget.getAttribute('href');
     const targetElement = document.querySelector(targetId);
     
-    // Always close the mobile menu when a link is clicked.
     closeMobileMenu();
 
     if (targetElement) {
-      // A brief timeout prevents the menu-closing animation from interfering
-      // with the start of the smooth scroll animation.
       setTimeout(() => {
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -56,8 +59,7 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
   };
 
   return (
-    // UPDATED: Border color now uses a subtle shade of the primary (emerald) color.
-    <header className="bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-primary/10">
+    <header className="bg-white/80 dark:bg-background-dark/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-primary-light/10 dark:border-primary-dark/20">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Home Icon Link */}
         <NavItem href="#home" label="Home" onClick={handleLinkClick}>
@@ -65,19 +67,22 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
         </NavItem>
         
         {/* Desktop Navigation Links */}
-        {/* UPDATED: Desktop links now use theme colors with a secondary (pink) hover effect. */}
-        <div className="hidden md:flex space-x-6 items-center font-medium text-text-secondary">
-          <a href="#about" onClick={handleLinkClick} className="hover:text-secondary transition-colors">About</a>
-          <a href="#experience" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Experience</a>
-          <a href="#skills" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Skills</a>
-          <a href="#projects" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Projects</a>
-          <a href="#contact" onClick={handleLinkClick} className="hover:text-secondary transition-colors">Contact</a>
+        <div className="hidden md:flex space-x-6 items-center font-medium text-text-secondary-light dark:text-text-secondary-dark">
+          {navLinks.map((link) => (
+            <a key={link.href} href={link.href} onClick={handleLinkClick} className="hover:text-secondary-light dark:hover:text-secondary-dark transition-colors">
+              {link.label}
+            </a>
+          ))}
+          {/* REFACTORED: No longer pass props to ThemeToggle */}
+          <ThemeToggle />
         </div>
         
-        {/* Mobile Menu Button (Hamburger/Close Icon) */}
-        <div className="md:hidden">
-          {/* UPDATED: Mobile menu button now uses the theme's primary text color. */}
-          <button onClick={toggleMobileMenu} className="text-text-primary focus:outline-none p-1">
+        {/* Mobile Controls */}
+        <div className="md:hidden flex items-center space-x-4">
+          {/* REFACTORED: No longer pass props to ThemeToggle */}
+          <ThemeToggle />
+          {/* MODIFIED: Use semantic text colors for the icon. */}
+          <button onClick={toggleMobileMenu} className="text-text-primary-light dark:text-text-primary-dark focus:outline-none p-1" aria-label="Toggle menu">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMobileMenuOpen 
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> 
@@ -95,14 +100,14 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            // UPDATED: Mobile menu now uses theme colors with a secondary (pink) hover effect.
-            className="md:hidden absolute top-full left-0 w-full bg-white z-40 shadow-lg px-6 py-4 space-y-3 text-text-secondary font-medium"
+            // MODIFIED: Use semantic background and text colors.
+            className="md:hidden absolute top-full left-0 w-full bg-background-light dark:bg-background-dark z-40 shadow-lg px-6 py-4 space-y-3 text-text-secondary-light dark:text-text-secondary-dark font-medium"
           >
-            <a href="#about" onClick={handleLinkClick} className="block py-2 hover:text-secondary">About</a>
-            <a href="#experience" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Experience</a>
-            <a href="#skills" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Skills</a>
-            <a href="#projects" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Projects</a>
-            <a href="#contact" onClick={handleLinkClick} className="block py-2 hover:text-secondary">Contact</a>
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href} onClick={handleLinkClick} className="block py-2 hover:text-secondary-light dark:hover:text-secondary-dark">
+                {link.label}
+              </a>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
