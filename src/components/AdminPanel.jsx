@@ -69,6 +69,7 @@ export default function AdminPanel({ db, auth }) {
   const [newProject, setNewProject] = useState({ title: "", description: "", link: "", tags: [], mediaUrl: "" }); // MODIFIED: Added mediaUrl state
   const [tagInput, setTagInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress] = useState(0); // This is no longer used, but kept to prevent errors.
 
   const showNotification = useCallback((message, type = 'error') => {
     setNotification({ message, type });
@@ -138,14 +139,6 @@ export default function AdminPanel({ db, auth }) {
     setNewProject({ ...newProject, tags: newProject.tags.filter(tag => tag !== tagToRemove) });
   };
   
-  // MODIFIED: This function is no longer needed since we aren't uploading files.
-  // const handleFileChange = (e) => {
-  //   if (e.target.files[0]) {
-  //     setMediaFile(e.target.files[0]);
-  //   }
-  // };
-
-  // REFACTORED: Simplified project addition to use a media URL instead of file uploads.
   const handleAddProject = async (e) => {
     e.preventDefault();
     if (!newProject.title.trim()) return showNotification("Project title is required.");
@@ -302,5 +295,5 @@ export default function AdminPanel({ db, auth }) {
         </div>
       </div>
     </>
-  );
+  );
 }

@@ -1,25 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Sets the favicon for the website's browser tab -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> 
-    <!-- Ensures the site is responsive and scales correctly on all devices -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- A brief description of the page for SEO and social sharing -->
-    <meta name="description" content="The professional portfolio of Costas Pinto, a Data Science and Machine Learning enthusiast." />
-    <title>Costas Pinto - Portfolio</title>
+    <title>Vite + React</title>
+    <!-- CSS for react-pdf viewer -->
+    <link rel="stylesheet" href="https://unpkg.com/react-pdf@5.7.2/dist/esm/Page/AnnotationLayer.css" />
+    <link rel="stylesheet" href="https://unpkg.com/react-pdf@5.7.2/dist/esm/Page/TextLayer.css" />
   </head>
   <body>
-    <!-- This is the root DOM element where the entire React application will be mounted -->
     <div id="root"></div>
-    
-    <!-- 
-      This script tag is the entry point for the React application.
-      - `type="module"` allows the use of ES6 import/export syntax.
-      - `src="/src/main.jsx"` points to the main JavaScript file that initializes React.
-      This is the standard convention for Vite-based projects.
-    -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

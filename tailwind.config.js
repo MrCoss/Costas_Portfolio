@@ -53,19 +53,12 @@ export default {
           '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
           '50%': { transform: 'scale(1.2)', opacity: '1' },
         },
-        // ADDED: Auto-scroll keyframe for the Certifications component.
-        'auto-scroll': {
-          '0%': { transform: 'translateY(0)' },
-          '100%': { transform: 'translateY(calc(-100% + 90vh))' },
-        },
       },
       animation: {
         'slow-spin': 'move 35s linear infinite',
         'reverse-spin': 'move-alt 45s linear infinite',
         'soft-pulse': 'pulse-soft 10s ease-in-out infinite',
         'pulse-bounce': 'pulse-bounce 1s ease-in-out infinite',
-        // ADDED: Auto-scroll animation for the Certifications component.
-        'auto-scroll': 'auto-scroll 60s linear infinite alternate',
       },
       // REFACTORED: Gradients are now semantically named.
       backgroundImage: {
