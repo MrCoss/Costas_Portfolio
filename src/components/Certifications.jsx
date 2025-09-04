@@ -4,12 +4,30 @@ import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
 // =================================================================================
-// Sub-component: SlideshowModal
+// Sub-component: SlideshowModal (with TypeError fix)
 // =================================================================================
 const SlideshowModal = ({ images, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Handle keyboard navigation
+  const convertGoogleDriveUrl = (url) => {
+    // FIX: Add a robust check to ensure 'url' is a string before calling .match()
+    if (typeof url !== 'string' || !url) {
+      return null;
+    }
+    const regex = /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
+    const match = url.match(regex);
+    if (match && match[1]) {
+      const fileId = match[1];
+      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    }
+    return url;
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [currentIndex]);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowRight') goToNext();
@@ -18,7 +36,7 @@ const SlideshowModal = ({ images, onClose }) => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [images]); // Re-bind if images change
+  }, [currentIndex, images]);
 
   if (!images || images.length === 0) {
     return null;
@@ -36,6 +54,8 @@ const SlideshowModal = ({ images, onClose }) => {
     setCurrentIndex(newIndex);
   };
 
+  const currentImageUrl = convertGoogleDriveUrl(images[currentIndex]);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -45,7 +65,6 @@ const SlideshowModal = ({ images, onClose }) => {
         onClick={onClose}
         className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4"
       >
-        {/* Main Modal Content */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -53,7 +72,6 @@ const SlideshowModal = ({ images, onClose }) => {
           onClick={(e) => e.stopPropagation()}
           className="relative w-full h-full max-w-5xl max-h-[90vh] flex flex-col items-center justify-center"
         >
-          {/* Close Button */}
           <button
             onClick={onClose}
             className="absolute -top-2 -right-2 z-20 text-white bg-black/50 rounded-full p-2 hover:bg-red-500 transition-colors"
@@ -62,23 +80,24 @@ const SlideshowModal = ({ images, onClose }) => {
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
 
-          {/* Image Display */}
           <div className="relative w-full h-full flex items-center justify-center">
+             {isLoading && <div className="text-white">Loading image...</div>}
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentIndex}
-                src={images[currentIndex]}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
+                src={currentImageUrl || ''} // Use empty string fallback for src
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                className={`max-w-full max-h-full object-contain rounded-lg shadow-2xl ${isLoading || !currentImageUrl ? 'hidden' : 'block'}`}
                 alt={`Slide ${currentIndex + 1}`}
+                onLoad={() => setIsLoading(false)}
+                onError={() => setIsLoading(false)}
               />
             </AnimatePresence>
           </div>
           
-          {/* Navigation Arrows */}
           <button onClick={goToPrevious} className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition-colors focus:outline-none">
              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"></path></svg>
           </button>
@@ -86,7 +105,6 @@ const SlideshowModal = ({ images, onClose }) => {
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"></path></svg>
           </button>
 
-          {/* Counter */}
           <div className="absolute bottom-4 bg-black/50 text-white text-sm px-3 py-1 rounded-full">
             {currentIndex + 1} / {images.length}
           </div>
@@ -98,7 +116,7 @@ const SlideshowModal = ({ images, onClose }) => {
 
 
 // =================================================================================
-// Main Component: Certifications
+// Main Component: Certifications (No changes needed here)
 // =================================================================================
 const Certifications = React.memo(({ licensesImageUrls, internshipsImageUrls }) => {
   const [activeSlideshow, setActiveSlideshow] = useState({
@@ -110,7 +128,6 @@ const Certifications = React.memo(({ licensesImageUrls, internshipsImageUrls }) 
     if (images && images.length > 0) {
         setActiveSlideshow({ isOpen: true, images: images });
     }
-    // Optionally, add an alert or notification if there are no images.
   };
 
   const closeSlideshow = () => {
