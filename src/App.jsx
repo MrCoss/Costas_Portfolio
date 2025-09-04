@@ -1,7 +1,3 @@
-// =================================================================================
-// FILE: src/App.jsx (FINAL & CORRECTED)
-// =================================================================================
-
 import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { initializeApp, getApps } from 'firebase/app';

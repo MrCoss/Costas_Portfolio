@@ -1,110 +1,163 @@
-// =================================================================================
-// FILE: src/components/Certifications.jsx (FINAL)
-// =================================================================================
-// This component now uses a simple and reliable iframe with Google Docs Viewer
-// to display PDFs.
-// =================================================================================
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
 // =================================================================================
-// Sub-component: PdfViewerModal
+// Sub-component: SlideshowModal
 // =================================================================================
-const PdfViewerModal = ({ url, onClose }) => {
-    // Return null if no valid URL is provided to prevent the modal from opening blankly.
-    if (!url) {
-        return null;
-    }
+const SlideshowModal = ({ images, onClose }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Construct the Google Docs Viewer URL for embedding.
-    const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') goToNext();
+      if (e.key === 'ArrowLeft') goToPrevious();
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [images]); // Re-bind if images change
 
-    return (
-        <AnimatePresence>
-            {url && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={onClose}
-                    className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4"
-                >
-                    <motion.div
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.95, opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="bg-background-light dark:bg-background-dark rounded-lg shadow-2xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden relative"
-                    >
-                        <header className="flex justify-between items-center p-4 border-b border-primary-light/10 dark:border-primary-dark/20">
-                            <h3 className="font-bold text-lg text-text-primary-light dark:text-text-primary-dark">Certificate Viewer</h3>
-                            <button
-                                onClick={onClose}
-                                className="text-text-secondary-light dark:text-text-secondary-dark hover:text-secondary-light dark:hover:text-secondary-dark transition-colors p-1 rounded-full hover:bg-secondary-light/10 dark:hover:bg-secondary-dark/10"
-                                aria-label="Close"
-                            >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </header>
-                        
-                        <div className="flex-grow">
-                            <iframe 
-                                src={googleViewerUrl}
-                                title="PDF Viewer"
-                                width="100%"
-                                height="100%"
-                                frameBorder="0"
-                                style={{ border: 0 }}
-                            ></iframe>
-                        </div>
-                    </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
+  if (!images || images.length === 0) {
+    return null;
+  }
+
+  const goToPrevious = () => {
+    const isFirstSlide = currentIndex === 0;
+    const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+  };
+
+  const goToNext = () => {
+    const isLastSlide = currentIndex === images.length - 1;
+    const newIndex = isLastSlide ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+  };
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+      >
+        {/* Main Modal Content */}
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full h-full max-w-5xl max-h-[90vh] flex flex-col items-center justify-center"
+        >
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute -top-2 -right-2 z-20 text-white bg-black/50 rounded-full p-2 hover:bg-red-500 transition-colors"
+            aria-label="Close"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+
+          {/* Image Display */}
+          <div className="relative w-full h-full flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={currentIndex}
+                src={images[currentIndex]}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3 }}
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                alt={`Slide ${currentIndex + 1}`}
+              />
+            </AnimatePresence>
+          </div>
+          
+          {/* Navigation Arrows */}
+          <button onClick={goToPrevious} className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition-colors focus:outline-none">
+             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <button onClick={goToNext} className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/40 text-white p-3 rounded-full hover:bg-black/70 transition-colors focus:outline-none">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"></path></svg>
+          </button>
+
+          {/* Counter */}
+          <div className="absolute bottom-4 bg-black/50 text-white text-sm px-3 py-1 rounded-full">
+            {currentIndex + 1} / {images.length}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
 };
+
 
 // =================================================================================
 // Main Component: Certifications
 // =================================================================================
-const Certifications = React.memo(({ licensesPdfUrl, internshipsPdfUrl }) => {
-    const [viewingPdfUrl, setViewingPdfUrl] = useState(null);
+const Certifications = React.memo(({ licensesImageUrls, internshipsImageUrls }) => {
+  const [activeSlideshow, setActiveSlideshow] = useState({
+      isOpen: false,
+      images: [],
+  });
 
-    const openLicsAndCerts = () => setViewingPdfUrl(licensesPdfUrl);
-    const openInternships = () => setViewingPdfUrl(internshipsPdfUrl);
-    const closePdfViewer = () => setViewingPdfUrl(null);
+  const openSlideshow = (images) => {
+    if (images && images.length > 0) {
+        setActiveSlideshow({ isOpen: true, images: images });
+    }
+    // Optionally, add an alert or notification if there are no images.
+  };
 
-    return (
-        <>
-            <AnimatedSection id="certifications">
-                <h2 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark text-center">Certificates & Internships</h2>
-                <AnimatedDivider />
-                <div className="text-center flex flex-col md:flex-row justify-center items-center gap-6">
-                    <motion.button
-                        onClick={openLicsAndCerts}
-                        whileHover={{ scale: 1.05, y: -2 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="inline-block text-white dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/30 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300"
-                    >
-                        View Licenses & Certs
-                    </motion.button>
-                    <motion.button
-                        onClick={openInternships}
-                        whileHover={{ scale: 1.05, y: -2 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="inline-block text-white dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/30 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300"
-                    >
-                        View Internship Certs
-                    </motion.button>
-                </div>
-            </AnimatedSection>
-            <PdfViewerModal url={viewingPdfUrl} onClose={closePdfViewer} />
-        </>
-    );
+  const closeSlideshow = () => {
+    setActiveSlideshow({ isOpen: false, images: [] });
+  };
+
+  const hasLicenses = licensesImageUrls && licensesImageUrls.length > 0;
+  const hasInternships = internshipsImageUrls && internshipsImageUrls.length > 0;
+
+  return (
+    <>
+      <AnimatedSection id="certifications">
+        <h2 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark text-center">Certificates & Internships</h2>
+        <AnimatedDivider />
+        <p className="text-center text-text-secondary-light dark:text-text-secondary-dark mb-8 max-w-2xl mx-auto">
+          Click below to view a slideshow of my professional licenses, certifications, and internship completion letters.
+        </p>
+        <div className="text-center flex flex-col md:flex-row justify-center items-center gap-6">
+          <motion.button
+            onClick={() => openSlideshow(licensesImageUrls)}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            disabled={!hasLicenses}
+            className="inline-block text-white dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/30 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            View Licenses & Certs
+          </motion.button>
+          <motion.button
+            onClick={() => openSlideshow(internshipsImageUrls)}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            disabled={!hasInternships}
+            className="inline-block text-white dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/30 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            View Internship Certs
+          </motion.button>
+        </div>
+      </AnimatedSection>
+
+      {activeSlideshow.isOpen && (
+        <SlideshowModal 
+          images={activeSlideshow.images}
+          onClose={closeSlideshow} 
+        />
+      )}
+    </>
+  );
 });
 
 export default Certifications;
