@@ -39,6 +39,7 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
   const navLinks = [
     { href: "#about", label: "About" },
     { href: "#experience", label: "Experience" },
+    { href: "#certifications", label: "Certifications" }, // NEW: Certifications link added
     { href: "#skills", label: "Skills" },
     { href: "#projects", label: "Projects" },
     { href: "#contact", label: "Contact" },
@@ -67,26 +68,28 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
         </NavItem>
         
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex space-x-6 items-center font-medium text-text-secondary-light dark:text-text-secondary-dark">
+        <div className="hidden md:flex space-x-8 items-center font-medium text-text-secondary-light dark:text-text-secondary-dark">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} onClick={handleLinkClick} className="hover:text-secondary-light dark:hover:text-secondary-dark transition-colors">
+            <a key={link.href} href={link.href} onClick={handleLinkClick} className="relative group hover:text-secondary-light dark:hover:text-secondary-dark transition-colors">
               {link.label}
+              {/* New animated dot */}
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-secondary-light dark:bg-secondary-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
             </a>
           ))}
-          {/* REFACTORED: No longer pass props to ThemeToggle */}
           <ThemeToggle />
         </div>
         
         {/* Mobile Controls */}
         <div className="md:hidden flex items-center space-x-4">
-          {/* REFACTORED: No longer pass props to ThemeToggle */}
           <ThemeToggle />
           {/* MODIFIED: Use semantic text colors for the icon. */}
-          <button onClick={toggleMobileMenu} className="text-text-primary-light dark:text-text-primary-dark focus:outline-none p-1" aria-label="Toggle menu">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMobileMenuOpen 
-                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> 
-                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+          <button onClick={toggleMobileMenu} className="text-text-primary-light dark:text-text-primary-dark focus:outline-none p-2" aria-label="Toggle menu">
+            <svg className="w-8 h-8 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <AnimatePresence mode="wait" initial={false}>
+                {isMobileMenuOpen 
+                  ? <motion.path key="menu-close" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> 
+                  : <motion.path key="menu-open" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+              </AnimatePresence>
             </svg>
           </button>
         </div>
@@ -104,7 +107,7 @@ const Header = React.memo(({ isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
             className="md:hidden absolute top-full left-0 w-full bg-background-light dark:bg-background-dark z-40 shadow-lg px-6 py-4 space-y-3 text-text-secondary-light dark:text-text-secondary-dark font-medium"
           >
             {navLinks.map((link) => (
-              <a key={link.href} href={link.href} onClick={handleLinkClick} className="block py-2 hover:text-secondary-light dark:hover:text-secondary-dark">
+              <a key={link.href} href={link.href} onClick={handleLinkClick} className="block py-2 hover:text-secondary-light dark:hover:text-secondary-dark transition-colors">
                 {link.label}
               </a>
             ))}
