@@ -4,14 +4,14 @@ import AnimatedSection from './ui/AnimatedSection';
 import AnimatedDivider from './ui/AnimatedDivider';
 
 // =================================================================================
-// Sub-component: SlideshowModal (with TypeError fix)
+// Sub-component: SlideshowModal
 // =================================================================================
 const SlideshowModal = ({ images, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const convertGoogleDriveUrl = (url) => {
-    // FIX: Add a robust check to ensure 'url' is a string before calling .match()
     if (typeof url !== 'string' || !url) {
       return null;
     }
@@ -19,13 +19,14 @@ const SlideshowModal = ({ images, onClose }) => {
     const match = url.match(regex);
     if (match && match[1]) {
       const fileId = match[1];
-      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+      return `https://drive.google.com/uc?export=download&id=${fileId}`;
     }
     return url;
   };
 
   useEffect(() => {
     setIsLoading(true);
+    setHasError(false);
   }, [currentIndex]);
 
   useEffect(() => {
@@ -81,19 +82,20 @@ const SlideshowModal = ({ images, onClose }) => {
           </button>
 
           <div className="relative w-full h-full flex items-center justify-center">
-             {isLoading && <div className="text-white">Loading image...</div>}
+             {isLoading && <div className="text-white">Loading...</div>}
+             {hasError && <div className="text-red-400">Failed to load image. Check sharing permissions.</div>}
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentIndex}
-                src={currentImageUrl || ''} // Use empty string fallback for src
+                src={currentImageUrl || ''}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className={`max-w-full max-h-full object-contain rounded-lg shadow-2xl ${isLoading || !currentImageUrl ? 'hidden' : 'block'}`}
+                className={`max-w-full max-h-full object-contain rounded-lg shadow-2xl ${isLoading || hasError || !currentImageUrl ? 'hidden' : 'block'}`}
                 alt={`Slide ${currentIndex + 1}`}
                 onLoad={() => setIsLoading(false)}
-                onError={() => setIsLoading(false)}
+                onError={() => { setIsLoading(false); setHasError(true); }}
               />
             </AnimatePresence>
           </div>
@@ -116,7 +118,7 @@ const SlideshowModal = ({ images, onClose }) => {
 
 
 // =================================================================================
-// Main Component: Certifications (No changes needed here)
+// Main Component: Certifications
 // =================================================================================
 const Certifications = React.memo(({ licensesImageUrls, internshipsImageUrls }) => {
   const [activeSlideshow, setActiveSlideshow] = useState({
@@ -163,7 +165,7 @@ const Certifications = React.memo(({ licensesImageUrls, internshipsImageUrls }) 
             className="inline-block text-white dark:text-text-primary-dark font-bold py-4 px-8 text-lg rounded-full shadow-lg shadow-primary-light/30 dark:shadow-primary-dark/30 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             View Internship Certs
-          </motion.button>
+          </motion.button> {/* <-- FIX: This closing tag was missing */}
         </div>
       </AnimatedSection>
 

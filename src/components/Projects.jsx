@@ -8,25 +8,10 @@ import { FaFilePdf } from 'react-icons/fa';
 // Sub-component: ProjectMedia (FIXED with TypeError Guard)
 // =================================================================================
 const ProjectMedia = memo(({ mediaUrl, title }) => {
-
-  const convertGoogleDriveUrl = (url) => {
-    // FIX: Add a robust check to ensure 'url' is a string before calling .match()
-    if (typeof url !== 'string' || !url) {
-      return null;
-    }
-    
-    const regex = /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
-    const match = url.match(regex);
-    if (match && match[1]) {
-      const fileId = match[1];
-      return `https://drive.google.com/uc?export=view&id=${fileId}`;
-    }
-    return url;
-  };
   
-  const displayUrl = convertGoogleDriveUrl(mediaUrl);
-
-  if (!displayUrl) {
+  // FIX: Add a robust check to ensure 'mediaUrl' is a valid string.
+  // This prevents the '.toLowerCase is not a function' error.
+  if (typeof mediaUrl !== 'string' || !mediaUrl) {
     return (
       <img
         loading="lazy"
@@ -37,12 +22,12 @@ const ProjectMedia = memo(({ mediaUrl, title }) => {
     );
   }
 
-  const isVideo = ['.mp4', '.webm', '.mov'].some(ext => displayUrl.toLowerCase().includes(ext));
+  const isVideo = ['.mp4', '.webm', '.mov'].some(ext => mediaUrl.toLowerCase().includes(ext));
 
   if (isVideo) {
     return (
       <video
-        src={displayUrl}
+        src={mediaUrl}
         controls
         className="rounded-lg mb-4 aspect-video object-cover border border-primary-light/10 dark:border-primary-dark/20 w-full"
       >
@@ -54,7 +39,7 @@ const ProjectMedia = memo(({ mediaUrl, title }) => {
   return (
     <img
       loading="lazy"
-      src={displayUrl}
+      src={mediaUrl}
       alt={title}
       className="rounded-lg mb-4 aspect-video object-cover border border-primary-light/10 dark:border-primary-dark/20 w-full"
       onError={(e) => {
@@ -67,7 +52,7 @@ const ProjectMedia = memo(({ mediaUrl, title }) => {
 
 
 // =================================================================================
-// Main Component: Projects (No changes needed here)
+// Main Component: Projects
 // =================================================================================
 const Projects = memo(({ projects }) => {
   const containerVariants = {
@@ -91,7 +76,7 @@ const Projects = memo(({ projects }) => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
-            className="grid grid-cols-1 md:give me the final code-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {projects.map((project) => (
               <motion.div
