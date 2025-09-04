@@ -1,11 +1,5 @@
 // =================================================================================
-// FILE: src/components/AdminPanel.jsx (FINAL & COMPLETE)
-// =================================================================================
-// This component is fully restored to include all functionality:
-// - Admin Login/Logout
-// - Adding/Deleting Projects (with a media URL input)
-// - Automated fetching of certificate image links from a Google Drive Folder ID
-// - Saving the fetched links to Firestore
+// FILE: src/components/AdminPanel.jsx (FINAL & COMPLETE - with fixes)
 // =================================================================================
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -71,7 +65,10 @@ export default function AdminPanel({ db, auth }) {
   const [newProject, setNewProject] = useState({ title: "", description: "", link: "", tags: [], mediaUrls: [] });
   const [tagInput, setTagInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  // FIX: Using separate state variables for each fetch button
+  const [isFetchingLicenses, setIsFetchingLicenses] = useState(false);
+  const [isFetchingInternships, setIsFetchingInternships] = useState(false);
+  const [isFetchingProjects, setIsFetchingProjects] = useState(false);
 
   // REPLACE WITH YOUR PUBLISHED GOOGLE APPS SCRIPT URL
   const APPS_SCRIPT_URL = "YOUR_DEPLOYED_WEB_APP_URL"; 
@@ -190,6 +187,7 @@ export default function AdminPanel({ db, auth }) {
     if (!folderId) {
       return showNotification(`Please enter a Folder ID for ${type === 'licenses' ? 'Licenses & Certs' : 'Internships'}.`);
     }
+    const setIsFetching = type === 'licenses' ? setIsFetchingLicenses : setIsFetchingInternships;
     setIsFetching(true);
     try {
       const response = await fetch(`${APPS_SCRIPT_URL}?folderId=${folderId}`);
@@ -216,7 +214,7 @@ export default function AdminPanel({ db, auth }) {
     if (!folderId) {
       return showNotification("Please enter a Project Media Folder ID.");
     }
-    setIsFetching(true);
+    setIsFetchingProjects(true);
     try {
       const response = await fetch(`${APPS_SCRIPT_URL}?folderId=${folderId}`);
       if (!response.ok) {
@@ -234,7 +232,7 @@ export default function AdminPanel({ db, auth }) {
     } catch (err) {
       showNotification(`Error fetching project media: ${err.message}`);
     } finally {
-      setIsFetching(false);
+      setIsFetchingProjects(false);
     }
   };
 
@@ -296,8 +294,8 @@ export default function AdminPanel({ db, auth }) {
                   
                   <div className="space-y-2">
                     <input type="text" placeholder="Project Media Folder ID" value={projectMediaFolderId} onChange={(e) => setProjectMediaFolderId(e.target.value)} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
-                    <button type="button" onClick={() => handleFetchProjectMedia(projectMediaFolderId)} disabled={isFetching} className="w-full bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
-                      {isFetching ? 'Fetching...' : 'Fetch Project Media'}
+                    <button type="button" onClick={() => handleFetchProjectMedia(projectMediaFolderId)} disabled={isFetchingProjects} className="w-full bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
+                      {isFetchingProjects ? 'Fetching...' : 'Fetch Project Media'}
                     </button>
                     {newProject.mediaUrls.length > 0 && (
                       <div className="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
@@ -328,8 +326,8 @@ export default function AdminPanel({ db, auth }) {
                 <form onSubmit={handleAssetUpdate} className="space-y-4">
                   <div>
                     <input type="text" placeholder="Licenses Folder ID" value={licensesFolderId} onChange={(e) => setLicensesFolderId(e.target.value)} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
-                    <button type="button" onClick={() => handleFetchImages(licensesFolderId, 'licenses')} disabled={isFetching} className="w-full mt-2 bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
-                      {isFetching ? 'Fetching...' : 'Fetch Licenses Images'}
+                    <button type="button" onClick={() => handleFetchImages(licensesFolderId, 'licenses')} disabled={isFetchingLicenses} className="w-full mt-2 bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
+                      {isFetchingLicenses ? 'Fetching...' : 'Fetch Licenses Images'}
                     </button>
                     {assets.licensesImageUrls.length > 0 && (
                       <div className="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
@@ -339,8 +337,8 @@ export default function AdminPanel({ db, auth }) {
                   </div>
                   <div>
                     <input type="text" placeholder="Internships Folder ID" value={internshipsFolderId} onChange={(e) => setInternshipsFolderId(e.target.value)} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
-                    <button type="button" onClick={() => handleFetchImages(internshipsFolderId, 'internships')} disabled={isFetching} className="w-full mt-2 bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
-                      {isFetching ? 'Fetching...' : 'Fetch Internships Images'}
+                    <button type="button" onClick={() => handleFetchImages(internshipsFolderId, 'internships')} disabled={isFetchingInternships} className="w-full mt-2 bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
+                      {isFetchingInternships ? 'Fetching...' : 'Fetch Internships Images'}
                     </button>
                     {assets.internshipsImageUrls.length > 0 && (
                       <div className="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
@@ -383,8 +381,7 @@ export default function AdminPanel({ db, auth }) {
       </div>
     </>
   );
-}
-
+} check
 
 // git add .
 // git commit -m "update"
