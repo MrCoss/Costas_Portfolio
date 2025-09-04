@@ -71,7 +71,8 @@ export default function AdminPanel({ db, auth }) {
   const [isFetchingProjects, setIsFetchingProjects] = useState(false);
 
   // REPLACE WITH YOUR PUBLISHED GOOGLE APPS SCRIPT URL
-  const APPS_SCRIPT_URL = "YOUR_DEPLOYED_WEB_APP_URL"; 
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuK-vnJgVWmi24i3TncPipUQmBgm-InattxenChbhBcvd4pzM05pQTTFeWxsMiniuG/exec
+"; 
 
   const showNotification = useCallback((message, type = 'error') => {
     setNotification({ message, type });
