@@ -1,5 +1,11 @@
 // =================================================================================
-// FILE: src/components/AdminPanel.jsx (FINAL)
+// FILE: src/components/AdminPanel.jsx (FINAL & COMPLETE)
+// =================================================================================
+// This component is fully restored to include all functionality:
+// - Admin Login/Logout
+// - Adding/Deleting Projects (with a media URL input)
+// - Automated fetching of certificate image links from a Google Drive Folder ID
+// - Saving the fetched links to Firestore
 // =================================================================================
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -12,12 +18,11 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from "./ui/LoadingSpinner.jsx";
 
-// --- SUB-COMPONENTS ---
+// --- SUB-COMPONENTS (rest of the sub-components are unchanged) ---
 const Notification = ({ message, type, onDismiss }) => {
   if (!message) return null;
   const baseClasses = "fixed top-5 right-5 p-4 rounded-lg shadow-lg text-text-primary-dark transition-opacity duration-300 z-50";
   const typeClasses = type === 'success' ? 'bg-primary-light dark:bg-primary-dark' : 'bg-red-500';
-
   return (
     <div className={`${baseClasses} ${typeClasses}`}>
       <span>{message}</span>
@@ -25,30 +30,29 @@ const Notification = ({ message, type, onDismiss }) => {
     </div>
   );
 };
-
 const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message }) => (
-  <AnimatePresence>
-    {isOpen && (
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4"
-        onClick={onCancel}
-      >
+    <AnimatePresence>
+      {isOpen && (
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-          onClick={(e) => e.stopPropagation()}
-          className="bg-background-light dark:bg-background-alt-dark rounded-xl shadow-2xl w-full max-w-md p-6"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4"
+          onClick={onCancel}
         >
-          <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">{title}</h3>
-          <p className="text-text-secondary-light dark:text-text-secondary-dark mb-6">{message}</p>
-          <div className="flex justify-end gap-4">
-            <button onClick={onCancel} className="px-4 py-2 rounded-lg bg-background-alt-light dark:bg-background-alt-dark hover:bg-slate-300 dark:hover:bg-slate-600 transition text-text-primary-light dark:text-text-primary-dark">Cancel</button>
-            <button onClick={onConfirm} className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition">Confirm</button>
-          </div>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-background-light dark:bg-background-alt-dark rounded-xl shadow-2xl w-full max-w-md p-6"
+          >
+            <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">{title}</h3>
+            <p className="text-text-secondary-light dark:text-text-secondary-dark mb-6">{message}</p>
+            <div className="flex justify-end gap-4">
+              <button onClick={onCancel} className="px-4 py-2 rounded-lg bg-background-alt-light dark:bg-background-alt-dark hover:bg-slate-300 dark:hover:bg-slate-600 transition text-text-primary-light dark:text-text-primary-dark">Cancel</button>
+              <button onClick={onConfirm} className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition">Confirm</button>
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    )}
-  </AnimatePresence>
+      )}
+    </AnimatePresence>
 );
 
 // --- MAIN ADMIN PANEL COMPONENT ---
@@ -56,7 +60,9 @@ export default function AdminPanel({ db, auth }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState([]);
-  const [assets, setAssets] = useState({ licensesPdfUrl: '', internshipsPdfUrl: '' });
+  const [assets, setAssets] = useState({ licensesImageUrls: [], internshipsImageUrls: [] });
+  const [licensesFolderId, setLicensesFolderId] = useState('');
+  const [internshipsFolderId, setInternshipsFolderId] = useState('');
   const [notification, setNotification] = useState({ message: '', type: '' });
   const [modalState, setModalState] = useState({ isOpen: false, onConfirm: () => {} });
   const [email, setEmail] = useState("");
@@ -64,7 +70,10 @@ export default function AdminPanel({ db, auth }) {
   const [newProject, setNewProject] = useState({ title: "", description: "", link: "", tags: [], mediaUrl: "" });
   const [tagInput, setTagInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadProgress] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
+
+  // REPLACE WITH YOUR PUBLISHED GOOGLE APPS SCRIPT URL
+  const APPS_SCRIPT_URL = "YOUR_DEPLOYED_WEB_APP_URL"; 
 
   const showNotification = useCallback((message, type = 'error') => {
     setNotification({ message, type });
@@ -85,7 +94,11 @@ export default function AdminPanel({ db, auth }) {
       const docRef = doc(db, "portfolioAssets", "main");
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setAssets(docSnap.data());
+        const data = docSnap.data();
+        setAssets({
+          licensesImageUrls: data.licensesImageUrls || [],
+          internshipsImageUrls: data.internshipsImageUrls || []
+        });
       }
     } catch (err) {
       showNotification("Failed to fetch asset links.");
@@ -172,6 +185,32 @@ export default function AdminPanel({ db, auth }) {
     }
   };
 
+  const handleFetchImages = async (folderId, type) => {
+    if (!folderId) {
+      return showNotification(`Please enter a Folder ID for ${type === 'licenses' ? 'Licenses & Certs' : 'Internships'}.`);
+    }
+    setIsFetching(true);
+    try {
+      const response = await fetch(`${APPS_SCRIPT_URL}?folderId=${folderId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch from Google Apps Script.');
+      }
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      setAssets(prev => ({
+        ...prev,
+        [type === 'licenses' ? 'licensesImageUrls' : 'internshipsImageUrls']: data.urls
+      }));
+      showNotification(`Successfully loaded ${data.urls.length} images. Remember to save!`, "success");
+    } catch (err) {
+      showNotification(`Error fetching images: ${err.message}`);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const handleAssetUpdate = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -185,9 +224,9 @@ export default function AdminPanel({ db, auth }) {
       setIsSubmitting(false);
     }
   };
-
+  
   if (loading) return <LoadingSpinner />;
-
+  
   if (!user) {
     return (
       <div className="min-h-screen bg-background-alt-light dark:bg-background-alt-dark flex items-center justify-center p-4">
@@ -239,11 +278,6 @@ export default function AdminPanel({ db, auth }) {
                       ))}
                     </div>
                   </div>
-                  {isSubmitting && uploadProgress > 0 && (
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
-                      <div className="bg-primary-light dark:bg-primary-dark h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
-                    </div>
-                  )}
                   <button type="submit" disabled={isSubmitting} className="w-full bg-primary-light dark:bg-primary-dark text-text-primary-dark dark:text-text-primary-light py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
                     {isSubmitting ? 'Adding Project...' : 'Add Project'}
                   </button>
@@ -253,11 +287,31 @@ export default function AdminPanel({ db, auth }) {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-background-light dark:bg-background-dark p-6 rounded-xl shadow-lg">
                 <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">Manage Asset Links</h2>
                 <form onSubmit={handleAssetUpdate} className="space-y-4">
-                   <input type="url" placeholder="Licenses & Certs PDF URL" value={assets.licensesPdfUrl} onChange={(e) => setAssets({...assets, licensesPdfUrl: e.target.value})} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
-                   <input type="url" placeholder="Internship Certs PDF URL" value={assets.internshipsPdfUrl} onChange={(e) => setAssets({...assets, internshipsPdfUrl: e.target.value})} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
-                   <button type="submit" disabled={isSubmitting} className="w-full bg-primary-light dark:bg-primary-dark text-text-primary-dark dark:text-text-primary-light py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
-                     {isSubmitting ? 'Saving...' : 'Save Links'}
-                   </button>
+                  <div>
+                    <input type="text" placeholder="Licenses Folder ID" value={licensesFolderId} onChange={(e) => setLicensesFolderId(e.target.value)} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
+                    <button type="button" onClick={() => handleFetchImages(licensesFolderId, 'licenses')} disabled={isFetching} className="w-full mt-2 bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
+                      {isFetching ? 'Fetching...' : 'Fetch Licenses Images'}
+                    </button>
+                    {assets.licensesImageUrls.length > 0 && (
+                      <div className="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        {assets.licensesImageUrls.length} links loaded.
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <input type="text" placeholder="Internships Folder ID" value={internshipsFolderId} onChange={(e) => setInternshipsFolderId(e.target.value)} className="w-full px-4 py-2 bg-transparent border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark text-text-primary-light dark:text-text-primary-dark" />
+                    <button type="button" onClick={() => handleFetchImages(internshipsFolderId, 'internships')} disabled={isFetching} className="w-full mt-2 bg-primary-light dark:bg-primary-dark text-white dark:text-text-primary-dark py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
+                      {isFetching ? 'Fetching...' : 'Fetch Internships Images'}
+                    </button>
+                    {assets.internshipsImageUrls.length > 0 && (
+                      <div className="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        {assets.internshipsImageUrls.length} links loaded.
+                      </div>
+                    )}
+                  </div>
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-primary-light dark:bg-primary-dark text-text-primary-dark dark:text-text-primary-light py-2 rounded-lg font-semibold hover:bg-primary-hover dark:hover:bg-primary-dark-hover transition disabled:opacity-50">
+                    {isSubmitting ? 'Saving...' : 'Save Links to Firestore'}
+                  </button>
                 </form>
               </motion.div>
             </div>
